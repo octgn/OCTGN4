@@ -37,10 +37,7 @@ namespace Octgn.Server
 
         private async Task<byte[]> SingleRead(byte[] buf, NetworkStream stream)
         {
-            //under some circumstances, it's not possible to detect
-            //a client disconnecting if there's no data being sent
-            //so it's a good idea to give them a timeout to ensure that 
-            //we clean them up.
+            // http://stackoverflow.com/questions/12630827/using-net-4-5-async-feature-for-socket-programming#answer-12631467
             var timeoutTask = Task.Delay(TimeSpan.FromSeconds(15));
             var amountReadTask = stream.ReadAsync(buf, 0, buf.Length, _cancelation.Token);
             var completedTask = await Task.WhenAny(timeoutTask, amountReadTask)
@@ -51,8 +48,6 @@ namespace Octgn.Server
                 //await stream.WriteAsync(msg, 0, msg.Length);
                 return null;
             }
-            //now we know that the amountTask is complete so
-            //we can ask for its Result without blocking
             var amountRead = amountReadTask.Result;
             if (amountRead == 0) return null; //end of stream.
             return buf;
