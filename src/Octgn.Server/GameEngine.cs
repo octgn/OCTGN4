@@ -16,6 +16,7 @@ namespace Octgn.Server
         {
             Users = new UserList();
             _invokeQueue = new ConcurrentQueue<Action>();
+            _cancelation = new System.Threading.CancellationTokenSource();
             _gameThread = new Task(Run, _cancelation.Token, TaskCreationOptions.LongRunning);
         }
 

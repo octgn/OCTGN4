@@ -11,7 +11,9 @@ using System.Windows;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Collections.Generic;
 using Microsoft.AspNet.SignalR;
+using Octgn.Server;
 
 namespace Octgn.Client
 {
@@ -24,11 +26,14 @@ namespace Octgn.Client
         protected IDisposable WebHost { get; set; }
         protected IDisposable SignalrHost { get; set; }
 
+        private List<GameServer> _servers;
+
         public void Start(string pathToWebFolder)
         {
             Port = FreeTcpPort();
             Path = String.Format("http://localhost:{0}/", Port);
             WebFolderPath = pathToWebFolder;
+            _servers = new List<GameServer>();
             WebHost = WebApp.Start(Path, x =>
             {
                 x.Use<Middleware>(x);
@@ -36,6 +41,7 @@ namespace Octgn.Client
                 {
                     map.UseCors(CorsOptions.AllowAll);
                     var hubConfiguration = new HubConfiguration();
+                    hubConfiguration.Resolver.Register(typeof(MainHub), () => new MainHub(this));
                     map.RunSignalR(hubConfiguration);
                 }).UseNancy(op =>
                 {
@@ -63,6 +69,15 @@ namespace Octgn.Client
         public void PingClients()
         {
             MainHub.Instance.Clients.All.Ping();
+        }
+
+        internal string HostGame(string username)
+        {
+            var ge = new GameEngine();
+            var port = FreeTcpPort();
+            var gs = new GameServer(port, ge);
+            _servers.Add(gs);
+            return port.ToString();
         }
 
         private class Middleware : OwinMiddleware

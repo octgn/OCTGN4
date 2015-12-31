@@ -9,6 +9,13 @@ namespace Octgn.Client
             get { return GlobalHost.ConnectionManager.GetHubContext<MainHub>(); }
         }
 
+        private UIBackend _backend;
+
+        public MainHub(UIBackend be)
+        {
+            _backend = be;
+        }
+
         public void Send(string name, string message)
         {
             Clients.All.addMessage(name, message);
@@ -25,7 +32,7 @@ namespace Octgn.Client
             {
                 if (string.IsNullOrWhiteSpace(username))
                     throw new HubException(Resources.Text.MainHub_HostGame_UsernameValidationError);
-                return "http://www.google.com";
+                return _backend.HostGame(username);
             }
             catch (System.Exception e)
             {

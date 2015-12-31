@@ -17,6 +17,7 @@ namespace Octgn.Server
 
         private async void Run()
         {
+            _listener.Start();
             var socket = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
             if (socket != null)
             {

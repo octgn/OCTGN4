@@ -264,6 +264,12 @@
       <LastGenOutput>Text.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Octgn.Server\Octgn.Server.csproj">
+      <Project>{b6b5d47a-fc8a-47dd-b9f3-b66f1cc25b1f}</Project>
+      <Name>Octgn.Server</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
