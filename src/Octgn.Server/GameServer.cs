@@ -21,6 +21,7 @@ namespace Octgn.Server
         public void Dispose()
         {
             _listener.Dispose();
+            _engine.Dispose();
         }
     }
 }
