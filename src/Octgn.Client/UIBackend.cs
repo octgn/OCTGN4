@@ -5,12 +5,8 @@ using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
 using Microsoft.Owin.Logging;
 using Owin;
-using Microsoft.AspNet.SignalR.Client;
-using System;
-using System.Windows;
 using System.Net.Sockets;
 using System.Net;
-using System.Threading;
 using System.Collections.Generic;
 using Microsoft.AspNet.SignalR;
 using Octgn.Server;
@@ -62,6 +58,13 @@ namespace Octgn.Client
 
         public void Dispose()
         {
+            lock (_servers)
+            {
+                foreach (var s in _servers)
+                {
+                    s.Dispose();
+                }
+            }
             WebHost.Dispose();
             SignalrHost.Dispose();
         }
@@ -73,11 +76,14 @@ namespace Octgn.Client
 
         internal string HostGame(string username)
         {
-            var ge = new GameEngine();
-            var port = FreeTcpPort();
-            var gs = new GameServer(port, ge);
-            _servers.Add(gs);
-            return port.ToString();
+            lock (_servers)
+            {
+                var ge = new GameEngine();
+                var port = FreeTcpPort();
+                var gs = new GameServer(port, ge);
+                _servers.Add(gs);
+                return port.ToString();
+            }
         }
 
         private class Middleware : OwinMiddleware

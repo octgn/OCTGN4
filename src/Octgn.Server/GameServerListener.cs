@@ -12,35 +12,26 @@ namespace Octgn.Server
         {
             _listener = new TcpListener(System.Net.IPAddress.Any, port);
             _onSocket = onSocket;
+            _listener.Start();
             Run();
         }
 
         private async void Run()
         {
-            _listener.Start();
-            var socket = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
-            if (socket != null)
+            while (!_disposed)
             {
-                // Handle the socket
-                _onSocket(new GameServerSocket(socket));
-            }
-
-            lock (this)
-            {
-                if (_disposed)
-                    return;
-                Run();
+                var socket = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
+                if (socket != null)
+                {
+                    // Handle the socket
+                    _onSocket(new GameServerSocket(socket));
+                }
             }
         }
 
         public void Dispose()
         {
-            lock (this)
-            {
-                if (_disposed)
-                    return;
-                _disposed = true;
-            }
+            _disposed = true;
         }
     }
 }

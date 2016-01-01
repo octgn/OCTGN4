@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Octgn.Client;
+using Octgn.Shared;
 using System.Diagnostics;
 
 namespace Octgn.WindowsClient
@@ -17,6 +18,7 @@ namespace Octgn.WindowsClient
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            LoggerFactory.SetDefault<Logger>();
             UIBackend = new UIBackend();
             UIBackend.Start(@"/../../../Octgn.WebApp");
             linkLabel1.Text = "http://localhost:" + UIBackend.Port + "/";
