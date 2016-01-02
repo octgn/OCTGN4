@@ -10,6 +10,7 @@ namespace Octgn.WindowsClient
         public void Setup(string type)
         {
             _typeName = type;
+            System.Diagnostics.Trace.Listeners.Clear();
         }
 
         public void Debug(string message, params object[] args)
@@ -34,8 +35,9 @@ namespace Octgn.WindowsClient
 
         protected void WriteLine(string str, [CallerMemberName] string cmem = "", params object[] args)
         {
-            var strr = $"[{cmem.ToUpper()} {DateTime.Now}] - {string.Format(str, args)}"; 
-            System.Diagnostics.Debug.WriteLine(strr);
+            var strr = $"[{cmem.ToUpper()} {DateTime.Now}] - {string.Format(str, args)}";
+            //System.Diagnostics.Debug.WriteLine(strr);
+            System.Console.WriteLine(strr); 
         }
     }
 }
