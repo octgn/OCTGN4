@@ -9,13 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Client", "Octgn.Clien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Server", "Octgn.Server\Octgn.Server.csproj", "{B6B5D47A-FC8A-47DD-B9F3-B66F1CC25B1F}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Octgn.Shared", "Octgn.Shared\Octgn.Shared.shproj", "{28D9F43B-6802-46CC-BCBD-6C2A9F413724}"
-EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Octgn.Shared\Octgn.Shared.projitems*{b6b5d47a-fc8a-47dd-b9f3-b66f1cc25b1f}*SharedItemsImports = 4
-		Octgn.Shared\Octgn.Shared.projitems*{28d9f43b-6802-46cc-bcbd-6c2a9f413724}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
