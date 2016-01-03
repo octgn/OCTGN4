@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Castle.DynamicProxy;
+using Octgn.Server.Networking;
+using System.Linq;
 
 namespace Octgn.Server
 {
@@ -6,10 +8,13 @@ namespace Octgn.Server
     {
         public bool Connected { get; private set; }
         private GameServerSocket _socket;
+        private IS2CComs RPC;
+        private static ProxyGenerator _generator = new ProxyGenerator();
         public UserBase(GameServerSocket sock)
         {
             _socket = sock;
             Connected = true;
+            RPC = _generator.CreateInterfaceProxyWithoutTarget<IS2CComs>(new ServerRpcInterceptor(sock));
         }
 
         internal void ProcessMessages()
