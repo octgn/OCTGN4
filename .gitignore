@@ -5,4 +5,5 @@ _build
 /src/Octgn.Server/obj
 /src/Octgn.WindowsClient/bin
 /src/Octgn.WindowsClient/obj
+/src/packages
 *.suo
