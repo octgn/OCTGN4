@@ -6,17 +6,25 @@
 Welcome to OCTGN's documentation!
 =================================
 
-Contents:
+We have multiple sections for our documentation:
+
+* :ref:`user-docs`
+* :ref:`gamedev-docs`
+* :ref:`dev-docs`
+
+
+.. _user-docs:
 
 .. toctree::
    :maxdepth: 2
+   :caption: User Documentation
 
+   getting_started
 
+.. _dev-docs:
 
-Indices and tables
-==================
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Documentation
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   workflow
