@@ -7,34 +7,36 @@ It should be noted that the endian order of the protocol is defined by the very 
 Packet Variables
 =================
 
-Byte
+Each Packet Variable starts with a 1 Byte header declaring its type. That value is next to each header below(ex. Byte - 0x02)
+
+Byte - 0x02
 -----
 * [1 Byte]
 
-Short
+Short - 0x03
 -----
 * [2 Byte]
 
-Int32
+Int32 - 0x04
 ------
 * [4 Bytes]
 
-Int64
+Int64 - 0x05
 ------
 * [8 Bytes]
 
-Float
+Float - 0x06
 ------
 * [4 Bytes]
 
-String
+String - 0x07
 ------
 
 * [1 Byte] Length of String Length
 * [1-20 Bytes] Length of String in ASCII
 * [Bytes] UTF8 String
 
-Method Parameter
+Method Parameter - 0x08
 ----------------
 
 * [1 String] Name of the parameter
@@ -47,5 +49,6 @@ Packet
 -------
 
 * [1 String] Method Name
+* [1 Byte] Number of Method Parameters
 * [Parameters] Method Parameters
 * [1 Byte] Packet End Delimiter - 0x01
