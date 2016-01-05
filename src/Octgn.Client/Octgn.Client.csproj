@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="GameClient.cs" />
     <Compile Include="MainHub.cs" />
     <Compile Include="Modules\CallerCulturePipelineModule.cs" />
     <Compile Include="Modules\HomeModule.cs" />
