@@ -28,3 +28,4 @@ We have multiple sections for our documentation:
    :caption: Developer Documentation
 
    workflow
+   network_protocol
