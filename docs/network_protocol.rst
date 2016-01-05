@@ -42,7 +42,7 @@ Method Parameter - 0x08
 * [1 String] Name of the parameter
 * [1 Packet Variable(Excluding Method Parameter)] Value of the parameter
    
-Packet - 0x200
+Packet - 0xC8
 -------
 
 * [1 String] Method Name
