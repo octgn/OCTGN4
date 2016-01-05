@@ -46,7 +46,6 @@ Packets
 Packet
 -------
 
-* [1 Byte] Packet Start Delimiter - 0x01
 * [1 String] Method Name
 * [Parameters] Method Parameters
-* [1 Byte] Packet End Delimiter - 0x02
+* [1 Byte] Packet End Delimiter - 0x01
