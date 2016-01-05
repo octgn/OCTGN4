@@ -1,5 +1,6 @@
+++++++++++++++++
 OCTGN Workflow
-==============
+++++++++++++++++
 
 Issue Types
 ===========
@@ -27,7 +28,7 @@ Closed States
 
 Give this the label ``Bug`` and continue
 
-:hand: Not Enough Info
+**🖐** Not Enough Info
 ~~~~~~~~~~~~~~~~~~~~~~
 
 *Example* > I can't log in, help!
@@ -38,7 +39,7 @@ This is generic text that can be used.
 
     This bug report does not contain enough information for us to act on so it has been closed. Please provide us more information and we will reevaluate this bug.
 
-:hand: Can't Reproduce
+**🖐** Can't Reproduce
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Explain what you did to try and reproduce this bug. Then give it the label ``No Repro`` and ``close`` it.
@@ -49,7 +50,7 @@ Post the following text as well
 
     This bug report was closed because we were unable to reproducde it.  If you provide more detailed information we will reevaluate this bug.
 
-:hand: The Bug is Expected Behavior *aka* Not a Bug
+**🖐** The Bug is Expected Behavior *aka* Not a Bug
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *Example* > If I ``End Task`` the program, it doesn't save my changes.
@@ -58,7 +59,7 @@ Give this the label ``Expected`` and ``close`` the issue. Explain why this behav
 
     This bug report has been closed because it is not actually a bug, it is expected behaviour. If you feel this is incorrect please provide us with more information and we will review it.
 
-:hand: It's a Bug, But We're Not Going To Fix It
+**🖐** It's a Bug, But We're Not Going To Fix It
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *Example* > While I'm using the application, if I click three times on the button, and then spin around in a circle, the application crashes
@@ -69,7 +70,7 @@ Give this the label ``Won't Fix`` and ``close`` the issue. Explain why we won't 
 
     This bug report has been closed because we don't plan on fixing this bug. Feel free to update us with more information if you feel it is relevant and we will review it, but at this time no further action will be taken.
 
-:accept: It's a Bug, and We Plan on Fixing It
+**👍** It's a Bug, and We Plan on Fixing It
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *Example* > If I double click the button, it happens twice
