@@ -4,10 +4,10 @@ Network Protocol
 
 It should be noted that the endian order of the protocol is defined by the very first byte that gets sent. 0xFF if it's BigEndian and 0xFE if it's LittleEndian. Both client and server are required to send this initial byte immediately after connecting.
 
-Packet Variables
+Packet Typtes
 =================
 
-Each Packet Variable starts with a 1 Byte header declaring its type. That value is next to each header below(ex. Byte - 0x02)
+Each Packet Type starts with a 1 Byte header declaring its type. That value is next to each header below(ex. Byte - 0x02). Each Packet Type also  ends with the byte 0x01. 
 
 Byte - 0x02
 -----
@@ -42,10 +42,7 @@ Method Parameter - 0x08
 * [1 String] Name of the parameter
 * [1 Packet Variable(Excluding Method Parameter)] Value of the parameter
    
-Packets
-=======
-
-Packet
+Packet - 0x200
 -------
 
 * [1 String] Method Name
