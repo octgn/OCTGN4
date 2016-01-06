@@ -124,6 +124,7 @@ This is just a generic task that needs to be completed by the development team. 
 Give this the label ``Task`` and continue
 
 If anyone commits code related to this ``Task`` they must make sure to reference this ``Task`` in the commit message
+
     Task #1234
 
 Open States
