@@ -31,7 +31,8 @@ Give this the label ``Bug`` and continue
 **🖐** Not Enough Info
 ~~~~~~~~~~~~~~~~~~~~~~
 
-*Example* > I can't log in, help!
+*Example* 
+    I can't log in, help!
 
 If the bug report doesn't have enough information, ``Close`` the bug and give it the label ``More Info``. Tell them why the bug report is closed.
 
@@ -53,7 +54,8 @@ Post the following text as well
 **🖐** The Bug is Expected Behavior *aka* Not a Bug
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Example* > If I ``End Task`` the program, it doesn't save my changes.
+*Example*
+    If I ``End Task`` the program, it doesn't save my changes.
 
 Give this the label ``Expected`` and ``close`` the issue. Explain why this behavior is expected. Also paste in the following text
 
@@ -62,7 +64,8 @@ Give this the label ``Expected`` and ``close`` the issue. Explain why this behav
 **🖐** It's a Bug, But We're Not Going To Fix It
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Example* > While I'm using the application, if I click three times on the button, and then spin around in a circle, the application crashes
+*Example*
+    While I'm using the application, if I click three times on the button, and then spin around in a circle, the application crashes
 
 *(It's a bug, but it's so obscure in this case it's not worth spending the time on fixing it)*
 
@@ -73,7 +76,8 @@ Give this the label ``Won't Fix`` and ``close`` the issue. Explain why we won't 
 **👍** It's a Bug, and We Plan on Fixing It
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Example* > If I double click the button, it happens twice
+*Example*
+    If I double click the button, it happens twice
 
 Give this the label ``Accepted`` and assign it to someone to work on it.  If you don't know who should work on it, then don't change the label or assign it to the repo owner to delegate the task.
 
@@ -96,47 +100,45 @@ Open States
 ~~~~~~~~~~~
 
 -  No Label - This means that the issue was not reviewed.
--  Accepted - This means that the issue passed initial inspection.
-   (Should detail what this means exactly, or what types of features
-   should not be accepted)
--  Must Test - Means this feature has been implemented, but that needs
-   to be tested before it can be closed #### Closed States
--  More Info - This feature is lacking information before it can be
-   implemented
--  Won't Implement - We don't plan on implementing this feature. It must
-   be explained in the comments of the issue as to why we won't.
+-  Accepted - This means that the issue passed initial inspection. (Should detail what this means exactly, or what types of features should not be accepted)
+-  Must Test - Means this feature has been implemented, but that needs to be tested before it can be closed 
+
+Closed States
+~~~~~~~~~~~~~
+
+-  More Info - This feature is lacking information before it can be implemented
+-  Won't Implement - We don't plan on implementing this feature. It must be explained in the comments of the issue as to why we won't.
 -  Complete - The feature is tested and committed to the master branch.
--  Released - When this fix goes live. You must also include a version
-   number as a comment
+-  Released - When this fix goes live. You must also include a version number as a comment
 
 Workflow
 ~~~~~~~~
 
 Give this the label ``Feature Request`` and continue
 
-Issue Labels
+Issue Priority
 ============
-
-Priority
---------
 
 Bugs and Feature Requests can have priority labels.
 
--  Blocking - High priority. If this is set
--  {Username} - A special priority which allows {Username} to say that
-   this issue is a priority item for them, even if it's not a priority
-   otherwise. These labels must be the color #ABCDEF
+-  Blocking - High priority. If this is set **TODO fill the rest of this sentence**
+-  {Username} - A special priority which allows {Username} to say that this issue is a priority item for them, even if it's not a priority otherwise. These labels must be the color #ABCDEF
 
 Release Types
 =============
 
-There are 4 different types of releases 1. Major Release 2. Feature
-Release 3. Bug Release 4. Test Release
+There are 4 different types of releases 
+1. Major Release 
+2. Feature Release 
+3. Bug Release 
+4. Test Release
 
 Version Schema
 --------------
 
-+ - Increment the number P - Use previous number 0-9 - Explicit number
++ - Increment the number 
+P - Use previous number 
+0-9 - Explicit number
 
 **Example**
 
@@ -151,17 +153,25 @@ Major Release
 
 **Version Schema**: +.0.0.0
 
-This is unlikely to happen, and will most likely bring with it a whole
-new workflow. Basically this is a rewrite. #### Feature Release
+This is unlikely to happen, and will most likely bring with it a whole new workflow. Basically this is a rewrite. 
+
+Feature Release
+---------------
+
 **Version Schema**: P.+.0.0
 
-If there are any `Blocking <#Blocking>`__ issues they must be either
-closed in this release or in a previous `Bug Release <#bug-release>`__
-#### Bug Release **Version Schema**: P.P.+.0
+If there are any `Blocking <#Blocking>`__ issues they must be either closed in this release or in a previous `Bug Release <#bug-release>`__
+
+Bug Release
+------------
+
+**Version Schema**: P.P.+.0
 
 This release type fixes issues that were introduced in any release type.
-#### Test Release **Version Schema**: P.P.P.+
 
-This release type ends up being the development builds that occure when
-we're doing `Bug Release <#bug-release>`__ or a `Feature
-Release <#feature-release>`__
+Test Release
+------------
+
+**Version Schema**: P.P.P.+
+
+This release type ends up being the development builds that occure when we're doing `Bug Release <#bug-release>`__ or a `Feature Release <#feature-release>`__
