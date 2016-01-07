@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Client", "Octgn.Clien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Server", "Octgn.Server\Octgn.Server.csproj", "{B6B5D47A-FC8A-47DD-B9F3-B66F1CC25B1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Test", "Octgn.Test\Octgn.Test.csproj", "{54E48D2A-9002-41DE-B2B1-99F1BBDE9281}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B6B5D47A-FC8A-47DD-B9F3-B66F1CC25B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6B5D47A-FC8A-47DD-B9F3-B66F1CC25B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6B5D47A-FC8A-47DD-B9F3-B66F1CC25B1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E48D2A-9002-41DE-B2B1-99F1BBDE9281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E48D2A-9002-41DE-B2B1-99F1BBDE9281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E48D2A-9002-41DE-B2B1-99F1BBDE9281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E48D2A-9002-41DE-B2B1-99F1BBDE9281}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
