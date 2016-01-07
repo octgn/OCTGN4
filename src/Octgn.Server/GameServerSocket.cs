@@ -7,17 +7,9 @@ namespace Octgn.Server
     public class GameServerSocket : SocketBase
     {
         public GameServerSocket(TcpClient sock)
-            : base(sock, new GameServerPacketInvoker())
+            : base(sock)
         {
 
-        }
-    }
-
-    public class GameServerPacketInvoker : IPacketInvoker
-    {
-        public void Invoke(NetworkProtocol.Packet packet)
-        {
-            throw new NotImplementedException();
         }
     }
 }

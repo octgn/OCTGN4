@@ -12,25 +12,12 @@ namespace Octgn.Client
         }
     }
 
-    class GameClientSocket : SocketBase, IPacketInvoker
+    class GameClientSocket : SocketBase
     {
         public GameClientSocket(TcpClient sock)
-            : base(sock, new GameClientPacketInvoker())
+            : base(sock)
         {
 
-        }
-
-        public void Invoke(NetworkProtocol.Packet packet)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class GameClientPacketInvoker : IPacketInvoker
-    {
-        public void Invoke(NetworkProtocol.Packet packet)
-        {
-            throw new NotImplementedException();
         }
     }
 }
