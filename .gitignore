@@ -3,6 +3,8 @@ _build
 /src/Octgn.Client/obj
 /src/Octgn.Server/bin
 /src/Octgn.Server/obj
+/src/Octgn.Test/bin
+/src/Octgn.Test/obj
 /src/Octgn.WindowsClient/bin
 /src/Octgn.WindowsClient/obj
 /src/packages
