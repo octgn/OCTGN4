@@ -255,6 +255,17 @@ namespace Octgn.Server.Networking
         {
             public string Name { get; set; }
             public object Value { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null) return false;
+                return GetHashCode() == obj.GetHashCode();
+            }
+
+            public override int GetHashCode()
+            {
+                return Name.GetHashCode();
+            }
         }
 
         public class Packet
