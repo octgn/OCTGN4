@@ -7,6 +7,7 @@
 
     public interface IS2CComs
     {
+        void HelloResp(int id);
         void Kicked(string message);
     }
 }

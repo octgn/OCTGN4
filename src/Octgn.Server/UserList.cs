@@ -20,8 +20,13 @@ namespace Octgn.Server
         {
             lock (this)
             {
-                foreach(var user in _users)
+                foreach(var user in _users.ToArray())
                 {
+                    if (user.Replaced)
+                    {
+                        _users.Remove(user);
+                        continue;
+                    }
                     user.ProcessMessages();
                 }
             }
