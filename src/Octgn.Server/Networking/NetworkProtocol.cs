@@ -10,10 +10,11 @@ namespace Octgn.Server.Networking
         // TODO Need to handle disconnects in read somehow
         private Stream _stream;
         private Socket _socket;
-        public NetworkProtocol(Socket socket)
+
+        public NetworkProtocol(TcpClient client)
         {
-            _stream = new NetworkStream(socket);
-            _socket = socket;
+            _stream = client.GetStream();
+            _socket = client.Client;
         }
 
         public byte ReadByte()
@@ -75,7 +76,7 @@ namespace Octgn.Server.Networking
             {
                 var takeCount = (int)Math.Min(4096, len - i);
                 _stream.Read(arrText, 0, takeCount);
-                var str = Encoding.UTF8.GetString(arrText);
+                var str = Encoding.UTF8.GetString(arrText, 0, takeCount);
                 sb.Append(str);
 
                 i += takeCount;
