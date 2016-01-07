@@ -141,6 +141,115 @@ namespace Octgn.Server.Networking
             return ret;
         }
 
+        public void WriteByte(byte b)
+        {
+            _stream.WriteByte(0x02);
+            _stream.WriteByte(b);
+        }
+
+        public void WriteShort(short s)
+        {
+            _stream.WriteByte(0x03);
+            var bytes = BitConverter.GetBytes(s);
+            _stream.Write(bytes, 0, bytes.Length);
+            for(var i = 0; i < (2 - bytes.Length); i++)
+            {
+                _stream.WriteByte(0);
+            }
+        }
+
+        public void WriteInt32(Int32 s)
+        {
+            _stream.WriteByte(0x04);
+            var bytes = BitConverter.GetBytes(s);
+            _stream.Write(bytes, 0, bytes.Length);
+            for(var i = 0; i < (4 - bytes.Length); i++)
+            {
+                _stream.WriteByte(0);
+            }
+        }
+
+        public void WriteInt64(Int64 s)
+        {
+            _stream.WriteByte(0x05);
+            var bytes = BitConverter.GetBytes(s);
+            _stream.Write(bytes, 0, bytes.Length);
+            for(var i = 0; i < (8 - bytes.Length); i++)
+            {
+                _stream.WriteByte(0);
+            }
+        }
+
+        public void WriteFloat(float s)
+        {
+            _stream.WriteByte(0x06);
+            var bytes = BitConverter.GetBytes(s);
+            _stream.Write(bytes, 0, bytes.Length);
+            for(var i = 0; i < (4 - bytes.Length); i++)
+            {
+                _stream.WriteByte(0);
+            }
+        }
+
+        public void WriteString(string s)
+        {
+            _stream.WriteByte(0x07);
+            var lenbytes = Encoding.ASCII.GetBytes(s.Length.ToString());
+            WriteByte((byte)lenbytes.Length);
+            _stream.Write(lenbytes, 0, lenbytes.Length);
+            var strBytes = Encoding.UTF8.GetBytes(s);
+            _stream.Write(strBytes, 0, strBytes.Length);
+        }
+        public void WriteVariable(object o)
+        {
+            if(o is byte)
+            {
+                WriteByte((byte)o);
+            }
+            else if(o is short)
+            {
+                WriteShort((short)o);
+            }
+            else if(o is Int32)
+            {
+                WriteInt32((Int32)o);
+            }
+            else if(o is Int64)
+            {
+                WriteInt64((Int64)o);
+            }
+            else if(o is float)
+            {
+                WriteFloat((float)o);
+            }
+            else if(o is string)
+            {
+                WriteString((string)o);
+            }
+            else
+            { 
+                throw new InvalidDataException($"Tried to WriteVariable. Type {o.GetType()} is not valid.");
+            }
+        }
+
+        public void WriteMethodParameter(MethodParameter p)
+        {
+            _stream.WriteByte(0x08);
+            WriteString(p.Name);
+            WriteVariable(p.Value);
+        }
+
+        public void WritePacket(Packet p)
+        {
+            _stream.WriteByte(0xC8);
+            WriteString(p.Name);
+            WriteByte((byte)p.Parameters.Length);
+            for(var i = 0; i < p.Parameters.Length; i++)
+            {
+                WriteMethodParameter(p.Parameters[i]);
+            }
+        }
+
         public struct MethodParameter
         {
             public string Name { get; set; }
