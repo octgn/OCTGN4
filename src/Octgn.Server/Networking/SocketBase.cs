@@ -30,9 +30,9 @@ namespace Octgn.Server.Networking
             }
         }
 
-        public void Write(byte[] arr)
+        public void Write(NetworkProtocol.Packet packet)
         {
-            _socket.Client.Send(arr);
+            _protocol.WritePacket(packet);
         }
 
         public void Dispose()
