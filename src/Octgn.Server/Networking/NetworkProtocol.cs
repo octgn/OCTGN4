@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 
@@ -272,6 +273,28 @@ namespace Octgn.Server.Networking
         {
             public string Name { get; set; }
             public MethodParameter[] Parameters { get; set; }
+
+            public void Invoke<T>(T obj) where T : new()
+            {
+                var methods = typeof(T).GetMethods();
+                var method = methods.First(x => x.Name == Name);
+                var parameters = method.GetParameters();
+                var parr = new object[parameters.Length];
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    var mp = Parameters.FirstOrDefault(x => x.Equals(parameters[i].Name));
+                    if (mp.Equals(default(MethodParameter)))
+                    {
+                        parr[i] = Activator.CreateInstance(parameters[i].ParameterType);
+                    }
+                    else
+                    {
+                        parr[i] = mp.Value;
+                    }
+                }
+
+                method.Invoke(obj, parr);
+            }
         }
     }
 }

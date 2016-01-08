@@ -50,23 +50,7 @@ namespace Octgn.Server
                 return;
             }
 
-            var method = _methods[message.Name];
-            var parameters = method.GetParameters();
-            var parr = new object[parameters.Length];
-            for(var i = 0; i < parameters.Length; i++)
-            {
-                var mp = message.Parameters.FirstOrDefault(x => x.Equals(parameters[i].Name));
-                if (mp.Equals(default(NetworkProtocol.MethodParameter)))
-                {
-                    parr[i] = Activator.CreateInstance(parameters[i].ParameterType);
-                }
-                else
-                {
-                    parr[i] = mp.Value;
-                }
-            }
-
-            method.Invoke(this, parr);
+            message.Invoke<IC2SComs>(this);
         }
 
         protected void ReplaceSelf(UserBase user)
