@@ -274,7 +274,7 @@ namespace Octgn.Server.Networking
             public string Name { get; set; }
             public MethodParameter[] Parameters { get; set; }
 
-            public void Invoke<T>(T obj) where T : new()
+            public void Invoke<T>(T obj)
             {
                 var methods = typeof(T).GetMethods();
                 var method = methods.First(x => x.Name == Name);
