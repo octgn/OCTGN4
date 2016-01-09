@@ -1,14 +1,38 @@
-﻿using Octgn.Server.Networking;
+﻿using Castle.DynamicProxy;
+using Octgn.Server.Networking;
 using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Octgn.Client
 {
-    public class GameClient : IDisposable
+    public class GameClient : IS2CComs, IDisposable
     {
+        private static ProxyGenerator _generator = new ProxyGenerator();
+
+        public IC2SComs RPC;
         private GameClientSocket _socket;
+
+        public GameClient(int port)
+        {
+            var sock = new TcpClient();
+            _socket = new GameClientSocket(sock);
+            RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
+        }
+
+        public void HelloResp(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Kicked(string message)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
+            _socket.Dispose();
         }
     }
 
@@ -17,7 +41,6 @@ namespace Octgn.Client
         public GameClientSocket(TcpClient sock)
             : base(sock)
         {
-
         }
     }
 }

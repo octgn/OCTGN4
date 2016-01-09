@@ -22,14 +22,16 @@ namespace Octgn.Client
         protected IDisposable WebHost { get; set; }
         protected IDisposable SignalrHost { get; set; }
 
-        private List<GameServer> _servers;
+        private Dictionary<int, GameServer> _servers;
+        private Dictionary<int, GameClient> _clients;
 
         public void Start(string pathToWebFolder)
         {
             Port = FreeTcpPort();
             Path = String.Format("http://localhost:{0}/", Port);
             WebFolderPath = pathToWebFolder;
-            _servers = new List<GameServer>();
+            _servers = new Dictionary<int, GameServer>();
+            _clients = new Dictionary<int, GameClient>();
             WebHost = WebApp.Start(Path, x =>
             {
                 x.Use<Middleware>(x);
@@ -62,7 +64,7 @@ namespace Octgn.Client
             {
                 foreach (var s in _servers)
                 {
-                    s.Dispose();
+                    s.Value.Dispose();
                 }
             }
             WebHost.Dispose();
@@ -81,9 +83,17 @@ namespace Octgn.Client
                 var ge = new GameEngine();
                 var port = FreeTcpPort();
                 var gs = new GameServer(port, ge);
-                _servers.Add(gs);
-                return port.ToString();
+                _servers.Add(gs.Id, gs);
+
+                var client = new GameClient(port);
+                _clients.Add(gs.Id, client);
+                return gs.Id.ToString();
             }
+        }
+
+        internal bool GameExists(int id)
+        {
+            return _servers.ContainsKey(id);
         }
 
         private class Middleware : OwinMiddleware

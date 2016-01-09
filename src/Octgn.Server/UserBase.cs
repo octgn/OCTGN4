@@ -25,7 +25,7 @@ namespace Octgn.Server
         {
             _socket = sock;
             Connected = true;
-            RPC = _generator.CreateInterfaceProxyWithoutTarget<IS2CComs>(new ServerRpcInterceptor(sock));
+            RPC = _generator.CreateInterfaceProxyWithoutTarget<IS2CComs>(new RpcInterceptor(sock));
             Id = System.Threading.Interlocked.Increment(ref _lastId);
         }
 

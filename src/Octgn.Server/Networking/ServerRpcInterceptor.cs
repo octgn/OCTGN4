@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Octgn.Server.Networking
 {
-    class ServerRpcInterceptor : IInterceptor
+    public class RpcInterceptor : IInterceptor
     {
-        private GameServerSocket _socket;
-        public ServerRpcInterceptor(GameServerSocket socket)
+        private SocketBase _socket;
+        public RpcInterceptor(SocketBase socket)
         {
             _socket = socket;
         }
