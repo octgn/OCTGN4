@@ -265,6 +265,8 @@ namespace Octgn.Server.Networking
 
             public override int GetHashCode()
             {
+                if (Name == null)
+                    return 0;
                 return Name.GetHashCode();
             }
         }
@@ -285,7 +287,9 @@ namespace Octgn.Server.Networking
                     var mp = Parameters.FirstOrDefault(x => x.Equals(parameters[i].Name));
                     if (mp.Equals(default(MethodParameter)))
                     {
-                        parr[i] = Activator.CreateInstance(parameters[i].ParameterType);
+                        parr[i] = parameters[i].ParameterType.IsValueType
+                            ? Activator.CreateInstance(parameters[i].ParameterType)
+                            : null;
                     }
                     else
                     {

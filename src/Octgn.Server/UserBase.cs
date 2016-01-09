@@ -18,10 +18,8 @@ namespace Octgn.Server
         protected IS2CComs RPC;
         private static ProxyGenerator _generator = new ProxyGenerator();
         private static int _lastId = 0;
-        private static Dictionary<string, MethodInfo> _methods;
         static UserBase()
         {
-            _methods = typeof(IC2SComs).GetMethods().ToDictionary(x=>x.Name, x=> x, StringComparer.InvariantCultureIgnoreCase);
         }
         public UserBase(GameServerSocket sock)
         {
