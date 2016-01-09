@@ -1,6 +1,8 @@
 _build
-/src/Octgn.Client/bin
-/src/Octgn.Client/obj
+/src/Octgn.UI/bin
+/src/Octgn.UI/obj
+/src/Octgn.Shared/bin
+/src/Octgn.Shared/obj
 /src/Octgn.Server/bin
 /src/Octgn.Server/obj
 /src/Octgn.Test/bin
@@ -10,3 +12,4 @@ _build
 /src/packages
 *.suo
 /src/.vs
+*.user

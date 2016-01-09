@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Octgn.Server
 {
@@ -16,7 +17,7 @@ namespace Octgn.Server
             Run();
         }
 
-        private async void Run()
+        private async Task Run()
         {
             while (!_disposed)
             {

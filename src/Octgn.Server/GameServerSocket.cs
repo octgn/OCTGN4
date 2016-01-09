@@ -1,4 +1,4 @@
-﻿using Octgn.Server.Networking;
+﻿using Octgn.Shared.Networking;
 using System.Net.Sockets;
 using System;
 

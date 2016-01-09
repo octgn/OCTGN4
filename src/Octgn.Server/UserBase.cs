@@ -1,5 +1,5 @@
 ﻿using Castle.DynamicProxy;
-using Octgn.Server.Networking;
+using Octgn.Shared.Networking;
 using System.Linq;
 using System;
 using System.Collections.Generic;

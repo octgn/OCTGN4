@@ -109,13 +109,13 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Octgn.Client\Octgn.Client.csproj">
-      <Project>{02A89092-3561-474E-8221-F6A9D92C6C96}</Project>
-      <Name>Octgn.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Octgn.Server\Octgn.Server.csproj">
       <Project>{b6b5d47a-fc8a-47dd-b9f3-b66f1cc25b1f}</Project>
       <Name>Octgn.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Octgn.Shared\Octgn.Shared.csproj">
+      <Project>{b4730346-26d1-4a9c-92ab-1e13664943ab}</Project>
+      <Name>Octgn.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

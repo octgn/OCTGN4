@@ -51,17 +51,18 @@
     <Compile Include="GameServerSocket.cs" />
     <Compile Include="GameServerSocketMessage.cs" />
     <Compile Include="GameThread.cs" />
-    <Compile Include="Networking\IC2SComs.cs" />
-    <Compile Include="ILogger.cs" />
-    <Compile Include="Networking\NetworkProtocol.cs" />
-    <Compile Include="Networking\ServerRpcInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Networking\SocketBase.cs" />
     <Compile Include="UserBase.cs" />
     <Compile Include="UserList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Octgn.Shared\Octgn.Shared.csproj">
+      <Project>{b4730346-26d1-4a9c-92ab-1e13664943ab}</Project>
+      <Name>Octgn.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
