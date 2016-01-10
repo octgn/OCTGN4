@@ -16,7 +16,7 @@ namespace Octgn.UI
         public GameClient(int port)
         {
             var sock = new TcpClient();
-            _socket = new GameClientSocket(sock);
+            _socket = new GameClientSocket(sock, port);
             RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
         }
 
@@ -38,9 +38,18 @@ namespace Octgn.UI
 
     class GameClientSocket : SocketBase
     {
-        public GameClientSocket(TcpClient sock)
+        private TcpClient _socket;
+        private int _port;
+        public GameClientSocket(TcpClient sock, int port)
             : base(sock)
         {
+            _socket = sock;
+            _port = port;
+        }
+
+        public void Connect()
+        {
+            _socket.Connect(IPAddress.Loopback, _port);
         }
     }
 }

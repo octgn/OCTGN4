@@ -15,6 +15,7 @@ namespace Octgn.UI
 
             var applicationLifetimeKernel = new StandardKernel();
             applicationLifetimeKernel.Bind<LocalServerManager>().ToSelf().InSingletonScope();
+            applicationLifetimeKernel.Bind<UserSessions>().ToSelf().InSingletonScope();
             app.Map("/signalr", map =>
                 {
                     map.UseCors(CorsOptions.AllowAll);

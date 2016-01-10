@@ -5,6 +5,11 @@ using Nancy.Conventions;
 using System.Reflection;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
+using Nancy.Security;
+using System;
+using Nancy.Owin;
+using System.Security.Claims;
+using Nancy.Responses;
 
 namespace Octgn.UI
 {
@@ -40,9 +45,32 @@ namespace Octgn.UI
 
         protected override void ApplicationStartup(IKernel container, IPipelines pipelines)
         {
+            pipelines.BeforeRequest += (x) => LoginRedirect(container, x);
+
             base.ApplicationStartup(container, pipelines);
 
             ServiceStack.Text.JsConfig.EmitCamelCaseNames = true;
+        }
+
+        protected override void RequestStartup(IKernel container, IPipelines pipelines, NancyContext context)
+        {
+            base.RequestStartup(container, pipelines, context);
+        }
+
+        protected Response LoginRedirect(IKernel k, NancyContext ctx)
+        {
+            if (ctx.Request.Path.ToLower().StartsWith("/login")) return null;
+            if (string.IsNullOrWhiteSpace(ctx.Request.Query.sid))
+                return new RedirectResponse("/Login");
+
+            var user = k.Get<UserSessions>().Get(ctx.Request.Query.sid);
+            if(user == null)
+                return new RedirectResponse("/Login");
+
+            ctx.CurrentUser = user;
+            ctx.ViewBag.Sid = user.Sid;
+
+            return null;
         }
 
         protected override void ConfigureRequestContainer(IKernel container, NancyContext context)

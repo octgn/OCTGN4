@@ -21,80 +21,81 @@
 </head>
 <body style="margin:0px">
     <div>@RT("_Layout_ConnectionStatus"): <span id="IsConnected">@RT("_Layout_NotConnected")</span>&nbsp;|&nbsp;
-        <span id="HostGame_Link_ShowDialog" class="link">@RT("_Layout_HostGame")</span>
+        @*<span id="HostGame_Link_ShowDialog" class="link">@RT("_Layout_HostGame")</span>*@
     </div>
-    @Html.Partial("Shared/_PartialHostGame.cshtml")
-    @Html.Partial("Shared/_PartialJoinGame.cshtml")
     @RenderBody()
-    <script type="text/javascript">
-        var gHub;
-        function onDisconnected(){
-            console.log("disconnected");
-            $("#IsConnected").html("@RT("_Layout_Disconnected")");
+    @if (this.Context.CurrentUser != null)
+    {
+        <script type="text/javascript">
+            var gHub;
+            function onDisconnected(){
+                console.log("disconnected");
+                $("#IsConnected").html("@RT("_Layout_Disconnected")");
 
-            $('#PingClient').off('click');
-            $('#HostGame_Button_Host').off('click');
-        }
-        function onConnected(){
-            console.log("connected");
-            $("#IsConnected").html("@RT("_Layout_Connected")");
+                $('#PingClient').off('click');
+                $('#HostGame_Button_Host').off('click');
+            }
+            function onConnected(){
+                console.log("connected");
+                $("#IsConnected").html("@RT("_Layout_Connected")");
 
-            $('#PingClient').on('click', function () {
-                gHub.server.pingClient();
-            });
-            $('#HostGame_Button_Host').on('click', function(){
-                var button = $(this);
-                button.prop('disabled', true);
-                gHub.server.hostGame($('#HostGame_Input_Username').val())
-                .done( function(returnVal) {
-                    window.location.href = "Games/" + returnVal;
-                    console.log(returnVal);
-                }).always( function() { 
-                    button.prop('disabled', false);
-                }).fail(function(error) { 
-                    if (error.source === 'HubException') {
-                        alertify.alert("@RT("_Layout_HostGame")", error.message);
-                    } else{
-                        alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
-                    }
+                $('#PingClient').on('click', function () {
+                    gHub.server.pingClient();
                 });
-            });
-        }
-        function setupSignalr(){
-            // Declare a proxy to reference the hub.
-            gHub = $.connection.mainHub;
-
-            //Set the hubs URL for the connection
-            $.connection.hub.url = window.location.origin + "/signalr";
-
-            // Create a function that the hub can call to broadcast messages.
-            gHub.client.ping = function () {
-                alert("ping");
-            };
-            
-            // Start the connection.
-            $.connection.hub.start().done(function () {
-                $.connection.hub.connectionSlow(function () {
+                $('#HostGame_Button_Host').on('click', function(){
+                    var button = $(this);
+                    button.prop('disabled', true);
+                    gHub.server.hostGame($('#HostGame_Input_Username').val())
+                    .done( function(returnVal) {
+                        window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
+                        console.log(returnVal);
+                    }).always( function() { 
+                        button.prop('disabled', false);
+                    }).fail(function(error) { 
+                        if (error.source === 'HubException') {
+                            alertify.alert("@RT("_Layout_HostGame")", error.message);
+                        } else{
+                            alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
+                        }
+                    });
                 });
-                $.connection.hub.reconnecting(function () {
-                    $("#IsConnected").html("@RT("_Layout_Reconnecting")");
-                });
-                $.connection.hub.reconnected(function () {
+            }
+            function setupSignalr(){
+                // Declare a proxy to reference the hub.
+                gHub = $.connection.mainHub;
+
+                //Set the hubs URL for the connection
+                $.connection.hub.url = window.location.origin + "/signalr";
+
+                // Create a function that the hub can call to broadcast messages.
+                gHub.client.ping = function () {
+                    alert("ping");
+                };
+                
+                // Start the connection.
+                $.connection.hub.start().done(function () {
+                    $.connection.hub.connectionSlow(function () {
+                    });
+                    $.connection.hub.reconnecting(function () {
+                        $("#IsConnected").html("@RT("_Layout_Reconnecting")");
+                    });
+                    $.connection.hub.reconnected(function () {
+                        onConnected();
+                    });
+
+                    $.connection.hub.disconnected(function () {
+                        setTimeout(function () {
+                            $.connection.hub.start();
+                        }, 5000); // Restart connection after 5 seconds.
+                        onDisconnected();
+                    });
                     onConnected();
                 });
-
-                $.connection.hub.disconnected(function () {
-                    setTimeout(function () {
-                        $.connection.hub.start();
-                    }, 5000); // Restart connection after 5 seconds.
-                    onDisconnected();
-                });
-                onConnected();
+            }
+            $(function () {
+                setupSignalr();
             });
-        }
-        $(function () {
-            setupSignalr();
-        });
-    </script>
+        </script>
+    }
 </body>
 </html>
