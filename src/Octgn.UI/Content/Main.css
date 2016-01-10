@@ -13,3 +13,20 @@
 #HostGame label, #JoinGame label{
     font-weight: bold;
 }
+
+.ConnectionStatus-NotConnected, .ConnectionStatus-Connected, .ConnectionStatus-Reconnecting{
+    width:16px;
+    height:16px;
+}
+
+.ConnectionStatus-Connected{
+    background-color: green;
+}
+
+.ConnectionStatus-NotConnected{
+    background-color: red;
+}
+
+.ConnectionStatus-Reconnecting{
+    background-color: orange;
+}

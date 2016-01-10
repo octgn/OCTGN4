@@ -20,9 +20,10 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/alertifyjs/themes/default.min.css")"/>
 </head>
 <body style="margin:0px">
-    <div>@RT("_Layout_ConnectionStatus"): <span id="IsConnected">@RT("_Layout_NotConnected")</span>&nbsp;|&nbsp;
-        @*<span id="HostGame_Link_ShowDialog" class="link">@RT("_Layout_HostGame")</span>*@
-    </div>
+    <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
+    @*<div>@RT("_Layout_ConnectionStatus"): <span id="IsConnected">@RT("_Layout_NotConnected")</span>&nbsp;|&nbsp;
+        <span id="HostGame_Link_ShowDialog" class="link">@RT("_Layout_HostGame")</span>
+    </div>*@
     @RenderBody()
     @if (this.Context.CurrentUser != null)
     {
@@ -30,14 +31,16 @@
             var gHub;
             function onDisconnected(){
                 console.log("disconnected");
-                $("#IsConnected").html("@RT("_Layout_Disconnected")");
+                @*$("#IsConnected").html("@RT("_Layout_Disconnected")");*@
+                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
 
                 $('#PingClient').off('click');
                 $('#HostGame_Button_Host').off('click');
             }
             function onConnected(){
                 console.log("connected");
-                $("#IsConnected").html("@RT("_Layout_Connected")");
+                @*$("#IsConnected").html("@RT("_Layout_Connected")");*@
+                $("#ConnectionStatus-UI").removeClass("ConnectionStatus-NotConnected").addClass("ConnectionStatus-Connected");
 
                 $('#PingClient').on('click', function () {
                     gHub.server.pingClient();
@@ -60,6 +63,9 @@
                     });
                 });
             }
+            function onReconnecting() {
+                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Reconnecting");
+            }
             function setupSignalr(){
                 // Declare a proxy to reference the hub.
                 gHub = $.connection.mainHub;
@@ -77,7 +83,7 @@
                     $.connection.hub.connectionSlow(function () {
                     });
                     $.connection.hub.reconnecting(function () {
-                        $("#IsConnected").html("@RT("_Layout_Reconnecting")");
+                        onReconnecting();
                     });
                     $.connection.hub.reconnected(function () {
                         onConnected();
