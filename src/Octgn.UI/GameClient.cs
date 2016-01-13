@@ -10,7 +10,7 @@ namespace Octgn.UI
     {
         private static ProxyGenerator _generator = new ProxyGenerator();
 
-        public IC2SComs RPC;
+        public IC2SComs RPC { get; private set; }
         private GameClientSocket _socket;
 
         public GameClient(int port)
@@ -18,6 +18,11 @@ namespace Octgn.UI
             var sock = new TcpClient();
             _socket = new GameClientSocket(sock, port);
             RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
+        }
+
+        public void Connect()
+        {
+            _socket.Connect();
         }
 
         public void HelloResp(int id)
@@ -34,22 +39,22 @@ namespace Octgn.UI
         {
             _socket.Dispose();
         }
-    }
 
-    class GameClientSocket : SocketBase
-    {
-        private TcpClient _socket;
-        private int _port;
-        public GameClientSocket(TcpClient sock, int port)
-            : base(sock)
+        class GameClientSocket : SocketBase
         {
-            _socket = sock;
-            _port = port;
-        }
+            private TcpClient _socket;
+            private int _port;
+            public GameClientSocket(TcpClient sock, int port)
+                : base(sock)
+            {
+                _socket = sock;
+                _port = port;
+            }
 
-        public void Connect()
-        {
-            _socket.Connect(IPAddress.Loopback, _port);
+            public void Connect()
+            {
+                _socket.Connect(IPAddress.Loopback, _port);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNet.SignalR;
 using Octgn.Shared.Resources;
+using System.Threading.Tasks;
 
 namespace Octgn.UI
 {
@@ -12,19 +13,21 @@ namespace Octgn.UI
         }
 
         private LocalServerManager _locserver;
+        private UserSessions _sessions;
 
-        public MainHub(LocalServerManager locserver)
+        public MainHub(LocalServerManager locserver, UserSessions sessions)
         {
             _locserver = locserver;
+            _sessions = sessions;
         }
 
         public string HostGame(string username)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(username))
-                    throw new HubException(Text.MainHub_HostGame_UsernameValidationError);
+                var user = Context.User.Identity as User;
                 var server = _locserver.LaunchServer();
+                Task.Run(() => user.JoinGame(server.Id, server.Port));
                 return server.Id.ToString();
             }
             catch (System.Exception e)
