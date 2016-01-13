@@ -14,14 +14,14 @@ namespace Octgn.Server
             _listener = new TcpListener(System.Net.IPAddress.Any, port);
             _onSocket = onSocket;
             _listener.Start();
-            Run();
+            Task.Factory.StartNew(Run, TaskCreationOptions.LongRunning);
         }
 
-        private async Task Run()
+        private void Run()
         {
             while (!_disposed)
             {
-                var socket = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
+                var socket = _listener.AcceptTcpClientAsync().Result;
                 if (socket != null)
                 {
                     // Handle the socket
