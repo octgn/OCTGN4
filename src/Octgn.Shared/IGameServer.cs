@@ -1,11 +1,11 @@
 ﻿namespace Octgn.Shared
 {
-    public class IGameServer
+    public interface IGameServer
     {
-        public int Id { get; }
+        int Id { get; }
 
-        public int Port { get; }
+        int Port { get; }
 
-        public string Name { get; }
+        string Name { get; }
     }
 }

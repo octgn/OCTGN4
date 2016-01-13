@@ -22,7 +22,7 @@ namespace Octgn.UI
             _sessions = sessions;
         }
 
-        public void HostGame(string gameName)
+        public int HostGame(string gameName)
         {
             try
             {
@@ -30,7 +30,9 @@ namespace Octgn.UI
                     throw new HubException(Text.MainHub_GameNameInvalid);
                 var user = Context.User.Identity as User;
                 var server = _locserver.LaunchServer(gameName);
-                user.JoinGame("localhost:" + server.Port);
+                var client = user.JoinGame("localhost:" + server.Port);
+				Task.Run(()=>client.Connect());
+				return client.Id;
             }
             catch (System.Exception e)
             {
@@ -40,12 +42,14 @@ namespace Octgn.UI
             }
         }
 
-        public void JoinGame(string host)
+        public int JoinGame(string host)
         {
             try
             {
                 var user = Context.User.Identity as User;
-                user.JoinGame(host);
+                var client = user.JoinGame(host);
+				Task.Run(()=>client.Connect());
+				return client.Id;
             }
             catch (System.Exception e)
             {
@@ -54,5 +58,19 @@ namespace Octgn.UI
                 throw new HubException(Text.MainHub_HostGame_UnhandledError);
             }
         }
-    }
+
+		public override Task OnConnected()
+		{
+			var user = Context.User.Identity as User;
+			user.UIRPC = this.Clients.Caller;
+			return base.OnConnected();
+		}
+
+		public override Task OnDisconnected(bool stopCalled)
+		{
+			var user = Context.User.Identity as User;
+			user.UIRPC = null;
+			return base.OnDisconnected(stopCalled);
+		}
+	}
 }

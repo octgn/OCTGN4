@@ -40,11 +40,11 @@ namespace Octgn.UI.Modules
             Get["/{id}"] = ctx =>
             {
                 var id = (int)ctx.id;
+				var user = (this.Context.CurrentUser as User);
+				var game = user.GetGame(id);
+				if (game == null) return HttpStatusCode.NotFound;
 
-                var server = locserver.GetServer(id);
-                if (server == null) return HttpStatusCode.NotFound;
-
-                return View[new TableModel() { Id = server.Id }];
+                return View[new TableModel(game)];
             };
         }
     }

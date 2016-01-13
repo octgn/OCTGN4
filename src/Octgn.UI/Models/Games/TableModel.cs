@@ -2,6 +2,16 @@
 {
     public class TableModel
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
+
+		public TableModel()
+		{
+
+		}
+
+		public TableModel(GameClient client)
+		{
+			Id = client.Id;
+		}
     }
 }

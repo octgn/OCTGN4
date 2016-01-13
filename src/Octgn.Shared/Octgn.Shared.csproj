@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="IGameServer.cs" />
     <Compile Include="ILogger.cs" />
+    <Compile Include="Models\GameServerModel.cs" />
     <Compile Include="Networking\IC2SComs.cs" />
     <Compile Include="Networking\NetworkProtocol.cs" />
     <Compile Include="Networking\ServerRpcInterceptor.cs" />

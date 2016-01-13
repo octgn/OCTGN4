@@ -1,78 +1,127 @@
 ﻿using Castle.DynamicProxy;
 using Octgn.Shared;
 using Octgn.Shared.Networking;
+using Octgn.Shared.Resources;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Octgn.UI
 {
-    public class GameClient : IS2CComs, IDisposable
-    {
-        private static ProxyGenerator _generator = new ProxyGenerator();
+	public class GameClient : IS2CComs, IDisposable
+	{
+		private static ProxyGenerator _generator = new ProxyGenerator();
 
-        public IC2SComs RPC { get; private set; }
-        private GameClientSocket _socket;
-        private User _user;
-        private Action<GameClient, IGameServer> _onConnect;
+		public IC2SComs RPC { get; private set; }
+		public bool Connected
+		{
+			get { return _connected; }
+			set
+			{
+				if (value == _connected) return;
+				_connected = value;
+				_user.UIRPC.GameStatusUpdated(_connected);
+			}
+		}
 
-        public GameClient(string host, User user)
-        {
-            _user = user;
-            var sock = new TcpClient();
-            _socket = new GameClientSocket(sock, host);
-            RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
-        }
+		public int Id { get; private set; }
+		private GameClientSocket _socket;
+		private User _user;
+		private Action<GameClient, IGameServer> _onConnect;
+		private static int _nextId = 0;
+		private bool _connected;
+		private Task _readTask;
+		private CancellationTokenSource _cancellation;
 
-        public void Connect(Action<GameClient, IGameServer> onConnect)
-        {
-            _onConnect = onConnect;
-            _socket.Connect();
-        }
+		public GameClient(string host, User user, Action<GameClient, IGameServer> onConnect)
+		{
+			Id = Interlocked.Increment(ref _nextId);
+			_user = user;
+			_onConnect = onConnect;
+			_cancellation = new CancellationTokenSource();
+			var sock = new TcpClient();
+			_socket = new GameClientSocket(sock, host);
+			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
+		}
 
-        public void HelloResp(IGameServer server)
-        {
-            _onConnect(this, server);
-        }
+		public void Connect()
+		{
+			try
+			{
+				_socket.Connect();
+				this.RPC.Hello(_user.UserName);
+				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+			}
+			catch (Exception e)
+			{
+				this._user.UIRPC.gameJoinError(Text.MainHub_HostGame_UnhandledError);
+			}
+		}
 
-        public void Kicked(string message)
-        {
-            throw new NotImplementedException();
-        }
+		internal void ProcessMessages()
+		{
+			while (_cancellation.IsCancellationRequested == false)
+			{
+				try
+				{
+					var message = _socket.Read().FirstOrDefault();
 
-        public void Dispose()
-        {
-            _socket.Dispose();
-        }
+					if (message == null)
+					{
+						Connected = false;
+						continue;
+					}
 
-        class GameClientSocket : SocketBase
-        {
-            private TcpClient _socket;
-            private string _host;
-            public GameClientSocket(TcpClient sock, string host)
-                : base(sock)
-            {
-                _socket = sock;
-                _host = host;
-            }
+					message.Invoke<IS2CComs>(this);
+				}
+				catch(Exception e)
+				{
+					throw;
+				}
+				finally
+				{
+					Thread.Sleep(2);
+				}
+			}
+		}
 
-            public void Connect()
-            {
-                var endpoint = ParseIPEndPoint(_host);
-                _socket.Connect(endpoint);
-            }
+		public void HelloResp(IGameServer server)
+		{
+			_onConnect(this, server);
+			Connected = true;
+		}
 
-            private static IPEndPoint ParseIPEndPoint(string text)
-            {
-                Uri uri;
-                if (Uri.TryCreate(text, UriKind.Absolute, out uri))
-                    return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
-                if (Uri.TryCreate(String.Concat("tcp://", text), UriKind.Absolute, out uri))
-                    return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
-                if (Uri.TryCreate(String.Concat("tcp://", String.Concat("[", text, "]")), UriKind.Absolute, out uri))
-                    return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
-                throw new FormatException("Failed to parse text to IPEndPoint");
-            }
-        }
-    }
+		public void Kicked(string message)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Dispose()
+		{
+			_cancellation.Cancel();
+			if(_readTask != null)
+				_readTask.Wait();
+			_socket.Dispose();
+		}
+
+		class GameClientSocket : SocketBase
+		{
+			private TcpClient _socket;
+			private string _host;
+			public GameClientSocket(TcpClient sock, string host)
+				: base(sock)
+			{
+				_socket = sock;
+				_host = host;
+			}
+
+			public void Connect()
+			{
+				Connect(_host);
+			}
+		}
+	}
 }

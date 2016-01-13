@@ -10,8 +10,10 @@ namespace Octgn.Server
         private bool _disposed;
         private TcpListener _listener;
         private Action<GameServerSocket> _onSocket;
-        public GameServerListener(int port, Action<GameServerSocket> onSocket)
+		private IGameServer _gs;
+        public GameServerListener(int port, IGameServer gs, Action<GameServerSocket> onSocket)
         {
+			_gs = gs;
             _listener = new TcpListener(System.Net.IPAddress.Any, port);
             _onSocket = onSocket;
             _listener.Start();
@@ -25,11 +27,8 @@ namespace Octgn.Server
                 var socket = _listener.AcceptTcpClientAsync().Result;
                 if (socket != null)
                 {
-                    // Handle the socket
-                    throw new NotImplementedException();
                     // Need to be able to create this and send it back
-                    IGameServer gs = null;
-                    _onSocket(new GameServerSocket(gs, socket));
+                    _onSocket(new GameServerSocket(_gs, socket));
                 }
             }
         }

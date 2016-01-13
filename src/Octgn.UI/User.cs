@@ -39,6 +39,8 @@ namespace Octgn.UI
             }
         }
 
+		public dynamic UIRPC { get; set; }
+
         private ConcurrentDictionary<int, GameClient> _clients;
 
         public User(string username, string sid)
@@ -48,22 +50,28 @@ namespace Octgn.UI
             _clients = new ConcurrentDictionary<int, GameClient>();
         }
 
-        public void JoinGame(string host)
+        public GameClient JoinGame(string host)
         {
-            var client = new GameClient(host, this);
-            client.Connect(OnJoinGame);
+            var client = new GameClient(host, this, OnJoinGame);
+            _clients.AddOrUpdate(client.Id, client, (x, y)=>client);
+			return client;
         }
+
+		public GameClient GetGame(int id)
+		{
+			return _clients[id];
+		}
 
         private void OnJoinGame(GameClient sender, IGameServer obj)
         {
-            _clients.AddOrUpdate(obj.Id, sender, (x, y)=>sender);
 
+			// Updated the GameClient's settings showing we're connected
             //TODO Needs to access the amin hub and message the user
             //    Saying that the server accepted our connection
             //    Issue is that, what if the user refreshes the page
             //    before we send the result message...maybe
             //    fuck it and make them rejoin if that happens? I dunno
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

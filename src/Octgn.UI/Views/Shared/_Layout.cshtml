@@ -79,6 +79,14 @@
                 gHub.client.ping = function () {
                     alert("ping");
                 };
+
+                gHub.client.gameStatusUpdated = function (status) {
+                	alert(!!status ? "Connected" : "Disconnected");
+                };
+
+                gHub.client.gameJoinError = function (error) {
+                	alertify.alert("@RT("_Layout_HostGame")", error);
+                };
                 
                 // Start the connection.
                 $.connection.hub.start().done(function () {

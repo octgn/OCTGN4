@@ -1,4 +1,5 @@
 ﻿using Octgn.Shared;
+using Octgn.Shared.Models;
 using Octgn.Shared.Networking;
 using System;
 
@@ -17,7 +18,7 @@ namespace Octgn.Server
         {
             Port = port;
             Name = name;
-            _listener = new GameServerListener(Port, OnSocket);
+            _listener = new GameServerListener(Port, new GameServerModel(Id, Name, Port), OnSocket);
             _engine = engine;
             Id = System.Threading.Interlocked.Increment(ref _nextId);
         }
