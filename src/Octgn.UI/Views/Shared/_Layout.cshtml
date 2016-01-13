@@ -48,7 +48,7 @@
                 $('#HostGame_Button_Host').on('click', function(){
                     var button = $(this);
                     button.prop('disabled', true);
-                    gHub.server.hostGame($('#HostGame_Input_Username').val())
+                    gHub.server.hostGame($('#HostGame_Input_GameName').val())
                     .done( function(returnVal) {
                         window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
                         console.log(returnVal);

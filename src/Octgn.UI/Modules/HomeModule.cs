@@ -2,6 +2,7 @@
 using Nancy.ModelBinding;
 using Octgn.UI.Models.Games;
 using Octgn.UI.Models.Home;
+using System.Text.RegularExpressions;
 
 namespace Octgn.UI.Modules
 {
@@ -19,7 +20,7 @@ namespace Octgn.UI.Modules
             Post["/Login"] = data =>
             {
                 var login = this.Bind<LoginModel>();
-                if (string.IsNullOrWhiteSpace(login.Username))
+                if(!Regex.IsMatch(login.Username, @"^[a-zA-Z0-9]+[a-zA-Z0-9_]+$"))
                 {
                     this.ModelValidationResult.Errors.Add("Username", "*LOCALIZE THIS* Username can't be empty");
                     return View["Login", login];

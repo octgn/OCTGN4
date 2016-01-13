@@ -13,9 +13,9 @@ namespace Octgn.UI
             _servers = new ConcurrentDictionary<int, GameServer>();
         }
 
-        public GameServer LaunchServer()
+        public GameServer LaunchServer(string gameName)
         {
-            var gs = new GameServer();
+            var gs = new GameServer(gameName);
 
             _servers.AddOrUpdate(gs.Id, gs, (x, y) => gs);
             return gs;

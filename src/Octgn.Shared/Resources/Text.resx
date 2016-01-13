@@ -126,6 +126,9 @@
   <data name="Global_Username" xml:space="preserve">
     <value>Username</value>
   </data>
+  <data name="MainHub_GameNameInvalid" xml:space="preserve">
+    <value>The Game Name is Invalid</value>
+  </data>
   <data name="MainHub_HostGame_UnhandledError" xml:space="preserve">
     <value>There was an error hosting the game</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="_Layout_HostGame" xml:space="preserve">
     <value>Host Game</value>
+  </data>
+  <data name="_Layout_HostGame_GameName" xml:space="preserve">
+    <value>Game Name</value>
   </data>
   <data name="_Layout_NotConnected" xml:space="preserve">
     <value>Not Connected</value>

@@ -97,6 +97,15 @@ namespace Octgn.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game Name.
+        /// </summary>
+        public static string _Layout_HostGame_GameName {
+            get {
+                return ResourceManager.GetString("_Layout_HostGame_GameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Connected.
         /// </summary>
         public static string _Layout_NotConnected {
@@ -147,6 +156,15 @@ namespace Octgn.Shared.Resources {
         public static string Global_Username {
             get {
                 return ResourceManager.GetString("Global_Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Game Name is Invalid.
+        /// </summary>
+        public static string MainHub_GameNameInvalid {
+            get {
+                return ResourceManager.GetString("MainHub_GameNameInvalid", resourceCulture);
             }
         }
         

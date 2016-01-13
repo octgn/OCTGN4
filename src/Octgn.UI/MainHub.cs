@@ -2,6 +2,7 @@
 using Microsoft.AspNet.SignalR;
 using Octgn.Shared.Resources;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Octgn.UI
 {
@@ -21,12 +22,14 @@ namespace Octgn.UI
             _sessions = sessions;
         }
 
-        public string HostGame(string username)
+        public string HostGame(string gameName)
         {
             try
             {
+                if(!Regex.IsMatch(gameName, @"^[a-zA-Z0-9]+[a-zA-Z0-9\-_ ]+$"))
+                    throw new HubException(Text.MainHub_GameNameInvalid);
                 var user = Context.User.Identity as User;
-                var server = _locserver.LaunchServer();
+                var server = _locserver.LaunchServer(gameName);
                 Task.Run(() => user.JoinGame(server.Id, server.Port));
                 return server.Id.ToString();
             }

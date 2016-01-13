@@ -7,25 +7,27 @@ namespace Octgn.Server
     {
         public int Id { get; private set; }
         public int Port { get; private set; }
+        public string Name { get; private set; }
         private static int _nextId = 0;
         private GameEngine _engine;
         private GameServerListener _listener;
-        public GameServer(int port, GameEngine engine)
+        public GameServer(string name, int port, GameEngine engine)
         {
             Port = port;
+            Name = name;
             _listener = new GameServerListener(Port, OnSocket);
             _engine = engine;
             Id = System.Threading.Interlocked.Increment(ref _nextId);
         }
 
-        public GameServer(GameEngine engine)
-            :this(SocketBase.FreeTcpPort(), engine)
+        public GameServer(string name, GameEngine engine)
+            :this(name, SocketBase.FreeTcpPort(), engine)
         {
 
         }
 
-        public GameServer()
-            :this(new GameEngine())
+        public GameServer(string name)
+            :this(name, new GameEngine())
         {
 
         }
