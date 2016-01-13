@@ -160,11 +160,11 @@ namespace Octgn.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Username can&apos;t be empty.
+        ///   Looks up a localized string similar to Your session is expired or invalid.
         /// </summary>
-        public static string MainHub_HostGame_UsernameValidationError {
+        public static string MainHub_SessionError {
             get {
-                return ResourceManager.GetString("MainHub_HostGame_UsernameValidationError", resourceCulture);
+                return ResourceManager.GetString("MainHub_SessionError", resourceCulture);
             }
         }
     }

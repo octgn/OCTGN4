@@ -3,6 +3,7 @@ using Microsoft.Owin.Cors;
 using Microsoft.AspNet.SignalR;
 using Owin;
 using Ninject;
+using Microsoft.AspNet.SignalR.Hubs;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
 namespace Octgn.UI
@@ -16,11 +17,16 @@ namespace Octgn.UI
             var applicationLifetimeKernel = new StandardKernel();
             applicationLifetimeKernel.Bind<LocalServerManager>().ToSelf().InSingletonScope();
             applicationLifetimeKernel.Bind<UserSessions>().ToSelf().InSingletonScope();
+
+            app.Use<SetPrincipalOwinMiddleware>(app, applicationLifetimeKernel);
+            app.Use<LoggerOwinMiddleware>(app);
             app.Map("/signalr", map =>
                 {
                     map.UseCors(CorsOptions.AllowAll);
                     var hubConfiguration = new HubConfiguration();
                     hubConfiguration.Resolver = new NinjectSignalRDependencyResolver(applicationLifetimeKernel);
+
+                    hubConfiguration.Resolver.Resolve<IHubPipeline>().AddModule(new Modules.SignalrPipelineModule(applicationLifetimeKernel));
                     map.RunSignalR(hubConfiguration);
                 }
             );
@@ -29,8 +35,6 @@ namespace Octgn.UI
                     op.Bootstrapper = new NancyBootstrapper(applicationLifetimeKernel);
                 }
             );
-            app.Use<LoggerOwinMiddleware>(app);
-            GlobalHost.HubPipeline.AddModule(new Modules.CallerCulturePipelineModule());
         }
     }
 }

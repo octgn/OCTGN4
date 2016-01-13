@@ -129,8 +129,8 @@
   <data name="MainHub_HostGame_UnhandledError" xml:space="preserve">
     <value>Hubo un error al acoger el juego</value>
   </data>
-  <data name="MainHub_HostGame_UsernameValidationError" xml:space="preserve">
-    <value>Nombre de usuario no puede estar vacío</value>
+  <data name="MainHub_SessionError" xml:space="preserve">
+    <value>Su sesión ha caducado o no válido</value>
   </data>
   <data name="_Layout_Connected" xml:space="preserve">
     <value>Conectado</value>

@@ -72,6 +72,8 @@
 
                 //Set the hubs URL for the connection
                 $.connection.hub.url = window.location.origin + "/signalr";
+                if(window.location.search)
+                    $.connection.hub.qs = window.location.search.substr(1);
 
                 // Create a function that the hub can call to broadcast messages.
                 gHub.client.ping = function () {

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNet.SignalR.Hubs;
+﻿using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
+using Ninject;
+using Octgn.Shared.Resources;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -6,8 +9,14 @@ using System.Threading;
 
 namespace Octgn.UI.Modules
 {
-    public class CallerCulturePipelineModule : HubPipelineModule
+    public class SignalrPipelineModule : HubPipelineModule
     {
+        private IKernel _kernel;
+        public SignalrPipelineModule(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
+
         protected override bool OnBeforeIncoming(IHubIncomingInvokerContext context)
         {
             // Use the value we stored in the Culture property of the caller's state when they connected
@@ -28,7 +37,13 @@ namespace Octgn.UI.Modules
                 }
             }
 
+            if(context.Hub.Context.User == null)
+                throw new HubException(Text.MainHub_SessionError);
+            var user = context.Hub.Context.User.Identity as User;
+            if (user == null)
+                throw new HubException(Text.MainHub_SessionError);
+
             return base.OnBeforeIncoming(context);
         }
-    }
+    } 
 }
