@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using Octgn.Shared;
 using Octgn.Shared.Networking;
 using System;
 using System.Net;
@@ -12,22 +13,26 @@ namespace Octgn.UI
 
         public IC2SComs RPC { get; private set; }
         private GameClientSocket _socket;
+        private User _user;
+        private Action<GameClient, IGameServer> _onConnect;
 
-        public GameClient(int port)
+        public GameClient(string host, User user)
         {
+            _user = user;
             var sock = new TcpClient();
-            _socket = new GameClientSocket(sock, port);
+            _socket = new GameClientSocket(sock, host);
             RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
         }
 
-        public void Connect()
+        public void Connect(Action<GameClient, IGameServer> onConnect)
         {
+            _onConnect = onConnect;
             _socket.Connect();
         }
 
-        public void HelloResp(int id)
+        public void HelloResp(IGameServer server)
         {
-            throw new NotImplementedException();
+            _onConnect(this, server);
         }
 
         public void Kicked(string message)
@@ -43,17 +48,30 @@ namespace Octgn.UI
         class GameClientSocket : SocketBase
         {
             private TcpClient _socket;
-            private int _port;
-            public GameClientSocket(TcpClient sock, int port)
+            private string _host;
+            public GameClientSocket(TcpClient sock, string host)
                 : base(sock)
             {
                 _socket = sock;
-                _port = port;
+                _host = host;
             }
 
             public void Connect()
             {
-                _socket.Connect(IPAddress.Loopback, _port);
+                var endpoint = ParseIPEndPoint(_host);
+                _socket.Connect(endpoint);
+            }
+
+            private static IPEndPoint ParseIPEndPoint(string text)
+            {
+                Uri uri;
+                if (Uri.TryCreate(text, UriKind.Absolute, out uri))
+                    return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
+                if (Uri.TryCreate(String.Concat("tcp://", text), UriKind.Absolute, out uri))
+                    return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
+                if (Uri.TryCreate(String.Concat("tcp://", String.Concat("[", text, "]")), UriKind.Absolute, out uri))
+                    return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
+                throw new FormatException("Failed to parse text to IPEndPoint");
             }
         }
     }

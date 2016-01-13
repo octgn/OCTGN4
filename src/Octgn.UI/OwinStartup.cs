@@ -4,6 +4,7 @@ using Microsoft.AspNet.SignalR;
 using Owin;
 using Ninject;
 using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.AspNet.SignalR.Infrastructure;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
 namespace Octgn.UI
@@ -27,6 +28,7 @@ namespace Octgn.UI
                     hubConfiguration.Resolver = new NinjectSignalRDependencyResolver(applicationLifetimeKernel);
 
                     hubConfiguration.Resolver.Resolve<IHubPipeline>().AddModule(new Modules.SignalrPipelineModule(applicationLifetimeKernel));
+                    applicationLifetimeKernel.Bind<IConnectionManager>().ToMethod((x) => hubConfiguration.Resolver.Resolve<IConnectionManager>());
                     map.RunSignalR(hubConfiguration);
                 }
             );

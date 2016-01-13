@@ -1,13 +1,15 @@
-﻿using Octgn.Shared.Networking;
+﻿using Octgn.Shared;
+using Octgn.Shared.Networking;
 using System;
 
 namespace Octgn.Server
 {
-    public class GameServer : IDisposable
+    public class GameServer : IGameServer, IDisposable
     {
         public int Id { get; private set; }
         public int Port { get; private set; }
         public string Name { get; private set; }
+
         private static int _nextId = 0;
         private GameEngine _engine;
         private GameServerListener _listener;
@@ -20,16 +22,12 @@ namespace Octgn.Server
             Id = System.Threading.Interlocked.Increment(ref _nextId);
         }
 
-        public GameServer(string name, GameEngine engine)
-            :this(name, SocketBase.FreeTcpPort(), engine)
+        public GameServer(string name, GameEngine engine): this (name, SocketBase.FreeTcpPort(), engine)
         {
-
         }
 
-        public GameServer(string name)
-            :this(name, new GameEngine())
+        public GameServer(string name): this (name, new GameEngine())
         {
-
         }
 
         private void OnSocket(GameServerSocket sock)

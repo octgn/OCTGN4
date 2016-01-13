@@ -22,7 +22,7 @@ namespace Octgn.UI
             _sessions = sessions;
         }
 
-        public string HostGame(string gameName)
+        public void HostGame(string gameName)
         {
             try
             {
@@ -30,8 +30,22 @@ namespace Octgn.UI
                     throw new HubException(Text.MainHub_GameNameInvalid);
                 var user = Context.User.Identity as User;
                 var server = _locserver.LaunchServer(gameName);
-                Task.Run(() => user.JoinGame(server.Id, server.Port));
-                return server.Id.ToString();
+                user.JoinGame("localhost:" + server.Port);
+            }
+            catch (System.Exception e)
+            {
+                if (e is HubException) throw;
+                //TODO Log exception
+                throw new HubException(Text.MainHub_HostGame_UnhandledError);
+            }
+        }
+
+        public void JoinGame(string host)
+        {
+            try
+            {
+                var user = Context.User.Identity as User;
+                user.JoinGame(host);
             }
             catch (System.Exception e)
             {

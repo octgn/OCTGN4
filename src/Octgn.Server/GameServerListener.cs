@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Octgn.Shared;
+using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -25,7 +26,10 @@ namespace Octgn.Server
                 if (socket != null)
                 {
                     // Handle the socket
-                    _onSocket(new GameServerSocket(socket));
+                    throw new NotImplementedException();
+                    // Need to be able to create this and send it back
+                    IGameServer gs = null;
+                    _onSocket(new GameServerSocket(gs, socket));
                 }
             }
         }

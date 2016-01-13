@@ -7,7 +7,7 @@
 
     public interface IS2CComs
     {
-        void HelloResp(int id);
+        void HelloResp(IGameServer server);
         void Kicked(string message);
     }
 }

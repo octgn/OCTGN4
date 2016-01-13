@@ -241,6 +241,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\SignalrPipelineModule.cs" />
     <Compile Include="SetPrincipalOwinMiddleware.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="UserSessions.cs" />
     <Compile Include="WebViewBase.cs" />
   </ItemGroup>

@@ -63,13 +63,15 @@ namespace Octgn.Server
     }
     public class UnauthenticatedUser : UserBase
     {
+        private GameServerSocket _sock;
         public UnauthenticatedUser(GameServerSocket sock): base (sock)
         {
+            _sock = sock;
         }
 
         public override void Hello(string username)
         {
-            this.RPC.HelloResp(this.Id);
+            this.RPC.HelloResp(this._sock._server);
         }
     }
 
