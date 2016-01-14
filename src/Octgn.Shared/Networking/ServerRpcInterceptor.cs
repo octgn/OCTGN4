@@ -1,13 +1,12 @@
 ﻿using Castle.DynamicProxy;
-using System.IO;
 using System.Linq;
 
 namespace Octgn.Shared.Networking
 {
     public class RpcInterceptor : IInterceptor
     {
-        private SocketBase _socket;
-        public RpcInterceptor(SocketBase socket)
+        private GameSocket _socket;
+        public RpcInterceptor(GameSocket socket)
         {
             _socket = socket;
         }

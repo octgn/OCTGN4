@@ -23,7 +23,7 @@ namespace Octgn.Server
             Id = System.Threading.Interlocked.Increment(ref _nextId);
         }
 
-        public GameServer(string name, GameEngine engine): this (name, SocketBase.FreeTcpPort(), engine)
+        public GameServer(string name, GameEngine engine): this (name, GameSocket.FreeTcpPort(), engine)
         {
         }
 
@@ -31,9 +31,9 @@ namespace Octgn.Server
         {
         }
 
-        private void OnSocket(GameServerSocket sock)
+        private void OnSocket(GameSocket sock)
         {
-            var user = new UnauthenticatedUser(sock);
+            var user = new UnauthenticatedUser(this, sock);
             _engine.Users.AddUser(user);
         }
 

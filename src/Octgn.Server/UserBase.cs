@@ -2,9 +2,7 @@
 using Octgn.Shared.Networking;
 using System.Linq;
 using System;
-using System.Collections.Generic;
 using Octgn.Shared;
-using System.Reflection;
 
 namespace Octgn.Server
 {
@@ -14,15 +12,17 @@ namespace Octgn.Server
         public bool Connected { get; private set; }
         public int Id { get; private set; }
         public bool Replaced { get; private set; }
-        private GameServerSocket _socket;
         protected IS2CComs RPC;
+        private GameSocket _socket;
+        protected GameServer Server;
         private static ProxyGenerator _generator = new ProxyGenerator();
         private static int _lastId = 0;
         static UserBase()
         {
         }
-        public UserBase(GameServerSocket sock)
+        public UserBase(GameServer server, GameSocket sock)
         {
+            Server = server;
             _socket = sock;
             Connected = true;
             RPC = _generator.CreateInterfaceProxyWithoutTarget<IS2CComs>(new RpcInterceptor(sock));
@@ -32,6 +32,7 @@ namespace Octgn.Server
         public UserBase(UserBase user)
         {
             _socket = user._socket;
+            Server = user.Server;
             Connected = user.Connected;
             RPC = user.RPC;
             Id = user.Id;
@@ -43,10 +44,7 @@ namespace Octgn.Server
             var message = _socket.Read().FirstOrDefault();
 
             if(message == null)
-            {
-                Connected = false;
                 return;
-            }
 
             message.Invoke<IC2SComs>(this);
         }
@@ -63,21 +61,23 @@ namespace Octgn.Server
     }
     public class UnauthenticatedUser : UserBase
     {
-        private GameServerSocket _sock;
-        public UnauthenticatedUser(GameServerSocket sock): base (sock)
+        private GameSocket _sock;
+        public UnauthenticatedUser(GameServer server, GameSocket sock)
+            : base (server, sock)
         {
             _sock = sock;
         }
 
         public override void Hello(string username)
         {
-            this.RPC.HelloResp(this._sock._server);
+            this.RPC.HelloResp(this.Server);
         }
     }
 
     public class AuthenticatedUser : UserBase
     {
-        public AuthenticatedUser(UnauthenticatedUser user) : base(user)
+        public AuthenticatedUser(UnauthenticatedUser user) 
+            : base(user)
         {
 
         }

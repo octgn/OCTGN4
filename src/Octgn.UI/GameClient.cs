@@ -28,22 +28,23 @@ namespace Octgn.UI
 		}
 
 		public int Id { get; private set; }
-		private GameClientSocket _socket;
+		private GameSocket _socket;
 		private User _user;
 		private Action<GameClient, IGameServer> _onConnect;
 		private static int _nextId = 0;
 		private bool _connected;
+        private string _host;
 		private Task _readTask;
 		private CancellationTokenSource _cancellation;
 
 		public GameClient(string host, User user, Action<GameClient, IGameServer> onConnect)
 		{
 			Id = Interlocked.Increment(ref _nextId);
+            _host = host;
 			_user = user;
 			_onConnect = onConnect;
 			_cancellation = new CancellationTokenSource();
-			var sock = new TcpClient();
-			_socket = new GameClientSocket(sock, host);
+			_socket = new GameSocket();
 			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
 		}
 
@@ -51,7 +52,7 @@ namespace Octgn.UI
 		{
 			try
 			{
-				_socket.Connect();
+				_socket.Connect(_host);
 				this.RPC.Hello(_user.UserName);
 				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 			}
@@ -70,10 +71,7 @@ namespace Octgn.UI
 					var message = _socket.Read().FirstOrDefault();
 
 					if (message == null)
-					{
-						Connected = false;
 						continue;
-					}
 
 					message.Invoke<IS2CComs>(this);
 				}
@@ -83,7 +81,8 @@ namespace Octgn.UI
 				}
 				finally
 				{
-					Thread.Sleep(2);
+                    if(!Thread.Yield())
+					    Thread.Sleep(2);
 				}
 			}
 		}
@@ -105,23 +104,6 @@ namespace Octgn.UI
 			if(_readTask != null)
 				_readTask.Wait();
 			_socket.Dispose();
-		}
-
-		class GameClientSocket : SocketBase
-		{
-			private TcpClient _socket;
-			private string _host;
-			public GameClientSocket(TcpClient sock, string host)
-				: base(sock)
-			{
-				_socket = sock;
-				_host = host;
-			}
-
-			public void Connect()
-			{
-				Connect(_host);
-			}
 		}
 	}
 }
