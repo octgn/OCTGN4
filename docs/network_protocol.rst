@@ -36,7 +36,11 @@ String - 0x07
 * [1-20 Bytes] Length of String in ASCII
 * [Bytes] UTF8 String
 
-Method Parameter - 0x08
+JSON Serialized Object - 0x08
+-----------------------------
+* [1 String] Object serialized to JSON
+
+Method Parameter - 0x0A
 ------------------------
 
 * [1 String] Name of the parameter

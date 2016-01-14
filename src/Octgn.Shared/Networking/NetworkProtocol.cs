@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 
 namespace Octgn.Shared.Networking
@@ -85,6 +88,14 @@ namespace Octgn.Shared.Networking
             return sb.ToString();
         }
 
+        public object ReadObject()
+        {
+            var ibyte = (byte)_stream.ReadByte();
+            if ((ibyte) != 0x08) throw new InvalidDataException($"Trying to ReadObject but streams identifier byte is {ibyte}");
+            var jsonString = ReadString();
+            return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+        }
+
         public object ReadVariable()
         {
             var ibytes = new byte[1];
@@ -104,6 +115,8 @@ namespace Octgn.Shared.Networking
                     return ReadFloat();
                 case 0x07:
                     return ReadString();
+                case 0x08:
+                    return ReadObject();
                 default:
                     throw new InvalidDataException($"Tried to ReadVariable. Got byte {ibyte}");
             }
@@ -112,7 +125,7 @@ namespace Octgn.Shared.Networking
         public MethodParameter ReadMethodParameter()
         {
             var ibyte = (byte)_stream.ReadByte();
-            if ((ibyte) != 0x08) throw new InvalidDataException($"Trying to ReadMethodParameter but streams identifier byte is {ibyte}");
+            if ((ibyte) != 0x0A) throw new InvalidDataException($"Trying to ReadMethodParameter but streams identifier byte is {ibyte}");
             var name = ReadString();
             var val = ReadVariable();
             var ret = new MethodParameter
@@ -202,6 +215,14 @@ namespace Octgn.Shared.Networking
             var strBytes = Encoding.UTF8.GetBytes(s);
             _stream.Write(strBytes, 0, strBytes.Length);
         }
+
+        public void WriteObject(object o)
+        {
+            _stream.WriteByte(0x08);
+            var str = JsonConvert.SerializeObject(o);
+            WriteString(str);
+        }
+
         public void WriteVariable(object o)
         {
             if(o is byte)
@@ -229,14 +250,14 @@ namespace Octgn.Shared.Networking
                 WriteString((string)o);
             }
             else
-            { 
-                throw new InvalidDataException($"Tried to WriteVariable. Type {o.GetType()} is not valid.");
+            {
+                WriteObject(o);
             }
         }
 
         public void WriteMethodParameter(MethodParameter p)
         {
-            _stream.WriteByte(0x08);
+            _stream.WriteByte(0x0A);
             WriteString(p.Name);
             WriteVariable(p.Value);
         }
@@ -276,6 +297,18 @@ namespace Octgn.Shared.Networking
             public string Name { get; set; }
             public MethodParameter[] Parameters { get; set; }
 
+            private static Type[] _loadedTypes;
+            static Packet()
+            {
+                _loadedTypes = AppDomain.CurrentDomain.GetAssemblies()
+                    // Filter out shit we shouldn't need(hopefully)
+                    .Where(x=>x == Assembly.GetEntryAssembly() || x == typeof(Packet).Assembly)
+                    .SelectMany(x => x.GetTypes())
+                    .Where(x => x.IsInterface == false)
+                    .Where(x => x.IsAbstract == false)
+                .ToArray();
+            }
+
             public void Invoke<T>(T obj)
             {
                 var methods = typeof(T).GetMethods();
@@ -293,7 +326,21 @@ namespace Octgn.Shared.Networking
                     }
                     else
                     {
-                        parr[i] = mp.Value;
+                        if (mp.Value is JObject)
+                        {
+                            if (parameters[i].ParameterType.IsInterface)
+                            {
+                                // Find a type worthy of decoding this
+                                var type = _loadedTypes.Single(x => x.GetInterfaces().Contains(parameters[i].ParameterType));
+                                parr[i] = (mp.Value as JObject).ToObject(type);
+                            }
+                            else {
+                                parr[i] = (mp.Value as JObject).ToObject(parameters[i].ParameterType);
+                            }
+                        }
+                        else {
+                            parr[i] = mp.Value;
+                        }
                     }
                 }
 
