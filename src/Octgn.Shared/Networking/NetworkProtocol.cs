@@ -346,6 +346,13 @@ namespace Octgn.Shared.Networking
 
                 method.Invoke(obj, parr);
             }
+
+			public static void AddType<T>()
+			{
+				var lst = new System.Collections.Generic.List<Type>(_loadedTypes);
+				lst.Add(typeof(T));
+				_loadedTypes = lst.ToArray();
+			}
         }
     }
 }

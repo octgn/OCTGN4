@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using Octgn.Shared.Networking;
 using System;
 using System.IO;
@@ -148,8 +149,10 @@ namespace Octgn.Test.Shared.Networking
                 Assert.AreEqual(test, ret);
             }
 
-            // Make sure that generic object fails
-            Assert.Throws<InvalidDataException>(() => _socket1Prot.WriteVariable(new object()));
+			// Make sure that generic object returns null
+			_socket1Prot.WriteVariable(new object());
+			var result = _socket2Prot.ReadVariable();
+			Assert.IsInstanceOf<JObject>(result);
 
             _socket1.GetStream().WriteByte(0xFF);
             Assert.Throws<InvalidDataException>(() =>_socket2Prot.ReadVariable());

@@ -10,6 +10,12 @@ namespace Octgn.Test.Shared.Networking
     [TestFixture]
     public class PacketTests
     {
+		[OneTimeSetUp]
+		public void Setup()
+		{
+			NetworkProtocol.Packet.AddType<Test1Imp>();
+		}
+
         [Test]
         public void Invoke_NoParameters([Values(true, false)]bool withArgs)
         {
@@ -69,7 +75,7 @@ namespace Octgn.Test.Shared.Networking
                 pars.Add(p);
             }
 			var faketest = A.Fake<ITest1>();
-			var jobject = new JObject(faketest);
+			var jobject = JObject.FromObject(faketest);
 			if(doArg4)
 			{
 				var p = new NetworkProtocol.MethodParameter()
@@ -85,18 +91,30 @@ namespace Octgn.Test.Shared.Networking
             var expectedA = arg1;
             var expectedB = arg2 == null ? default(int) : arg2.Value;
             var expectedC = arg3 == null ? default(float) : arg3.Value;
-			var expectedD = doArg4 ? (doArg4AsJObject ? (object)jobject : faketest) : null;
 			A.CallTo(() => faketest.Method2(A<string>.That.IsEqualTo(expectedA)
                 , A<int>.That.IsEqualTo(expectedB)
                 , A<float>.That.IsEqualTo(expectedC)
-				, A<object>.That.IsEqualTo(expectedD))
+				, doArg4 == false ? A<ITest1>.That.IsNull() : A<ITest1>.That.IsInstanceOf(typeof(ITest1)))
             ).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         public interface ITest1
         {
+			string Taco { get; set; }
             void Method1();
             void Method2(string a, int b, float c, ITest1 d);
         }
-    }
+
+		public class Test1Imp : ITest1
+		{
+			public virtual string Taco { get; set; }
+			public virtual void Method1()
+			{
+			}
+
+			public virtual void Method2(string a, int b, float c, ITest1 d)
+			{
+			}
+		}
+	}
 }
