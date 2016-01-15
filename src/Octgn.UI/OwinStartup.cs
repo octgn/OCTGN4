@@ -5,6 +5,7 @@ using Owin;
 using Ninject;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
+using Octgn.Shared;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
 namespace Octgn.UI
@@ -14,6 +15,7 @@ namespace Octgn.UI
         public void Configuration(IAppBuilder app)
         {
 			//LoggerFactory.SetDefault<Logger>();
+			LoggerFactory.SetDefault<HubLogger>();
 
 			var settings = new NinjectSettings();
 			settings.LoadExtensions = false;

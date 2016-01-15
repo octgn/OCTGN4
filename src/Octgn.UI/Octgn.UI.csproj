@@ -185,6 +185,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
+    <Content Include="Scripts\Custom\LogForwarder.js" />
     <Content Include="Scripts\Custom\GameTable.js" />
     <Content Include="Scripts\jquery-2.2.0.min.map" />
     <Content Include="Views\Home\Login.cshtml" />
@@ -241,6 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlTagHelpers.cs" />
+    <Compile Include="HubLogger.cs" />
     <Compile Include="LoggerOwinMiddleware.cs" />
     <Compile Include="Models\Home\LoginModel.cs" />
     <Compile Include="NancyBootstrapper.cs" />

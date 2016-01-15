@@ -3,11 +3,13 @@ using Microsoft.AspNet.SignalR;
 using Octgn.Shared.Resources;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Octgn.Shared;
 
 namespace Octgn.UI
 {
     public class MainHub : Hub
     {
+		protected ILogger Log = LoggerFactory.Create<MainHub>();
         public static IHubContext Instance
         {
             get { return GlobalHost.ConnectionManager.GetHubContext<MainHub>(); }
@@ -37,7 +39,7 @@ namespace Octgn.UI
             catch (System.Exception e)
             {
                 if (e is HubException) throw;
-                //TODO Log exception
+				Log.Error(e.ToString());
                 throw new HubException(Text.MainHub_HostGame_UnhandledError);
             }
         }
@@ -54,7 +56,7 @@ namespace Octgn.UI
             catch (System.Exception e)
             {
                 if (e is HubException) throw;
-                //TODO Log exception
+				Log.Error(e.ToString());
                 throw new HubException(Text.MainHub_HostGame_UnhandledError);
             }
         }
@@ -78,5 +80,13 @@ namespace Octgn.UI
 			user.UIRPC = null;
 			return base.OnDisconnected(stopCalled);
 		}
+	}
+
+	public class LoggingHub : Hub
+	{
+        public static IHubContext Instance
+        {
+            get { return GlobalHost.ConnectionManager.GetHubContext<LoggingHub>(); }
+        }
 	}
 }

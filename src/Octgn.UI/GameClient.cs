@@ -13,6 +13,7 @@ namespace Octgn.UI
 {
 	public class GameClient : IS2CComs, IDisposable
 	{
+		protected ILogger Log = LoggerFactory.Create<GameClient>();
 		private static ProxyGenerator _generator = new ProxyGenerator();
 
 		public IC2SComs RPC { get; private set; }
@@ -50,18 +51,22 @@ namespace Octgn.UI
 		{
 			try
 			{
+				Log.Debug("Connecting...");
 				_socket.Connect(_host);
+				Log.Debug("Connected...");
 				this.RPC.Hello(_user.UserName);
 				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 			}
 			catch (Exception e)
 			{
+				Log.Error(e.ToString());
 				this._user.UIRPC.gameJoinError(Text.MainHub_HostGame_UnhandledError);
 			}
 		}
 
 		internal void ProcessMessages()
 		{
+			Log.Debug("Processing Messages");
 			while (_cancellation.IsCancellationRequested == false)
 			{
 				try
@@ -75,6 +80,7 @@ namespace Octgn.UI
 				}
 				catch(Exception e)
 				{
+					Log.Error(e.ToString());
 					throw;
 				}
 				finally
@@ -83,10 +89,12 @@ namespace Octgn.UI
 					    Thread.Sleep(2);
 				}
 			}
+			Log.Debug("Finished processing messages");
 		}
 
 		public void HelloResp(IGameServer server)
 		{
+			Log.Debug("HelloResp");
 			Connected = true;
 		}
 

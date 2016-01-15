@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using Nancy.Security;
 using System.Security.Principal;
-using Octgn.Shared;
 using System;
 
 namespace Octgn.UI
@@ -15,53 +14,35 @@ namespace Octgn.UI
 
 		public string Sid { get; private set; }
 
-		public string Name
-		{
-			get
-			{
-				return UserName;
-			}
-		}
+		public string Name { get { return UserName; } }
 
-		public string AuthenticationType
-		{
-			get
-			{
-				return "Session";
-			}
-		}
+		public string AuthenticationType { get { return "Session"; } }
 
-		public bool IsAuthenticated
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool IsAuthenticated { get { return true; } }
 
-		public GameClient GameClient {get; set;}
+		public GameClient GameClient { get; set; }
 
 		public dynamic UIRPC { get; set; }
 
-        private ConcurrentDictionary<int, GameClient> _clients;
+		private ConcurrentDictionary<int, GameClient> _clients;
 
-        public User(string username, string sid)
-        {
-            UserName = username;
-            Sid = sid;
-            _clients = new ConcurrentDictionary<int, GameClient>();
-        }
+		public User(string username, string sid)
+		{
+			UserName = username;
+			Sid = sid;
+			_clients = new ConcurrentDictionary<int, GameClient>();
+		}
 
-        public GameClient JoinGame(string host)
-        {
-            var client = new GameClient(host, this);
-            _clients.AddOrUpdate(client.Id, client, (x, y)=>client);
+		public GameClient JoinGame(string host)
+		{
+			var client = new GameClient(host, this);
+			_clients.AddOrUpdate(client.Id, client, (x, y) => client);
 			return client;
-        }
+		}
 
 		public GameClient GetGame(int id)
 		{
 			return _clients[id];
 		}
-    }
+	}
 }

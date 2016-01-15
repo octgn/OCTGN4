@@ -16,6 +16,7 @@
     <script src="@Url.Content("~/Scripts/jquery.signalR-2.2.0.min.js")"></script>
     <script src="@Url.Content("~/Scripts/alertify.min.js")"></script>
     <script src="@Url.Content("~/Scripts/Custom/jquery.customDialog.js")"></script>
+    <script src="@Url.Content("~/Scripts/Custom/LogForwarder.js")"></script>
     <script src="@(baseUrl)/signalr/hubs"></script>
 
     <link rel="stylesheet" href="@Url.Content("~/Content/Main.css")"/>
@@ -130,6 +131,8 @@
                 });
             }
             $(function () {
+            	BELOG = new LogForwarderClass();
+            	BELOG.init();
                 setupSignalr();
 				if(O.com)
 					O.com.init();
