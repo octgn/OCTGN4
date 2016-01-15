@@ -36,6 +36,7 @@
 
                 $('#PingClient').off('click');
                 $('#HostGame_Button_Host').off('click');
+                $('#JoinGame_Button_Join').off('click');
             }
             function onConnected(){
                 console.log("connected");
@@ -49,6 +50,23 @@
                     var button = $(this);
                     button.prop('disabled', true);
                     gHub.server.hostGame($('#HostGame_Input_GameName').val())
+                    .done( function(returnVal) {
+                        window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
+                        console.log(returnVal);
+                    }).always( function() { 
+                        button.prop('disabled', false);
+                    }).fail(function(error) { 
+                        if (error.source === 'HubException') {
+                            alertify.alert("@RT("_Layout_HostGame")", error.message);
+                        } else{
+                            alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
+                        }
+                    });
+                });
+                $('#JoinGame_Button_Join').on('click', function(){
+                    var button = $(this);
+                    button.prop('disabled', true);
+                    gHub.server.joinGame($('#JoinGame_Input_Host').val())
                     .done( function(returnVal) {
                         window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
                         console.log(returnVal);
