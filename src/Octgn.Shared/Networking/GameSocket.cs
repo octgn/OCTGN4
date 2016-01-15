@@ -65,6 +65,7 @@ namespace Octgn.Shared.Networking
 
         private void BackgroundReaderRun()
         {
+			Thread.CurrentThread.Name = "GameSocket " + Thread.CurrentThread.ManagedThreadId;
             while(this._cancelation.IsCancellationRequested == false)
             {
                 if (!_socket.Connected)

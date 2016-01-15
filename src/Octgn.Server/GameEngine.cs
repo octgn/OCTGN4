@@ -52,6 +52,7 @@ namespace Octgn.Server
         internal JsCom(GameEngine engine)
         {
             _engine = engine;
+			_callbacks = new Dictionary<string, List<Action<object>>>();
         }
 
         internal void FireOn(string name, object obj)

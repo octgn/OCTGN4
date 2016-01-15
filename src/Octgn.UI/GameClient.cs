@@ -30,19 +30,17 @@ namespace Octgn.UI
 		public int Id { get; private set; }
 		private GameSocket _socket;
 		private User _user;
-		private Action<GameClient, IGameServer> _onConnect;
 		private static int _nextId = 0;
 		private bool _connected;
         private string _host;
 		private Task _readTask;
 		private CancellationTokenSource _cancellation;
 
-		public GameClient(string host, User user, Action<GameClient, IGameServer> onConnect)
+		public GameClient(string host, User user)
 		{
 			Id = Interlocked.Increment(ref _nextId);
             _host = host;
 			_user = user;
-			_onConnect = onConnect;
 			_cancellation = new CancellationTokenSource();
 			_socket = new GameSocket();
 			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
@@ -89,7 +87,6 @@ namespace Octgn.UI
 
 		public void HelloResp(IGameServer server)
 		{
-			_onConnect(this, server);
 			Connected = true;
 		}
 

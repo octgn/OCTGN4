@@ -22,9 +22,10 @@ namespace Octgn.Server
             {
                 foreach(var user in _users.ToArray())
                 {
-                    if (user.Replaced)
+                    if (user.Replaced != null)
                     {
                         _users.Remove(user);
+						_users.Add(user.Replaced);
                         continue;
                     }
                     user.ProcessMessages();

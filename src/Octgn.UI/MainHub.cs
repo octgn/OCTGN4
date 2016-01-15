@@ -59,6 +59,12 @@ namespace Octgn.UI
             }
         }
 
+		public void Send(string name, object o)
+		{
+			var user = Context.User.Identity as User;
+			user.GameClient.RPC.JsInvoke(name, o);
+		}
+
 		public override Task OnConnected()
 		{
 			var user = Context.User.Identity as User;

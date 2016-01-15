@@ -13,9 +13,11 @@ namespace Octgn.UI
     {
         public void Configuration(IAppBuilder app)
         {
-            //LoggerFactory.SetDefault<Logger>();
+			//LoggerFactory.SetDefault<Logger>();
 
-            var applicationLifetimeKernel = new StandardKernel();
+			var settings = new NinjectSettings();
+			settings.LoadExtensions = false;
+            var applicationLifetimeKernel = new StandardKernel(settings);
             applicationLifetimeKernel.Bind<LocalServerManager>().ToSelf().InSingletonScope();
             applicationLifetimeKernel.Bind<UserSessions>().ToSelf().InSingletonScope();
 

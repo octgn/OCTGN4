@@ -35,6 +35,12 @@ namespace Octgn.UI
                 await Next.Invoke(context);
                 return;
             }
+			if (context.Request.Path.ToString().StartsWith("/Games/"))
+			{
+				var snum = context.Request.Path.ToString().Split(new[] { "/" }, System.StringSplitOptions.RemoveEmptyEntries)[1];
+				var num = int.Parse(snum);
+				user.GameClient = user.GetGame(num);
+			}
             context.Request.User = new GenericPrincipal(user, new string[]{});
             await Next.Invoke(context);
         }

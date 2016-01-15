@@ -11,7 +11,7 @@ namespace Octgn.Server
         private static ILogger Log = LoggerFactory.Create<GameThread>();
         public bool Connected { get; private set; }
         public int Id { get; private set; }
-        public bool Replaced { get; private set; }
+        public UserBase Replaced { get; private set; }
         protected IS2CComs RPC;
         private GameSocket _socket;
         protected GameServer Server;
@@ -36,7 +36,7 @@ namespace Octgn.Server
             Connected = user.Connected;
             RPC = user.RPC;
             Id = user.Id;
-            Replaced = true;
+            user.Replaced = this;
         }
 
         internal void ProcessMessages()
@@ -51,6 +51,7 @@ namespace Octgn.Server
 
         protected void ReplaceSelf(UserBase user)
         {
+			// Need to use this method so that things don't get GC'd
             Log.Debug("User {0} became {1}", user.Id, user.GetType().Name);
         }
 
@@ -81,6 +82,7 @@ namespace Octgn.Server
         public override void Hello(string username)
         {
             this.RPC.HelloResp(this.Server);
+			this.ReplaceSelf(new AuthenticatedUser(this));
         }
     }
 
@@ -89,7 +91,6 @@ namespace Octgn.Server
         public AuthenticatedUser(UnauthenticatedUser user) 
             : base(user)
         {
-
         }
 
         public override void JsInvoke(string name, object obj)

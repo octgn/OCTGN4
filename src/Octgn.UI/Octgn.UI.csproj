@@ -185,6 +185,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
+    <Content Include="Scripts\Custom\GameTable.js" />
     <Content Include="Scripts\jquery-2.2.0.min.map" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Games\Test\manifest.json">
