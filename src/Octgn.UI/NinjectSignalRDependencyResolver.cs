@@ -16,7 +16,10 @@ namespace Octgn.UI
 
         public override object GetService(Type serviceType)
         {
-            return _kernel.TryGet(serviceType) ?? base.GetService(serviceType);
+			if (_kernel.GetBindings(serviceType).Any())
+				return _kernel.TryGet(serviceType);
+			else
+				return base.GetService(serviceType);
         }
 
         public override IEnumerable<object> GetServices(Type serviceType)

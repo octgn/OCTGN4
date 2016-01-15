@@ -6,6 +6,7 @@ using Ninject;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Octgn.Shared;
+using Microsoft.AspNet.SignalR.Messaging;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
 namespace Octgn.UI
@@ -28,6 +29,7 @@ namespace Octgn.UI
             app.Map("/signalr", map =>
                 {
                     map.UseCors(CorsOptions.AllowAll);
+					var current = GlobalHost.DependencyResolver;
                     var hubConfiguration = new HubConfiguration();
                     hubConfiguration.Resolver = new NinjectSignalRDependencyResolver(applicationLifetimeKernel);
 

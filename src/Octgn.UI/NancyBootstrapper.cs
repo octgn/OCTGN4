@@ -60,6 +60,8 @@ namespace Octgn.UI
         protected Response LoginRedirect(IKernel k, NancyContext ctx)
         {
             if (ctx.Request.Path.ToLower().StartsWith("/login")) return null;
+			if(ctx.Request.Query.ContainsKey("sid") == false)
+                return new RedirectResponse("/Login");
             if (string.IsNullOrWhiteSpace(ctx.Request.Query.sid))
                 return new RedirectResponse("/Login");
 
