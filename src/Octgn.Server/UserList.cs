@@ -31,5 +31,16 @@ namespace Octgn.Server
                 }
             }
         }
+
+        public void Broadcast(string name, object obj)
+        {
+            lock (this)
+            {
+                foreach(var user in _users)
+                {
+                    user.Send(name, obj);
+                }
+            }
+        }
     }
 }

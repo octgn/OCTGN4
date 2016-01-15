@@ -98,6 +98,11 @@ namespace Octgn.UI
 			throw new NotImplementedException();
 		}
 
+        public void JsInvoke(string name, object obj)
+        {
+            this._user.UIRPC.invoke(name, obj);
+        }
+
 		public void Dispose()
 		{
 			_cancellation.Cancel();

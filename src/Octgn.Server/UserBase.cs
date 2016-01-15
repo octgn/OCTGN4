@@ -58,6 +58,16 @@ namespace Octgn.Server
         {
             throw new NotImplementedException();
         }
+
+        public void Send(string name, object obj)
+        {
+            this.RPC.JsInvoke(name, obj);
+        }
+
+        public virtual void JsInvoke(string name, object obj)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class UnauthenticatedUser : UserBase
     {
@@ -80,6 +90,11 @@ namespace Octgn.Server
             : base(user)
         {
 
+        }
+
+        public override void JsInvoke(string name, object obj)
+        {
+            this.Server.Engine.InvokeJsFunction(name, obj);
         }
     }
 }

@@ -46,6 +46,13 @@ namespace Octgn.UI.Modules
 
                 return View[new TableModel(game)];
             };
+
+            Get["/Resources/"] = ctx =>
+            {
+                return null;
+            };
         }
     }
 }
+
+

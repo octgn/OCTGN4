@@ -10,37 +10,39 @@ namespace Octgn.Server
         public int Id { get; private set; }
         public int Port { get; private set; }
         public string Name { get; private set; }
+        internal GameResourceProvider Resources { get; private set; }
+        internal GameEngine Engine { get; private set; }
 
         private static int _nextId = 0;
-        private GameEngine _engine;
         private GameServerListener _listener;
-        public GameServer(string name, int port, GameEngine engine)
+        public GameServer(string name, int port, GameEngine engine, GameResourceProvider resources)
         {
+            Resources = resources;
             Port = port;
             Name = name;
             _listener = new GameServerListener(Port, new GameServerModel(Id, Name, Port), OnSocket);
-            _engine = engine;
+            Engine = engine;
             Id = System.Threading.Interlocked.Increment(ref _nextId);
         }
 
-        public GameServer(string name, GameEngine engine): this (name, GameSocket.FreeTcpPort(), engine)
+        public GameServer(string name, GameEngine engine, GameResourceProvider resources): this (name, GameSocket.FreeTcpPort(), engine, resources)
         {
         }
 
-        public GameServer(string name): this (name, new GameEngine())
+        public GameServer(string name, GameResourceProvider resources): this (name, new GameEngine(resources), resources)
         {
         }
 
         private void OnSocket(GameSocket sock)
         {
             var user = new UnauthenticatedUser(this, sock);
-            _engine.Users.AddUser(user);
+            Engine.Users.AddUser(user);
         }
 
         public void Dispose()
         {
             _listener.Dispose();
-            _engine.Dispose();
+            Engine.Dispose();
         }
     }
 }

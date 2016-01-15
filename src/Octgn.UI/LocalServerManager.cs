@@ -1,6 +1,8 @@
 ﻿using Octgn.Server;
 using System;
 using System.Collections.Concurrent;
+using System.IO;
+using System.Reflection;
 
 namespace Octgn.UI
 {
@@ -15,7 +17,12 @@ namespace Octgn.UI
 
         public GameServer LaunchServer(string gameName)
         {
-            var gs = new GameServer(gameName);
+            //var bp = new FileInfo(typeof(LocalServerManager).Assembly.Location).Directory.FullName;
+            //var bp = Server.MapPath("/");
+            var bp = AppDomain.CurrentDomain.BaseDirectory;
+            bp = Path.Combine(bp, "Games\\Test");
+            var rp = new GameResourceProvider(bp);
+            var gs = new GameServer(gameName, rp);
 
             _servers.AddOrUpdate(gs.Id, gs, (x, y) => gs);
             return gs;
