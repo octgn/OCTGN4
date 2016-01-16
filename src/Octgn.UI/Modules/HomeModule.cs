@@ -47,7 +47,7 @@ namespace Octgn.UI.Modules
                 return View[new TableModel(game)];
             };
 
-            Get["/Resources/"] = ctx =>
+            Get["/{id}/Resources/"] = ctx =>
             {
                 return null;
             };

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.ClearScript.V8;
+using System;
 using System.Collections.Generic;
 
 namespace Octgn.Server
 {
     public class GameEngine : GameThread, IDisposable
     {
-        private Jint.Engine _engine;
+        private V8ScriptEngine _engine;
         private GameResourceProvider _resources;
         private JsMainClass _jsmain;
 
@@ -16,14 +17,14 @@ namespace Octgn.Server
             _resources = resources;
             Users = new UserList();
             _jsmain = new JsMainClass(this);
-            _engine = new Jint.Engine();
-            _engine.SetValue("O", _jsmain);
+            _engine = new V8ScriptEngine();
+            _engine.AddHostObject("O", _jsmain);
             _engine.Execute(_resources.ReadEntryPoint());
         }
 
         internal void InvokeJsFunction(string name, object o)
         {
-            _jsmain.Com.FireOn(name, o);
+            _jsmain.com.FireOn(name, o);
         }
 
         protected override void Run()
@@ -34,25 +35,25 @@ namespace Octgn.Server
 
     internal class JsMainClass
     {
-        public JsCom Com { get; set; }
+        public JsCom com { get; set; }
 
         private GameEngine _engine;
 
         public JsMainClass(GameEngine engine)
         {
             _engine = engine;
-            Com = new JsCom(engine);
+            com = new JsCom(engine);
         }
     }
 
-    internal class JsCom
+    public class JsCom
     {
         private GameEngine _engine;
-        private Dictionary<string, List<Action<object>>> _callbacks;
+        private Dictionary<string, List<dynamic>> _callbacks;
         internal JsCom(GameEngine engine)
         {
             _engine = engine;
-			_callbacks = new Dictionary<string, List<Action<object>>>();
+			_callbacks = new Dictionary<string, List<dynamic>>();
         }
 
         internal void FireOn(string name, object obj)
@@ -67,11 +68,12 @@ namespace Octgn.Server
             });
         }
 
-        public void on(string name, Action<object> callback)
+        public void on(string name, dynamic callback)
         {
-            _engine.Invoke(() => {
+            _engine.Invoke(() =>
+            {
                 if (!_callbacks.ContainsKey(name))
-                    _callbacks.Add(name, new List<Action<object>>());
+                    _callbacks.Add(name, new List<dynamic>());
                 _callbacks[name].Add(callback);
             });
 
