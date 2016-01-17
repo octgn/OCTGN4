@@ -64,7 +64,7 @@ namespace Octgn.UI
 		public void Send(string name, object o)
 		{
 			var user = Context.User.Identity as User;
-			user.GameClient.RPC.JsInvoke(name, o);
+			user.GameClient.RPC.RemoteCall(name, o);
 		}
 
 		public override Task OnConnected()

@@ -103,7 +103,7 @@ namespace Octgn.UI
 			throw new NotImplementedException();
 		}
 
-        public void JsInvoke(string name, object obj)
+        public void RemoteCall(string name, object obj)
         {
             this._user.UIRPC.invoke(name, obj);
         }

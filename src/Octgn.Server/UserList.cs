@@ -39,7 +39,7 @@ namespace Octgn.Server
             {
                 foreach(var user in _users)
                 {
-                    user.Send(name, obj);
+                    user.RPC.RemoteCall(name, obj);
                 }
             }
         }

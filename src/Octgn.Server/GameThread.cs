@@ -43,7 +43,7 @@ namespace Octgn.Server
 
         protected abstract void Run();
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _disposing = true;
             _gameThread.Wait();
