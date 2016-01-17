@@ -246,7 +246,7 @@
     <Compile Include="LoggerOwinMiddleware.cs" />
     <Compile Include="Models\Home\LoginModel.cs" />
     <Compile Include="NancyBootstrapper.cs" />
-    <Compile Include="GameClient.cs" />
+    <Compile Include="Gameplay\GameClient.cs" />
     <Compile Include="LocalServerManager.cs" />
     <Compile Include="MainHub.cs" />
     <Compile Include="Models\Games\TableModel.cs" />

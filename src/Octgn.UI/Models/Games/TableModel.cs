@@ -1,4 +1,6 @@
-﻿namespace Octgn.UI.Models.Games
+﻿using Octgn.UI.Gameplay;
+
+namespace Octgn.UI.Models.Games
 {
     public class TableModel
     {
