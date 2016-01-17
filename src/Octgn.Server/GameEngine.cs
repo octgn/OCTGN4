@@ -7,6 +7,7 @@ namespace Octgn.Server
     internal class GameEngine : GameThread, IDisposable
     {
         internal GameResourceProvider Resources { get; private set; }
+        internal StateHistory StateHistory {get;private set;}
 
         private JavascriptEngine _engine;
         internal OClass O { get; private set; }
@@ -17,6 +18,7 @@ namespace Octgn.Server
         {
             Resources = resources;
             Users = new UserList();
+            StateHistory = new StateHistory();
             O = new OClass(this);
             _engine = new JavascriptEngine();
             _engine.AddObject("O", O);

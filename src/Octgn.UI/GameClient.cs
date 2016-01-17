@@ -4,8 +4,6 @@ using Octgn.Shared.Networking;
 using Octgn.Shared.Resources;
 using System;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -108,8 +106,10 @@ namespace Octgn.UI
             this._user.UIRPC.invoke(name, obj);
         }
 
-        public void StateChange(string name, object val)
+        public void StateChange(int id, string name, object val)
         {
+            //TODO should check to see if we missed a state change
+            //    Cause we know they'll happen in order
             throw new NotImplementedException();
         }
 

@@ -13,7 +13,8 @@ namespace Octgn.Server.JS
 
         protected override void OnPropertyChanged(StateObject sender, string name, object val)
         {
-            _engine.Users.BroadcastRPC.StateChange(name, val);
+            var id = _engine.StateHistory.StoreChange(name, val);
+            _engine.Users.BroadcastRPC.StateChange(id, name, val);
         }
     }
 }
