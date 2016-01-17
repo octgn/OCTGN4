@@ -9,6 +9,7 @@
     <title>@ViewBag.Title - OCTGN</title>
 	<script type="text/javascript">
 		var O = O || {};
+		O.state = {};
 	</script>
     <script src="@Url.Content("~/Scripts/jquery-2.2.0.min.js")"></script>
     <script src="@Url.Content("~/Scripts/json2.min.js")"></script>
@@ -109,6 +110,28 @@
                 gHub.client.gameJoinError = function (error) {
                 	alertify.alert("@RT("_Layout_HostGame")", error);
                 };
+
+                gHub.client.fireStateReplaced = function (state) {
+                    O.state = JSON.parse(state);
+                    console.log("fireStateReplaced", state);
+                }
+
+                gHub.client.firePropertyChanged = function(name, obj){
+                    console.log("firePropertyChanged", {
+                        name: name,
+                        obj: obj
+                    });
+                    var parts = name.split('.');
+                    var curObj = O.state;
+                    for (var i = 0; i < parts.length; i++) {
+                        var curProp = parts[i];
+                        if (!curObj[curProp]) {
+                            curObj[curProp] = {};
+                        }
+                        curObj = curObj[curProp];
+                    }
+                    curObj = obj;
+                }
                 
                 // Start the connection.
                 $.connection.hub.start().done(function () {

@@ -241,6 +241,7 @@
     <Content Include="Views\Shared\_PartialJoinGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\GameState.cs" />
     <Compile Include="HtmlTagHelpers.cs" />
     <Compile Include="HubLogger.cs" />
     <Compile Include="LoggerOwinMiddleware.cs" />

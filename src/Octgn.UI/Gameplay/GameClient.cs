@@ -15,6 +15,7 @@ namespace Octgn.UI.Gameplay
 		private static ProxyGenerator _generator = new ProxyGenerator();
 
 		public IC2SComs RPC { get; private set; }
+		public User User { get; private set; }
 		public bool Connected
 		{
 			get { return _connected; }
@@ -22,26 +23,28 @@ namespace Octgn.UI.Gameplay
 			{
 				if (value == _connected) return;
 				_connected = value;
-				_user.UIRPC.GameStatusUpdated(_connected);
+				User.UIRPC.GameStatusUpdated(_connected);
 			}
 		}
 
 		public int Id { get; private set; }
 		private GameSocket _socket;
-		private User _user;
+        private GameState _state;
 		private static int _nextId = 0;
 		private bool _connected;
         private string _host;
 		private Task _readTask;
 		private CancellationTokenSource _cancellation;
+        private int _lastState;
 
 		public GameClient(string host, User user)
 		{
 			Id = Interlocked.Increment(ref _nextId);
             _host = host;
-			_user = user;
+			User = user;
 			_cancellation = new CancellationTokenSource();
 			_socket = new GameSocket();
+            _state = new GameState(this);
 			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
 		}
 
@@ -52,13 +55,13 @@ namespace Octgn.UI.Gameplay
 				Log.Debug("Connecting...");
 				_socket.Connect(_host);
 				Log.Debug("Connected...");
-				this.RPC.Hello(_user.UserName);
+				this.RPC.Hello(User.UserName);
 				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 			}
 			catch (Exception e)
 			{
 				Log.Error(e.ToString());
-				this._user.UIRPC.gameJoinError(Text.MainHub_HostGame_UnhandledError);
+				this.User.UIRPC.gameJoinError(Text.MainHub_HostGame_UnhandledError);
 			}
 		}
 
@@ -103,20 +106,23 @@ namespace Octgn.UI.Gameplay
 
         public void RemoteCall(string name, object obj)
         {
-            this._user.UIRPC.invoke(name, obj);
+            this.User.UIRPC.invoke(name, obj);
         }
 
         public void StateChange(int id, string name, object val)
         {
-            //TODO should check to see if we missed a state change
-            //    Cause we know they'll happen in order
-            throw new NotImplementedException();
+            if(id != _lastState + 1)
+            {
+                //TODO should check to see if we missed a state change
+                //    Cause we know they'll happen in order
+                throw new NotImplementedException();
+            }
+            _state.UpdateState(id, name, val);
         }
 
         public void FullState(int id, string val)
         {
-            // Blow away current state and replace it with this
-            throw new NotImplementedException();
+            _state.UpdateFullState(id, val);
         }
 
 		public void Dispose()

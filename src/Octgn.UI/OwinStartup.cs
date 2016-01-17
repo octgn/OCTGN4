@@ -27,12 +27,11 @@ namespace Octgn.UI
             app.Map("/signalr", map =>
                 {
                     map.UseCors(CorsOptions.AllowAll);
-					var current = GlobalHost.DependencyResolver;
                     var hubConfiguration = new HubConfiguration();
                     hubConfiguration.Resolver = new NinjectSignalRDependencyResolver(applicationLifetimeKernel);
 
                     hubConfiguration.Resolver.Resolve<IHubPipeline>().AddModule(new Modules.SignalrPipelineModule(applicationLifetimeKernel));
-                    applicationLifetimeKernel.Bind<IConnectionManager>().ToMethod((x) => hubConfiguration.Resolver.Resolve<IConnectionManager>());
+
                     map.RunSignalR(hubConfiguration);
                 }
             );

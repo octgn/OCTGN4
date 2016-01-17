@@ -8,6 +8,7 @@ namespace Octgn.UI
 {
     internal class NinjectSignalRDependencyResolver : DefaultDependencyResolver
     {
+        //TODO Basically need to reimplement this https://github.com/SignalR/SignalR/blob/dev/src%2FMicrosoft.AspNet.SignalR.Core%2FDefaultDependencyResolver.cs
         private readonly IKernel _kernel;
         public NinjectSignalRDependencyResolver(IKernel kernel)
         {
