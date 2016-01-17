@@ -6,7 +6,6 @@ using Ninject;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Octgn.Shared;
-using Microsoft.AspNet.SignalR.Messaging;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
 namespace Octgn.UI

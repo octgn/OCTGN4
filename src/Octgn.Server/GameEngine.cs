@@ -4,22 +4,23 @@ using System;
 
 namespace Octgn.Server
 {
-    public class GameEngine : GameThread, IDisposable
+    internal class GameEngine : GameThread, IDisposable
     {
+        internal GameResourceProvider Resources { get; private set; }
+
         private JavascriptEngine _engine;
-        private GameResourceProvider _resources;
         internal OClass O { get; private set; }
 
         public UserList Users {get; private set;}
 
         public GameEngine(GameResourceProvider resources)
         {
-            _resources = resources;
+            Resources = resources;
             Users = new UserList();
             O = new OClass(this);
             _engine = new JavascriptEngine();
             _engine.AddObject("O", O);
-            _engine.Execute(_resources.ReadEntryPoint());
+            _engine.Execute(Resources.ReadEntryPoint());
         }
 
         protected override void Run()

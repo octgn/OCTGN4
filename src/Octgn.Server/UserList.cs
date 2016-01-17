@@ -2,7 +2,7 @@
 
 namespace Octgn.Server
 {
-    public class UserList
+    internal class UserList
     {
         private List<UserBase> _users;
         public UserList()
@@ -10,13 +10,13 @@ namespace Octgn.Server
             _users = new List<UserBase>();
         }
 
-        public void AddUser(UserBase user)
+        internal void AddUser(UserBase user)
         {
             lock(this)
                 _users.Add(user);
         }
 
-        public void ProcessUsers()
+        internal void ProcessUsers()
         {
             lock (this)
             {
@@ -33,7 +33,7 @@ namespace Octgn.Server
             }
         }
 
-        public void Broadcast(string name, object obj)
+        internal void Broadcast(string name, object obj)
         {
             lock (this)
             {

@@ -6,7 +6,7 @@ using Octgn.Shared;
 
 namespace Octgn.Server
 {
-    public abstract class UserBase: IC2SComs
+    internal abstract class UserBase: IC2SComs
     {
         private static ILogger Log = LoggerFactory.Create<GameThread>();
         private static ProxyGenerator _generator = new ProxyGenerator();
@@ -62,7 +62,7 @@ namespace Octgn.Server
             Log.Debug("User {0} became {1}", user.Id, user.GetType().Name);
         }
     }
-    public class UnauthenticatedUser : UserBase
+    internal class UnauthenticatedUser : UserBase
     {
         private GameSocket _sock;
         public UnauthenticatedUser(GameServer server, GameSocket sock)
@@ -78,7 +78,7 @@ namespace Octgn.Server
         }
     }
 
-    public class AuthenticatedUser : UserBase
+    internal class AuthenticatedUser : UserBase
     {
         public AuthenticatedUser(UnauthenticatedUser user) 
             : base(user)
