@@ -175,7 +175,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Games\Test\Resources\Layout.html">
+    <Content Include="Games\Test\Resources\StartStage.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Games\Test\Resources\main.js">

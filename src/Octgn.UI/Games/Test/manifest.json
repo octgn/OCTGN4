@@ -1,5 +1,5 @@
 ﻿{
 	"name": "Test",
 	"version": "1.0.0.0",
-	"initial_layout": "Layout.html"
+	"initial_stage": "StartStage.html"
 }

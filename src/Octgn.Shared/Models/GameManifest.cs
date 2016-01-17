@@ -7,7 +7,7 @@ namespace Octgn.Shared.Models
 	{
 		public string Name { get; set; }
 		public Version Version { get; set; }
-		public string InitialLayout { get; set; }
+		public string InitialStage { get; set; }
 
 		public GameManifest()
 		{
