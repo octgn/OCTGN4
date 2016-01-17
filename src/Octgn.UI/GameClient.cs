@@ -113,6 +113,12 @@ namespace Octgn.UI
             throw new NotImplementedException();
         }
 
+        public void FullState(int id, object val)
+        {
+            // Blow away current state and replace it with this
+            throw new NotImplementedException();
+        }
+
 		public void Dispose()
 		{
 			_cancellation.Cancel();
@@ -120,5 +126,5 @@ namespace Octgn.UI
 				_readTask.Wait();
 			_socket.Dispose();
 		}
-	}
+    }
 }

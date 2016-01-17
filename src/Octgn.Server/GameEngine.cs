@@ -1,5 +1,4 @@
-﻿using Microsoft.ClearScript.V8;
-using Octgn.Server.JS;
+﻿using Octgn.Server.JS;
 using System;
 
 namespace Octgn.Server

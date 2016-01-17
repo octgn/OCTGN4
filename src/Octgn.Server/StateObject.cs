@@ -59,32 +59,7 @@ namespace Octgn.Server
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            if (value is DynamicObject)
-            {
-                if (binder.Name == "_meta")
-                {
-                    this.Meta = new StateObjectMeta(value as DynamicObject);
-                    return true;
-                }
-                else
-                {
-                    var jo = ((DynamicObject)value);
-                    if (jo.GetDynamicMemberNames().Any(x => x == "_meta"))
-                    {
-                        value = new StateObject(binder.Name, this, jo);
-                    }
-                }
-            }
-
-            if (!_properties.ContainsKey(binder.Name))
-            {
-                _properties.Add(binder.Name, value);
-            }
-            else
-            {
-                _properties[binder.Name] = value;
-            }
-            OnPropertyChanged(this, binder.Name, value);
+            AddProperty(binder.Name, value);
 
             return true;
         }
@@ -104,6 +79,34 @@ namespace Octgn.Server
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return _properties.Keys;
+        }
+
+        protected void AddProperty(string name, object value, bool firePropertyChanged = true)
+        {
+            if (value is DynamicObject)
+            {
+                if (name == "_meta")
+                {
+                    this.Meta = new StateObjectMeta(value as DynamicObject);
+                    return;
+                }
+                else
+                {
+                    var jo = ((DynamicObject)value);
+                    value = new StateObject(name, this, jo);
+                }
+            }
+
+            if (!_properties.ContainsKey(name))
+            {
+                _properties.Add(name, value);
+            }
+            else
+            {
+                _properties[name] = value;
+            }
+            if(firePropertyChanged)
+                OnPropertyChanged(this, name, value);
         }
 
         protected virtual void OnPropertyChanged(StateObject sender, string name, object val)

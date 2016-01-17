@@ -9,11 +9,14 @@ namespace Octgn.Server.JS
             : base(name)
         {
             _engine = engine;
+            AddProperty("stage", _engine.Resources.Manifest.InitialStage, false);
         }
 
         protected override void OnPropertyChanged(StateObject sender, string name, object val)
         {
             var id = _engine.StateHistory.StoreChange(name, val);
+            if(id % 10 == 0)
+                _engine.StateHistory.StoreFullState(id, this);
             _engine.Users.BroadcastRPC.StateChange(id, name, val);
         }
     }

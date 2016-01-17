@@ -76,6 +76,18 @@ namespace Octgn.Server
         public override void Hello(string username)
         {
             this.RPC.HelloResp(this.Server);
+
+            foreach(var change in Server.Engine.StateHistory.GetLatestChanges())
+            {
+                if (change.IsFullState)
+                {
+                    this.RPC.FullState(change.Id, change.Change);
+                }
+                else
+                {
+                    this.RPC.StateChange(change.Id, change.Name, change.Change);
+                }
+            }
 			this.ReplaceSelf(new AuthenticatedUser(this));
         }
     }
