@@ -6,7 +6,7 @@ namespace Octgn.Server.JS
     {
         public ComClass com { get; private set; }
 
-        public StateObject state { get; private set; }
+        public StateClass state { get; private set; }
 
         private GameEngine _engine;
 
@@ -14,7 +14,7 @@ namespace Octgn.Server.JS
         {
             _engine = engine;
             com = new ComClass(engine);
-            state = new StateObject();
+            state = new StateClass("O.state", _engine);
         }
     }
 }

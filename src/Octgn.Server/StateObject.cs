@@ -7,17 +7,21 @@ namespace Octgn.Server
 {
     public class StateObject : DynamicObject, IDynamicMetaObjectProvider
     {
+        public string Name { get; private set; }
         public StateObjectMeta Meta { get; set; }
 
         private DynamicObject _underlyingObject;
         private Dictionary<string, object> _properties;
-        public StateObject()
+        private StateObject _parent;
+        protected StateObject(string name)
         {
+            Name = name;
             _properties = new Dictionary<string, object>();
         }
 
-        public StateObject(DynamicObject o) : this()
+        protected StateObject(string name, StateObject parent, DynamicObject o) : this(name)
         {
+            _parent = parent;
             _underlyingObject = o;
             dynamic d = o;
             Type type = d.GetType();
@@ -42,7 +46,7 @@ namespace Octgn.Server
                     {
                         if ((val as DynamicObject).GetDynamicMemberNames().Any(x => x == "_meta"))
                         {
-                            var so = new StateObject(val as DynamicObject);
+                            var so = new StateObject(propName, this, val as DynamicObject);
                             _properties[propName] = so;
                             continue;
                         }
@@ -67,7 +71,7 @@ namespace Octgn.Server
                     var jo = ((DynamicObject)value);
                     if (jo.GetDynamicMemberNames().Any(x => x == "_meta"))
                     {
-                        value = new StateObject(jo);
+                        value = new StateObject(binder.Name, this, jo);
                     }
                 }
             }
@@ -80,6 +84,7 @@ namespace Octgn.Server
             {
                 _properties[binder.Name] = value;
             }
+            OnPropertyChanged(binder.Name, value);
 
             return true;
         }
@@ -99,6 +104,11 @@ namespace Octgn.Server
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return _properties.Keys;
+        }
+
+        protected virtual void OnPropertyChanged(string name, object val)
+        {
+            _parent.OnPropertyChanged(this.Name + "." + name, val);
         }
     }
 }
