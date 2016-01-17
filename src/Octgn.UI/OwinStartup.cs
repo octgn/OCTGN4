@@ -14,7 +14,6 @@ namespace Octgn.UI
     {
         public void Configuration(IAppBuilder app)
         {
-			//LoggerFactory.SetDefault<Logger>();
 			LoggerFactory.SetDefault<HubLogger>();
 
 			var settings = new NinjectSettings();

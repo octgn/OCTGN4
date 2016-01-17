@@ -11,5 +11,6 @@
         void HelloResp(IGameServer server);
         void Kicked(string message);
         void RemoteCall(string name, object obj);
+        void StateChange(string name, object val);
     }
 }

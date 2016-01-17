@@ -11,9 +11,9 @@ namespace Octgn.Server.JS
             _engine = engine;
         }
 
-        protected override void OnPropertyChanged(string name, object val)
+        protected override void OnPropertyChanged(StateObject sender, string name, object val)
         {
-            throw new NotImplementedException();
+            _engine.Users.BroadcastRPC.StateChange(name, val);
         }
     }
 }

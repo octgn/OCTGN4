@@ -38,7 +38,7 @@ namespace Octgn.Server.JS
         public void broadcast(string name, object obj)
         {
             _engine.Invoke(() => {
-                _engine.Users.Broadcast(name, obj);
+                _engine.Users.BroadcastRPC.RemoteCall(name, obj);
             });
         }
     }

@@ -54,7 +54,7 @@
     <Compile Include="Models\GameServerModel.cs" />
     <Compile Include="Networking\IC2SComs.cs" />
     <Compile Include="Networking\NetworkProtocol.cs" />
-    <Compile Include="Networking\ServerRpcInterceptor.cs" />
+    <Compile Include="Networking\RpcInterceptor.cs" />
     <Compile Include="Networking\GameSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Text.Designer.cs">

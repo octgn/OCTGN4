@@ -84,7 +84,7 @@ namespace Octgn.Server
             {
                 _properties[binder.Name] = value;
             }
-            OnPropertyChanged(binder.Name, value);
+            OnPropertyChanged(this, binder.Name, value);
 
             return true;
         }
@@ -106,9 +106,9 @@ namespace Octgn.Server
             return _properties.Keys;
         }
 
-        protected virtual void OnPropertyChanged(string name, object val)
+        protected virtual void OnPropertyChanged(StateObject sender, string name, object val)
         {
-            _parent.OnPropertyChanged(this.Name + "." + name, val);
+            _parent.OnPropertyChanged(sender, this.Name + "." + name, val);
         }
     }
 }

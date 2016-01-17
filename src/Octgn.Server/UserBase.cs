@@ -15,6 +15,7 @@ namespace Octgn.Server
         public int Id { get; private set; }
         internal UserBase Replaced { get; private set; }
         internal IS2CComs RPC { get; private set; }
+        internal IInterceptor RPCInterceptor { get; private set; }
         protected GameServer Server;
         private GameSocket _socket;
         public UserBase(GameServer server, GameSocket sock)
@@ -22,7 +23,8 @@ namespace Octgn.Server
             Server = server;
             _socket = sock;
             Connected = true;
-            RPC = _generator.CreateInterfaceProxyWithoutTarget<IS2CComs>(new RpcInterceptor(sock));
+            RPCInterceptor = new RpcInterceptor(_socket);
+            RPC = _generator.CreateInterfaceProxyWithoutTarget<IS2CComs>(RPCInterceptor);
             Id = System.Threading.Interlocked.Increment(ref _lastId);
         }
 

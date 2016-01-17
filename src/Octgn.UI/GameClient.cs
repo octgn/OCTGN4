@@ -108,6 +108,11 @@ namespace Octgn.UI
             this._user.UIRPC.invoke(name, obj);
         }
 
+        public void StateChange(string name, object val)
+        {
+            throw new NotImplementedException();
+        }
+
 		public void Dispose()
 		{
 			_cancellation.Cancel();
