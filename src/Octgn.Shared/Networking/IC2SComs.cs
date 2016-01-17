@@ -12,6 +12,6 @@
         void Kicked(string message);
         void RemoteCall(string name, object obj);
         void StateChange(int id, string name, object val);
-        void FullState(int id, object val);
+        void FullState(int id, string val);
     }
 }

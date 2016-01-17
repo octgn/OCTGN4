@@ -113,7 +113,7 @@ namespace Octgn.UI
             throw new NotImplementedException();
         }
 
-        public void FullState(int id, object val)
+        public void FullState(int id, string val)
         {
             // Blow away current state and replace it with this
             throw new NotImplementedException();

@@ -90,11 +90,8 @@ namespace Octgn.Server
                     this.Meta = new StateObjectMeta(value as DynamicObject);
                     return;
                 }
-                else
-                {
-                    var jo = ((DynamicObject)value);
-                    value = new StateObject(name, this, jo);
-                }
+                var jo = ((DynamicObject)value);
+                value = new StateObject(name, this, jo);
             }
 
             if (!_properties.ContainsKey(name))
