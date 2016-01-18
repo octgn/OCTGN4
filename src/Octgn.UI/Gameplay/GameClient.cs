@@ -126,6 +126,11 @@ namespace Octgn.UI.Gameplay
             _state.UpdateFullState(id, val);
         }
 
+        public void SendStateToUI()
+        {
+            _state.SendStateToUI();
+        }
+
 		public void Dispose()
 		{
 			_cancellation.Cancel();

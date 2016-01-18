@@ -73,7 +73,10 @@ namespace Octgn.UI
             //TODO Update this to allow for multiple windows with the same user
             //TODO should probably have a hub per game, instead of piggy backing OR make sure to append the game id to calls that need it
 			user.UIRPC = this.Clients.Caller;
-			return base.OnConnected();
+            if(user.GameClient != null)
+                user.GameClient.SendStateToUI();
+
+            return base.OnConnected();
 		}
 
 		public override Task OnDisconnected(bool stopCalled)

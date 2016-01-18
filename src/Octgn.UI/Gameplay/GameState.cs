@@ -21,22 +21,40 @@ namespace Octgn.UI.Gameplay
 
         internal void UpdateState(int id, string name, object val)
         {
-            var realo = val is string 
-                ? JsonConvert.DeserializeObject(val as string) : val;
+            lock (this)
+            {
+                var realo = val is string
+                    ? JsonConvert.DeserializeObject(val as string) : val;
 
-            if (!_state.ContainsKey(name))
-                _state.Add(name, realo);
-            else
-                _state[name] = realo;
+                if (!_state.ContainsKey(name))
+                    _state.Add(name, realo);
+                else
+                    _state[name] = realo;
 
-            _client.User.UIRPC.firePropertyChanged(name, realo);
+                _client.User.UIRPC.firePropertyChanged(name, realo);
+            }
         }
 
         internal void UpdateFullState(int id, string val)
         {
-            _fullState = val;
+            lock (this)
+            {
+                _fullState = val;
 
-            _client.User.UIRPC.fireStateReplaced(val);
+                _client.User.UIRPC.fireStateReplaced(val);
+            }
+        }
+
+        internal void SendStateToUI()
+        {
+            lock (this)
+            {
+                _client.User.UIRPC.fireStateReplaced(_fullState);
+                foreach(var dingdong in _state)
+                {
+                    _client.User.UIRPC.firePropertyChanged(dingdong.Key, dingdong.Value);
+                }
+            }
         }
     }
 }

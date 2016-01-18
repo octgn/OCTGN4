@@ -123,14 +123,17 @@
                     });
                     var parts = name.split('.');
                     var curObj = O.state;
+                    var curProp = "";
                     for (var i = 0; i < parts.length; i++) {
-                        var curProp = parts[i];
+                        curProp = parts[i];
                         if (!curObj[curProp]) {
                             curObj[curProp] = {};
                         }
-                        curObj = curObj[curProp];
+                        if (i < parts.length - 1)
+                            curObj = curObj[curProp];
+                        else
+                            curObj[curProp] = obj;
                     }
-                    curObj = obj;
                 }
                 
                 // Start the connection.
