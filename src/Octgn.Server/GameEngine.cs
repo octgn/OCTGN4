@@ -22,6 +22,7 @@ namespace Octgn.Server
             _engine = new JavascriptEngine();
             _engine.AddObject("O", O);
             _engine.Execute(Resources.ReadEntryPoint());
+            Start();
         }
 
         protected override void Run()

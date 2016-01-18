@@ -17,7 +17,11 @@ namespace Octgn.Server
             Log.Trace();
             _invokeQueue = new ConcurrentQueue<Action>();
             _gameThread = new Task(_run, TaskCreationOptions.LongRunning);
-			_gameThread.Start();
+        }
+
+        protected void Start()
+        {
+            _gameThread.Start();
         }
 
         internal void Invoke(Action a)

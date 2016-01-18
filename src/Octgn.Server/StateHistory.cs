@@ -12,7 +12,7 @@ namespace Octgn.Server
         private readonly Dictionary<int, StateChange> _changes;
         private readonly Dictionary<int, StateChange> _fullStateDump;
         private readonly ReaderWriterLockSlim _locker;
-        private int _nextId = 1;
+        private int _nextId = 0;
 
         internal StateHistory()
         {
@@ -28,7 +28,6 @@ namespace Octgn.Server
                 _locker.EnterWriteLock();
                 var id = Interlocked.Increment(ref _nextId);
                 var change = JsonConvert.SerializeObject(val);
-                change = name + "=" + change;
                 var c = new StateChange(id, name, change);
                 _changes.Add(id, c);
                 return id;

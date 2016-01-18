@@ -8,7 +8,7 @@ namespace Octgn.Server
 {
     internal abstract class UserBase: IC2SComs
     {
-        private static ILogger Log = LoggerFactory.Create<GameThread>();
+        private static ILogger Log = LoggerFactory.Create<UserBase>();
         private static ProxyGenerator _generator = new ProxyGenerator();
         private static int _lastId = 0;
         public bool Connected { get; private set; }

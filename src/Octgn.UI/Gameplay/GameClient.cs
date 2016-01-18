@@ -117,6 +117,7 @@ namespace Octgn.UI.Gameplay
                 //    Cause we know they'll happen in order
                 throw new NotImplementedException();
             }
+            _lastState = id;
             _state.UpdateState(id, name, val);
         }
 

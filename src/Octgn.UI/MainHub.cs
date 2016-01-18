@@ -38,8 +38,8 @@ namespace Octgn.UI
             }
             catch (System.Exception e)
             {
-                if (e is HubException) throw;
 				Log.Error(e.ToString());
+                if (e is HubException) throw;
                 throw new HubException(Text.MainHub_HostGame_UnhandledError);
             }
         }

@@ -4,7 +4,6 @@ using Microsoft.AspNet.SignalR;
 using Owin;
 using Ninject;
 using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.AspNet.SignalR.Infrastructure;
 using Octgn.Shared;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
@@ -22,14 +21,18 @@ namespace Octgn.UI
             applicationLifetimeKernel.Bind<LocalServerManager>().ToSelf().InSingletonScope();
             applicationLifetimeKernel.Bind<UserSessions>().ToSelf().InSingletonScope();
 
+            // Register hubs
+            //applicationLifetimeKernel.Bind<Octgn.UI.MainHub>().ToSelf();
+            //applicationLifetimeKernel.Bind<Octgn.UI.HubLogger>().ToSelf();
+
             app.Use<SetPrincipalOwinMiddleware>(app, applicationLifetimeKernel);
             app.Use<LoggerOwinMiddleware>(app);
             app.Map("/signalr", map =>
                 {
+                    var activator = new OctgnHubActivator(applicationLifetimeKernel);
                     map.UseCors(CorsOptions.AllowAll);
                     var hubConfiguration = new HubConfiguration();
-                    hubConfiguration.Resolver = new NinjectSignalRDependencyResolver(applicationLifetimeKernel);
-
+                    hubConfiguration.Resolver.Register(typeof(IHubActivator), () => activator);
                     hubConfiguration.Resolver.Resolve<IHubPipeline>().AddModule(new Modules.SignalrPipelineModule(applicationLifetimeKernel));
 
                     map.RunSignalR(hubConfiguration);
@@ -40,6 +43,20 @@ namespace Octgn.UI
                     op.Bootstrapper = new NancyBootstrapper(applicationLifetimeKernel);
                 }
             );
+        }
+    }
+
+    public class OctgnHubActivator : IHubActivator
+    {
+        private IKernel _kernel;
+        public OctgnHubActivator(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
+
+        public IHub Create(HubDescriptor descriptor)
+        {
+            return (IHub)_kernel.Get(descriptor.HubType);
         }
     }
 }
