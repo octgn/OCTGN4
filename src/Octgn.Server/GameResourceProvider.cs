@@ -15,7 +15,6 @@ namespace Octgn.Server
             Manifest = GameManifest.Parse(File.ReadAllText(path.FullName));
         }
 
-        //TODO stuff to get script files and shit in the resources dir
         public string ReadEntryPoint()
         {
             var path = _basePath.GetFiles("startup.js")[0];

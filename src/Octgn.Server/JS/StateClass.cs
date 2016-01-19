@@ -9,7 +9,8 @@ namespace Octgn.Server.JS
             : base(name)
         {
             _engine = engine;
-            AddProperty("stage", _engine.Resources.Manifest.InitialStage, false);
+			// Here just an example of how and where to do something like this
+            //AddProperty("stage", _engine.Resources.Manifest.InitialStage, false);
         }
 
         protected override void OnPropertyChanged(StateObject sender, string name, object val)
