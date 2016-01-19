@@ -21,5 +21,37 @@ namespace Octgn.Server
             var path = _basePath.GetFiles("startup.js")[0];
             return File.ReadAllText(path.FullName);
         }
+
+		public Resource Get(string path)
+		{
+			var p = Path.Combine(_basePath.FullName, "Resources", path);
+			var ret = new Resource(p);
+			ret.Read();
+			return ret;
+		}
+
+		public class Resource
+		{
+			public string Path { get; private set; }
+			public string ContentType { get; set; }
+			public byte[] Data { get; set; }
+
+			public bool Exists { get; private set; }
+
+			public Resource(string path)
+			{
+				ContentType = "application/octet-stream";
+				Data = new byte[0];
+				Path = path;
+				Exists = File.Exists(Path);
+			}
+
+			public void Read()
+			{
+				if (!Exists) return;
+				ContentType = System.Web.MimeMapping.GetMimeMapping(Path);
+				Data = File.ReadAllBytes(Path);
+			}
+		}
     }
 }

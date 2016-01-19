@@ -53,8 +53,10 @@ namespace Octgn.UI.Modules
 				var user = (this.Context.CurrentUser as User);
 				Gameplay.ResourceResolver.ResourceResolverResult resource = user.GameClient.ResourceResolver.Get(ctx.pars);
 
-				if (!resource.Exists)
+				if (resource.StatusCode == 404)
 					return HttpStatusCode.NotFound;
+				else if (resource.StatusCode == 408)
+					return HttpStatusCode.RequestTimeout;
 
 				var r = new Response();
 				r.Contents = s =>

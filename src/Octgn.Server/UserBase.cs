@@ -54,6 +54,11 @@ namespace Octgn.Server
             throw new NotImplementedException();
         }
 
+		public virtual void GetResource(int reqId, string path)
+		{
+			throw new NotImplementedException();
+		}
+
         internal void ProcessMessages()
         {
             var message = _socket.Read().FirstOrDefault();
@@ -69,7 +74,7 @@ namespace Octgn.Server
 			// Need to use this method so that things don't get GC'd
             Log.Debug("User {0} became {1}", user.Id, user.GetType().Name);
         }
-    }
+	}
     internal class UnauthenticatedUser : UserBase
     {
         private GameSocket _sock;
@@ -115,5 +120,12 @@ namespace Octgn.Server
 			var ctx = new EventContext(new UserClass(this));
             this.Server.Engine.O.events.Fire_BrowserOpened(ctx);
         }
-    }
+
+		public override void GetResource(int reqId, string path)
+		{
+			var data = this.Server.Engine.Resources.Get(path);
+
+			this.RPC.GetResourceResp(reqId, data.Data, data.ContentType);
+		}
+	}
 }

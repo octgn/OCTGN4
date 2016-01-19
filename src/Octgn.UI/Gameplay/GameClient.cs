@@ -133,6 +133,11 @@ namespace Octgn.UI.Gameplay
 			this.User.UIRPC.fireSetLayout(layout);
 		}
 
+		public void GetResourceResp(int reqId, byte[] data, string contentType)
+		{
+			this.ResourceResolver.FinishRequest(reqId, data, contentType);
+		}
+
         public void SendStateToUI()
         {
             _state.SendStateToUI();
@@ -145,5 +150,5 @@ namespace Octgn.UI.Gameplay
 				_readTask.Wait();
 			_socket.Dispose();
 		}
-    }
+	}
 }

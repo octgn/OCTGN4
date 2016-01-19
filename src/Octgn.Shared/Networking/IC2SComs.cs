@@ -5,6 +5,7 @@
         void Hello(string username);
         void RemoteCall(string name, object obj);
         void BrowserOpened();
+		void GetResource(int reqId, string path);
     }
 
     public interface IS2CComs
@@ -15,5 +16,6 @@
         void StateChange(int id, string name, object val);
         void FullState(int id, string val);
 		void SetLayout(string layout);
+		void GetResourceResp(int reqId, byte[] data, string contentType);
     }
 }

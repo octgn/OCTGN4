@@ -40,6 +40,12 @@ JSON Serialized Object - 0x08
 -----------------------------
 * [1 String] Object serialized to JSON
 
+Byte[] - 0x09
+-----------------
+* [1 Byte] Length of String Length
+* [1-20 Bytes] Length of String in ASCII
+* [Bytes] Bytes
+
 Method Parameter - 0x0A
 ------------------------
 

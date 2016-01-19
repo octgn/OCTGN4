@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -88,7 +89,31 @@ namespace Octgn.Shared.Networking
             return sb.ToString();
         }
 
-        public object ReadObject()
+		public byte[] ReadByteArray()
+		{
+			var ibyte = (byte)_stream.ReadByte();
+			if ((ibyte) != 0x09) throw new InvalidDataException($"Trying to ReadByteArray but streams identifier byte is {ibyte}");
+			var lenlen = (int)ReadByte();
+			var lenbytes = new byte[lenlen];
+			_stream.Read(lenbytes, 0, lenlen);
+			var lenstr = System.Text.Encoding.ASCII.GetString(lenbytes);
+			var len = Int64.Parse(lenstr);
+
+			var ret = new List<byte>();
+			var arr = new byte[4096];
+			var sb = new StringBuilder();
+			for (long i = 0; i < len;)
+			{
+				var takeCount = (int)Math.Min(4096, len - i);
+				_stream.Read(arr, 0, takeCount);
+				ret.AddRange(arr.Take(takeCount));
+
+				i += takeCount;
+			}
+			return ret.ToArray();
+		}
+
+		public object ReadObject()
         {
             var ibyte = (byte)_stream.ReadByte();
             if ((ibyte) != 0x08) throw new InvalidDataException($"Trying to ReadObject but streams identifier byte is {ibyte}");
@@ -117,6 +142,8 @@ namespace Octgn.Shared.Networking
                     return ReadString();
                 case 0x08:
                     return ReadObject();
+                case 0x09:
+                    return ReadByteArray();
                 default:
                     throw new InvalidDataException($"Tried to ReadVariable. Got byte {ibyte}");
             }
@@ -216,7 +243,16 @@ namespace Octgn.Shared.Networking
             _stream.Write(strBytes, 0, strBytes.Length);
         }
 
-        public void WriteObject(object o)
+		public void WriteByteArray(byte[] arr)
+		{
+			_stream.WriteByte(0x09);
+			var lenbytes = Encoding.ASCII.GetBytes(arr.Length.ToString());
+			WriteByte((byte)lenbytes.Length);
+			_stream.Write(lenbytes, 0, lenbytes.Length);
+			_stream.Write(arr, 0, arr.Length);
+		}
+
+		public void WriteObject(object o)
         {
             _stream.WriteByte(0x08);
             var str = JsonConvert.SerializeObject(o);
@@ -249,6 +285,10 @@ namespace Octgn.Shared.Networking
             {
                 WriteString((string)o);
             }
+			else if(o is byte[])
+			{
+				WriteByteArray((byte[])o);
+			}
             else
             {
                 WriteObject(o);
