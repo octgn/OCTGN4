@@ -35,7 +35,7 @@
         <script type="text/javascript">
             var gHub;
             function onDisconnected(){
-                console.log("disconnected");
+                console.log("[UI]: disconnected");
                 @*$("#IsConnected").html("@RT("_Layout_Disconnected")");*@
                 $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
 
@@ -44,7 +44,7 @@
                 $('#JoinGame_Button_Join').off('click');
             }
             function onConnected(){
-                console.log("connected");
+                console.log("[UI]: connected");
                 @*$("#IsConnected").html("@RT("_Layout_Connected")");*@
                 $("#ConnectionStatus-UI").removeClass("ConnectionStatus-NotConnected").addClass("ConnectionStatus-Connected");
 
@@ -58,9 +58,9 @@
                     .done( function(returnVal) {
                         window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
                         console.log(returnVal);
-                    }).always( function() { 
+                    }).always( function() {
                         button.prop('disabled', false);
-                    }).fail(function(error) { 
+                    }).fail(function(error) {
                         if (error.source === 'HubException') {
                             alertify.alert("@RT("_Layout_HostGame")", error.message);
                         } else{
@@ -75,9 +75,9 @@
                     .done( function(returnVal) {
                         window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
                         console.log(returnVal);
-                    }).always( function() { 
+                    }).always( function() {
                         button.prop('disabled', false);
-                    }).fail(function(error) { 
+                    }).fail(function(error) {
                         if (error.source === 'HubException') {
                             alertify.alert("@RT("_Layout_HostGame")", error.message);
                         } else{
@@ -100,11 +100,11 @@
 
                 // Create a function that the hub can call to broadcast messages.
                 gHub.client.ping = function () {
-                    alert("ping");
+                	alertify.alert("ping");
                 };
 
                 gHub.client.gameStatusUpdated = function (status) {
-                	alert(!!status ? "Connected" : "Disconnected");
+                	alertify.alert(!!status ? "Connected" : "Disconnected");
                 };
 
                 gHub.client.gameJoinError = function (error) {
@@ -135,7 +135,11 @@
                             curObj[curProp] = obj;
                     }
                 }
-                
+
+                gHub.client.fireSetLayout = function (layout) {
+                	$('#GameTable').load(window.location.pathname + '/Resources/' + layout + "?sid=@ViewBag.Sid");
+                }
+
                 // Start the connection.
                 $.connection.hub.start().done(function () {
                     $.connection.hub.connectionSlow(function () {
@@ -154,6 +158,7 @@
                         onDisconnected();
                     });
                     onConnected();
+					gHub.server.browserOpened();
                 });
             }
             $(function () {
@@ -162,7 +167,6 @@
                 setupSignalr();
 				if(O.com)
 					O.com.init();
-				gHub.server.browserOpened();
             });
         </script>
     }

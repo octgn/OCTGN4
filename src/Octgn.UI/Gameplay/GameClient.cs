@@ -28,6 +28,7 @@ namespace Octgn.UI.Gameplay
 		}
 
 		public int Id { get; private set; }
+		public ResourceResolver ResourceResolver { get; private set; }
 		private GameSocket _socket;
         private GameState _state;
 		private static int _nextId = 0;
@@ -46,6 +47,7 @@ namespace Octgn.UI.Gameplay
 			_socket = new GameSocket();
             _state = new GameState(this);
 			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
+			ResourceResolver = new ResourceResolver(this);
 		}
 
 		public void Connect()
@@ -125,6 +127,11 @@ namespace Octgn.UI.Gameplay
         {
             _state.UpdateFullState(id, val);
         }
+
+		public void SetLayout(string layout)
+		{
+			this.User.UIRPC.fireSetLayout(layout);
+		}
 
         public void SendStateToUI()
         {

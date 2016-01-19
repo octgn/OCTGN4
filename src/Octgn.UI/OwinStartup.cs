@@ -5,6 +5,7 @@ using Owin;
 using Ninject;
 using Microsoft.AspNet.SignalR.Hubs;
 using Octgn.Shared;
+using Microsoft.Owin.Extensions;
 
 [assembly: OwinStartup(typeof (Octgn.UI.OwinStartup))]
 namespace Octgn.UI
@@ -43,6 +44,7 @@ namespace Octgn.UI
                     op.Bootstrapper = new NancyBootstrapper(applicationLifetimeKernel);
                 }
             );
+			app.UseStageMarker(PipelineStage.MapHandler);
         }
     }
 

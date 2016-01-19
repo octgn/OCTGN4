@@ -2,7 +2,6 @@
     O.com.broadcast('ping', obj);
 });
 
-O.state.chicken = 12;
-O.state.chicken2 = {
-    taco: 12
-};
+O.events.on('browser.opened', function (ctx) {
+	ctx.user.setLayout("StartStage.html");
+});

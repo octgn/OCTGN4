@@ -3,10 +3,11 @@ using Octgn.Shared.Networking;
 using System.Linq;
 using System;
 using Octgn.Shared;
+using Octgn.Server.JS;
 
 namespace Octgn.Server
 {
-    internal abstract class UserBase: IC2SComs
+    public abstract class UserBase: IC2SComs
     {
         private static ILogger Log = LoggerFactory.Create<UserBase>();
         private static ProxyGenerator _generator = new ProxyGenerator();
@@ -111,7 +112,8 @@ namespace Octgn.Server
 
         public override void BrowserOpened()
         {
-            this.Server.Engine.O.events.Fire_BrowserOpened();
+			var ctx = new EventContext(new UserClass(this));
+            this.Server.Engine.O.events.Fire_BrowserOpened(ctx);
         }
     }
 }

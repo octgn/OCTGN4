@@ -2,6 +2,7 @@
 using Nancy.ModelBinding;
 using Octgn.UI.Models.Games;
 using Octgn.UI.Models.Home;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Octgn.UI.Modules
@@ -47,9 +48,21 @@ namespace Octgn.UI.Modules
                 return View[new TableModel(game)];
             };
 
-            Get["/{id}/Resources/"] = ctx =>
+            Get["/{id}/Resources/{pars*}"] = ctx =>
             {
-                return null;
+				var user = (this.Context.CurrentUser as User);
+				Gameplay.ResourceResolver.ResourceResolverResult resource = user.GameClient.ResourceResolver.Get(ctx.pars);
+
+				if (!resource.Exists)
+					return HttpStatusCode.NotFound;
+
+				var r = new Response();
+				r.Contents = s =>
+				{
+					s.Write(resource.Data, 0, resource.Data.Length);
+				};
+				r.ContentType = r.ContentType;
+				return r;
             };
         }
     }

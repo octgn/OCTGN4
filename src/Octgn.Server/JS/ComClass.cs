@@ -54,16 +54,16 @@ namespace Octgn.Server.JS
 			_callbacks = new Dictionary<string, List<dynamic>>();
         }
 
-        internal void Fire_BrowserOpened()
+        internal void Fire_BrowserOpened(EventContext ctx)
         {
             _engine.Invoke(() =>
             {
                 var name = "browser.opened";
                 if (!_callbacks.ContainsKey(name))
                     return;
-                throw new NotImplementedException();
                 foreach(var i in _callbacks[name])
                 {
+					i(ctx);
                 }
             });
         }

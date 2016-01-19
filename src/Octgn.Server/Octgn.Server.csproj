@@ -58,9 +58,11 @@
     <Compile Include="GameServer.cs" />
     <Compile Include="GameServerListener.cs" />
     <Compile Include="JS\ComClass.cs" />
+    <Compile Include="JS\EventContext.cs" />
     <Compile Include="JS\JavascriptEngine.cs" />
     <Compile Include="JS\OClass.cs" />
     <Compile Include="JS\StateClass.cs" />
+    <Compile Include="JS\UserClass.cs" />
     <Compile Include="StateHistory.cs" />
     <Compile Include="StateObject.cs" />
     <Compile Include="GameThread.cs" />
