@@ -16,6 +16,7 @@ namespace Octgn.UI.Gameplay
 
 		public IC2SComs RPC { get; private set; }
 		public User User { get; private set; }
+		public int Port { get; private set; }
 		public bool Connected
 		{
 			get { return _connected; }
@@ -56,6 +57,7 @@ namespace Octgn.UI.Gameplay
 			{
 				Log.Debug("Connecting...");
 				_socket.Connect(_host);
+				Port = _socket.Port;
 				Log.Debug("Connected...");
 				this.RPC.Hello(User.UserName);
 				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);

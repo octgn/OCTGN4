@@ -1,7 +1,7 @@
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Octgn.UI.Models.Games.TableModel>
 @{Layout = "Views/Shared/_Layout.cshtml";}
 <script src="@Url.Content("~/Scripts/Custom/GameTable.js")"></script>
-Game @Model.Id
+Game @Model.Id : @Model.Port
 <div id="GameTable">
 
 </div>

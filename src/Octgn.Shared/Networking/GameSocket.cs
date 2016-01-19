@@ -10,6 +10,7 @@ namespace Octgn.Shared.Networking
 {
 	public class GameSocket : IDisposable
 	{
+		public int Port { get; private set; }
 		private TcpClient _socket;
 		private CancellationTokenSource _cancelation;
 		private NetworkProtocol _protocol;
@@ -35,6 +36,7 @@ namespace Octgn.Shared.Networking
 
 		public void Connect(IPEndPoint endpoint)
 		{
+			Port = endpoint.Port;
 			_socket.Connect(endpoint);
 			_protocol = new NetworkProtocol(_socket);
             _backgroundReader = Task.Factory.StartNew(BackgroundReaderRun, _cancelation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
