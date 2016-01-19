@@ -37,6 +37,7 @@ namespace Octgn.Server
             RPC = user.RPC;
             Id = user.Id;
             user.Replaced = this;
+			RPCInterceptor = user.RPCInterceptor;
         }
 
         public virtual void Hello(string username)

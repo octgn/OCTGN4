@@ -2,7 +2,6 @@
 using Nancy.ModelBinding;
 using Octgn.UI.Models.Games;
 using Octgn.UI.Models.Home;
-using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Octgn.UI.Modules
@@ -38,7 +37,7 @@ namespace Octgn.UI.Modules
     {
         public GamesModule(LocalServerManager locserver) : base("/Games")
         {
-            Get["/{id}"] = ctx =>
+            Get["/{id}/"] = ctx =>
             {
                 var id = (int)ctx.id;
 				var user = (this.Context.CurrentUser as User);
@@ -58,12 +57,21 @@ namespace Octgn.UI.Modules
 				else if (resource.StatusCode == 408)
 					return HttpStatusCode.RequestTimeout;
 
+				if (resource.ContentType.StartsWith("text"))
+				{
+					var strData = System.Text.Encoding.UTF8.GetString(resource.Data);
+					const string rex = "('|\")(Resources/[a-zA-Z\\.]+){1}('|\")";
+
+					var newData = Regex.Replace(strData, rex, $"$1$2?sid={user.Sid}$3");
+                    resource.Data = System.Text.Encoding.UTF8.GetBytes(newData);
+				}
+
 				var r = new Response();
 				r.Contents = s =>
 				{
 					s.Write(resource.Data, 0, resource.Data.Length);
 				};
-				r.ContentType = r.ContentType;
+				r.ContentType = resource.ContentType;
 				return r;
             };
         }
