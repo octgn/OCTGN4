@@ -67,6 +67,12 @@ namespace Octgn.UI
 			user.GameClient.RPC.RemoteCall(name, o);
 		}
 
+        public void BrowserOpened()
+        {
+			var user = Context.User.Identity as User;
+            user.GameClient.RPC.BrowserOpened();
+        }
+
 		public override Task OnConnected()
 		{
 			var user = Context.User.Identity as User;

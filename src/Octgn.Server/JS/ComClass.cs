@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Octgn.Server.JS
 {
@@ -40,6 +41,54 @@ namespace Octgn.Server.JS
             _engine.Invoke(() => {
                 _engine.Users.BroadcastRPC.RemoteCall(name, obj);
             });
+        }
+    }
+
+    public class EventsClass
+    {
+        private GameEngine _engine;
+        private Dictionary<string, List<dynamic>> _callbacks;
+        internal EventsClass(GameEngine engine)
+        {
+            _engine = engine;
+			_callbacks = new Dictionary<string, List<dynamic>>();
+        }
+
+        internal void Fire_BrowserOpened()
+        {
+            _engine.Invoke(() =>
+            {
+                var name = "browser.opened";
+                if (!_callbacks.ContainsKey(name))
+                    return;
+                throw new NotImplementedException();
+                foreach(var i in _callbacks[name])
+                {
+                }
+            });
+        }
+
+        internal void Fire_on(string name, object obj)
+        {
+            _engine.Invoke(() => {
+                if (!_callbacks.ContainsKey(name))
+                    return;
+                foreach(var i in _callbacks[name])
+                {
+                    i(obj);
+                }
+            });
+        }
+
+        public void on(string name, dynamic callback)
+        {
+            _engine.Invoke(() =>
+            {
+                if (!_callbacks.ContainsKey(name))
+                    _callbacks.Add(name, new List<dynamic>());
+                _callbacks[name].Add(callback);
+            });
+
         }
     }
 }

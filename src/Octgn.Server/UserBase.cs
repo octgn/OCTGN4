@@ -48,6 +48,11 @@ namespace Octgn.Server
             throw new NotImplementedException();
         }
 
+        public virtual void BrowserOpened()
+        {
+            throw new NotImplementedException();
+        }
+
         internal void ProcessMessages()
         {
             var message = _socket.Read().FirstOrDefault();
@@ -102,6 +107,11 @@ namespace Octgn.Server
         public override void RemoteCall(string name, object obj)
         {
             this.Server.Engine.O.com.Fire_on(name, obj);
+        }
+
+        public override void BrowserOpened()
+        {
+            this.Server.Engine.O.events.Fire_BrowserOpened();
         }
     }
 }

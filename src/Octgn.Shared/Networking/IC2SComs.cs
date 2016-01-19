@@ -4,6 +4,7 @@
     {
         void Hello(string username);
         void RemoteCall(string name, object obj);
+        void BrowserOpened();
     }
 
     public interface IS2CComs
