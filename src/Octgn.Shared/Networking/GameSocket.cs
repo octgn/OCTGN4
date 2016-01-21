@@ -1,115 +1,146 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using Octgn.Shared.Networking;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Octgn.Shared.Networking
 {
-	public class GameSocket : IDisposable
+
+	public class GameSocket : ISocket, IDisposable
 	{
-		public int Port { get; private set; }
-		private TcpClient _socket;
-		private CancellationTokenSource _cancelation;
-		private NetworkProtocol _protocol;
-        private Task _backgroundReader;
-        private ConcurrentQueue<NetworkProtocol.Packet> _packetQueue;
-		public GameSocket(TcpClient sock)
+		public IPEndPoint Endpoint { get; private set; }
+		private ISocket _socket;
+		private Queue<NetworkProtocol.Packet> _queue;
+		private bool _disposed;
+		private Task _writeTask;
+
+		//TODO need something continually trying to reconnect.
+		public GameSocket(string host)
 		{
-			_socket = sock;
-            _packetQueue = new ConcurrentQueue<NetworkProtocol.Packet>();
-			_cancelation = new CancellationTokenSource();
-            if (_socket.Connected)
-            {
-                _protocol = new NetworkProtocol(_socket);
-                _backgroundReader = Task.Factory.StartNew(BackgroundReaderRun, _cancelation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            }
+			Endpoint = NetworkHelper.ParseIPEndPoint(host);
+			_queue = new Queue<NetworkProtocol.Packet>();
 		}
 
-        public GameSocket()
-            :this(new TcpClient())
-        {
-
-        }
-
-		public void Connect(IPEndPoint endpoint)
+		public GameSocket(TcpClient existingConnection)
 		{
-			Port = endpoint.Port;
-			_socket.Connect(endpoint);
-			_protocol = new NetworkProtocol(_socket);
-            _backgroundReader = Task.Factory.StartNew(BackgroundReaderRun, _cancelation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-		}
-
-		public void Connect(string host)
-		{
-			var endpoint = ParseIPEndPoint(host);
-			Connect(endpoint);
-		}
-
-		public IEnumerable<NetworkProtocol.Packet> Read()
-		{
-			while (!_cancelation.IsCancellationRequested)
-			{
-                NetworkProtocol.Packet pack = null;
-                if (_packetQueue.TryDequeue(out pack))
-                    yield return pack;
-                else
-                    yield return null;
-			}
+			Endpoint = (IPEndPoint)existingConnection.Client.LocalEndPoint;
+			_queue = new Queue<NetworkProtocol.Packet>();
+			_socket = new RawSocket(existingConnection);
 		}
 
 		public void Write(NetworkProtocol.Packet packet)
 		{
-			_protocol.WritePacket(packet);
+			lock (this)
+			{
+				if(_writeTask == null)
+				{
+					if (_socket == null || !TryWrite(packet))
+					{
+						_queue.Enqueue(packet);
+						_writeTask = Task.Run(()=>WriteTaskRun());
+					}
+				}
+				else
+				{
+					_queue.Enqueue(packet);
+				}
+			}
 		}
 
-        private void BackgroundReaderRun()
-        {
-			Thread.CurrentThread.Name = "GameSocket " + Thread.CurrentThread.ManagedThreadId;
-            while(this._cancelation.IsCancellationRequested == false)
-            {
-                if (!_socket.Connected)
-                {
-                    if (!Thread.Yield()) Thread.Sleep(2);
-                    continue;
-                }
-
-                var packet = _protocol.ReadPacket();
-                if(packet != null)
-                {
-                    _packetQueue.Enqueue(packet);
-                }
-            }
-        }
-
-		public static int FreeTcpPort()
+		public NetworkProtocol.Packet Read()
 		{
-			TcpListener l = new TcpListener(IPAddress.Loopback, 0);
-			l.Start();
-			int port = ((IPEndPoint)l.LocalEndpoint).Port;
-			l.Stop();
-			return port;
+			lock (this)
+			{
+				NetworkProtocol.Packet ret = null;
+				TryRead(out ret);
+				return ret;
+			}
 		}
 
-		private static IPEndPoint ParseIPEndPoint(string text)
+		public void Connect()
 		{
-			Uri uri;
-			if (text.ToLower().StartsWith("localhost"))
-				return new IPEndPoint(IPAddress.Loopback, int.Parse(text.Split(':')[1]));
-			if (Uri.TryCreate(text, UriKind.Absolute, out uri))
-				return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
-			if (Uri.TryCreate(String.Concat("tcp://", text), UriKind.Absolute, out uri))
-				return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
-			if (Uri.TryCreate(String.Concat("tcp://", String.Concat("[", text, "]")), UriKind.Absolute, out uri))
-				return new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port < 0 ? 0 : uri.Port);
-			throw new FormatException("Failed to parse text to IPEndPoint");
+			lock (this)
+			{
+				if(_socket == null)
+				{
+					_socket = new RawSocket();
+					_socket.Connect(Endpoint);
+				}
+			}
+		}
+
+		public void Connect(IPEndPoint endpoint)
+		{
+			lock(this)
+			{
+				Endpoint = endpoint;
+				if(_socket == null)
+				{
+					_socket = new RawSocket();
+					_socket.Connect(endpoint);
+				}
+			}
+		}
+
+		private bool TryWrite(NetworkProtocol.Packet packet)
+		{
+			try
+			{
+				if (_socket == null) return false;
+				_socket.Write(packet);
+				return true;
+			}
+			catch
+			{
+			}
+			return false;
+		}
+
+		private bool TryRead(out NetworkProtocol.Packet packet)
+		{
+			packet = null;
+			try
+			{
+				if (_socket == null) return false;
+				packet = _socket.Read();
+				return true;
+			}
+			catch
+			{
+			}
+			return false;
+		}
+
+		private void WriteTaskRun()
+		{
+			while (!_disposed)
+			{
+				NetworkProtocol.Packet pack = null;
+				lock (this)
+				{
+					if(_queue.Count == 0)
+					{
+						_writeTask = null;
+						return;
+					}
+					pack = _queue.Peek();
+					if (TryWrite(pack))
+					{
+						_queue.Dequeue();
+					}
+				}
+			}
 		}
 
 		public void Dispose()
 		{
-			_cancelation.Cancel();
+			_disposed = true;
+			if(_socket != null)
+			{
+				_socket.Dispose();
+			}
 		}
 	}
 }

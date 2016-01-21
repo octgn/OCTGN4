@@ -62,7 +62,7 @@ namespace Octgn.Server
 
         internal void ProcessMessages()
         {
-            var message = _socket.Read().FirstOrDefault();
+            var message = _socket.Read();
 
             if(message == null)
                 return;

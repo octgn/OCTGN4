@@ -19,7 +19,7 @@ namespace Octgn.Server
         {
             Id = System.Threading.Interlocked.Increment(ref _nextId);
             Engine = new GameEngine(resources);
-            Port = GameSocket.FreeTcpPort();
+            Port = NetworkHelper.FreeTcpPort();
             Name = name;
             _listener = new GameServerListener(Port, new GameServerModel(Id, Name, Port), OnSocket);
         }

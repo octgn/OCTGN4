@@ -45,7 +45,8 @@ namespace Octgn.UI.Gameplay
             _host = host;
 			User = user;
 			_cancellation = new CancellationTokenSource();
-			_socket = new GameSocket();
+			_socket = new GameSocket(host);
+			Port = _socket.Endpoint.Port;
             _state = new GameState(this);
 			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
 			ResourceResolver = new ResourceResolver(this);
@@ -56,8 +57,7 @@ namespace Octgn.UI.Gameplay
 			try
 			{
 				Log.Debug("Connecting...");
-				_socket.Connect(_host);
-				Port = _socket.Port;
+				_socket.Connect();
 				Log.Debug("Connected...");
 				this.RPC.Hello(User.UserName);
 				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -76,7 +76,7 @@ namespace Octgn.UI.Gameplay
 			{
 				try
 				{
-					var message = _socket.Read().FirstOrDefault();
+					var message = _socket.Read();
 
 					if (message == null)
 						continue;
