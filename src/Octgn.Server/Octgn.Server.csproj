@@ -60,6 +60,7 @@
     <Compile Include="GameServerListener.cs" />
     <Compile Include="JS\ComClass.cs" />
     <Compile Include="JS\EventContext.cs" />
+    <Compile Include="JS\EventsClass.cs" />
     <Compile Include="JS\JavascriptEngine.cs" />
     <Compile Include="JS\OClass.cs" />
     <Compile Include="JS\StateClass.cs" />
