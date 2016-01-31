@@ -54,10 +54,16 @@
                 $('#HostGame_Button_Host').on('click', function(){
                     var button = $(this);
                     button.prop('disabled', true);
-                    gHub.server.hostGame($('#HostGame_Input_GameName').val())
-                    .done( function(returnVal) {
+                    $.ajax({
+                        url: '/Games' + '?sid=@ViewBag.Sid',
+                        type: 'Put',
+                        data: {
+                            gameName: $('#HostGame_Input_GameName').val()
+                        }
+                    })
+                    .done(function(returnVal) {
                         window.location.href = "Games/" + returnVal + "/?sid=@ViewBag.Sid";
-                        console.log(returnVal);
+                        //console.log(returnVal);
                     }).always( function() {
                         button.prop('disabled', false);
                     }).fail(function(error) {

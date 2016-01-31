@@ -1,7 +1,9 @@
 ﻿using Nancy;
 using Nancy.ModelBinding;
+using Octgn.Shared;
 using Octgn.UI.Models.Games;
 using Octgn.UI.Models.Home;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Octgn.UI.Modules
@@ -35,8 +37,40 @@ namespace Octgn.UI.Modules
 
     public class GamesModule : NancyModule
     {
+        protected ILogger Log = LoggerFactory.Create<GamesModule>();
+
         public GamesModule(LocalServerManager locserver) : base("/Games")
         {
+            Put["/"] = ctx =>
+            {
+                try
+                {
+                    var game = this.BindAndValidate<HostGameModel>();
+                    if (!this.ModelValidationResult.IsValid)
+                    {
+                        Context.Response = new Nancy.Response();
+                        Context.Response.StatusCode = HttpStatusCode.BadRequest;
+                        return this.ModelValidationResult.FormattedErrors;
+                    }
+                    var user = Context.CurrentUser as User;
+                    var server = locserver.LaunchServer(game.GameName);
+                    var client = user.JoinGame("localhost:" + server.Port);
+                    if (!client.Connect()){
+                        Context.Response = new Nancy.Response();
+                        Context.Response.StatusCode = HttpStatusCode.InternalServerError;
+                        return Text.MainHub_HostGame_UnhandledError;
+                    }
+                    return client.Id.ToString();
+                }
+                catch (System.Exception e)
+                {
+                    Log.Error(e.ToString());
+                    Context.Response = new Nancy.Response();
+                    Context.Response.StatusCode = HttpStatusCode.InternalServerError;
+                    return Text.MainHub_HostGame_UnhandledError;
+                }
+            };
+
             Get["/{id}/"] = ctx =>
             {
                 var id = (int)ctx.id;

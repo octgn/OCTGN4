@@ -52,7 +52,7 @@ namespace Octgn.UI.Gameplay
 			ResourceResolver = new ResourceResolver(this);
 		}
 
-		public void Connect()
+		public bool Connect()
 		{
 			try
 			{
@@ -61,11 +61,12 @@ namespace Octgn.UI.Gameplay
 				Log.Debug("Connected...");
 				this.RPC.Hello(User.UserName);
 				_readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                return true;
 			}
 			catch (Exception e)
 			{
 				Log.Error(e.ToString());
-				this.User.UIRPC.gameJoinError(Text.MainHub_HostGame_UnhandledError);
+                return false;
 			}
 		}
 
