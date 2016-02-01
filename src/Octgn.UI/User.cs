@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Concurrent;
-using Nancy.Security;
 using System.Security.Principal;
 using System;
 using Octgn.UI.Gameplay;
 
 namespace Octgn.UI
 {
-	public class User : IUserIdentity, IIdentity
+	public class User : IIdentity
 	{
 		public IEnumerable<string> Claims { get; } = new string[0];
 

@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.AspNet.SignalR;
-using Octgn.Shared.Resources;
+﻿using Microsoft.AspNet.SignalR;
+using Octgn.UI.Resources;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using Octgn.Shared;
 
 namespace Octgn.UI.Hubs
@@ -10,10 +8,6 @@ namespace Octgn.UI.Hubs
     public class MainHub : Hub
     {
 		protected ILogger Log = LoggerFactory.Create<MainHub>();
-        public static IHubContext Instance
-        {
-            get { return GlobalHost.ConnectionManager.GetHubContext<MainHub>(); }
-        }
 
         private LocalServerManager _locserver;
         private UserSessions _sessions;
@@ -72,13 +66,4 @@ namespace Octgn.UI.Hubs
 			return base.OnDisconnected(stopCalled);
 		}
 	}
-
-    public class GameHub : Hub
-    {
-		protected ILogger Log = LoggerFactory.Create<GameHub>();
-        public static IHubContext Instance
-        {
-            get { return GlobalHost.ConnectionManager.GetHubContext<GameHub>(); }
-        }
-    }
 }
