@@ -13,6 +13,7 @@ _build
 /src/Octgn.WindowsClient/obj
 /src/wrap
 /src/packages
+/src/artifacts
 *.suo
 /src/.vs
 *.user

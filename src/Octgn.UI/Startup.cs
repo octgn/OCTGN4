@@ -74,7 +74,7 @@ namespace Octgn.UI
             //    }
             //);
             //app.UseSignalR();
-            //app.UseAuthenticationMiddleware();
+            app.UseAuthenticationMiddleware();
             app.UseIISPlatformHandler();
 
             app.UseStaticFiles();

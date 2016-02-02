@@ -21,6 +21,7 @@ namespace Octgn.UI.Controllers
             return View(new LoginModel());
         }
 
+        [HttpPost]
         public IActionResult Login(LoginModel login)
         {
             if(!this.ModelState.IsValid)

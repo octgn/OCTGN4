@@ -1,7 +1,7 @@
 ﻿@model Octgn.UI.Models.Home.LoginModel
 @{Layout = "~/Views/Shared/_Layout.cshtml";}
 
-<form action="/login" method="post">
+<form action="/Home/Login" method="post">
     @Html.ValidationSummary()
     <label for="Username">Username</label>
     <input name="Username" value="@Model.Username" />

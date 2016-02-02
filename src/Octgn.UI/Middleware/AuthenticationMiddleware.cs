@@ -30,13 +30,13 @@ namespace Octgn.UI.Middleware
             if(context.Request.Path.HasValue == false)
             {
                 //await _next(context);
-                context.Response.Redirect("/login");
+                context.Response.Redirect("/Home/Login");
                 return;
             }
-            if (context.Request.Path.Value.ToLower().StartsWith("/login") == false)
+            if (context.Request.Path.Value.ToLower().StartsWith("/home/login") == false)
             {
                 //await _next(context);
-                context.Response.Redirect("/login");
+                context.Response.Redirect("/Home/Login");
                 return;
             }
             await _next(context);
