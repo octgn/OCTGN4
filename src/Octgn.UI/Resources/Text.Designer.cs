@@ -22,20 +22,20 @@ namespace Octgn.UI.Resources {
     // with the /str option, or rebuild your VS project.
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Text {
+    internal class Text {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
-        public Text() {
+        internal Text() {
         }
         
         /// <summary>
         ///    Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Octgn.UI.Resources.Text", typeof(Text).GetTypeInfo().Assembly);
@@ -50,7 +50,7 @@ namespace Octgn.UI.Resources {
         ///    resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,7 +62,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Connected.
         /// </summary>
-        public static string _Layout_Connected {
+        internal static string _Layout_Connected {
             get {
                 return ResourceManager.GetString("_Layout_Connected", resourceCulture);
             }
@@ -71,7 +71,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Connection Status.
         /// </summary>
-        public static string _Layout_ConnectionStatus {
+        internal static string _Layout_ConnectionStatus {
             get {
                 return ResourceManager.GetString("_Layout_ConnectionStatus", resourceCulture);
             }
@@ -80,7 +80,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Disconnected.
         /// </summary>
-        public static string _Layout_Disconnected {
+        internal static string _Layout_Disconnected {
             get {
                 return ResourceManager.GetString("_Layout_Disconnected", resourceCulture);
             }
@@ -89,7 +89,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Host Game.
         /// </summary>
-        public static string _Layout_HostGame {
+        internal static string _Layout_HostGame {
             get {
                 return ResourceManager.GetString("_Layout_HostGame", resourceCulture);
             }
@@ -98,7 +98,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Game Name.
         /// </summary>
-        public static string _Layout_HostGame_GameName {
+        internal static string _Layout_HostGame_GameName {
             get {
                 return ResourceManager.GetString("_Layout_HostGame_GameName", resourceCulture);
             }
@@ -107,7 +107,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Not Connected.
         /// </summary>
-        public static string _Layout_NotConnected {
+        internal static string _Layout_NotConnected {
             get {
                 return ResourceManager.GetString("_Layout_NotConnected", resourceCulture);
             }
@@ -116,7 +116,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Reconnecting....
         /// </summary>
-        public static string _Layout_Reconnecting {
+        internal static string _Layout_Reconnecting {
             get {
                 return ResourceManager.GetString("_Layout_Reconnecting", resourceCulture);
             }
@@ -125,7 +125,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to There was an unknown error hosting the game.
         /// </summary>
-        public static string _Layout_UnknownHostingError {
+        internal static string _Layout_UnknownHostingError {
             get {
                 return ResourceManager.GetString("_Layout_UnknownHostingError", resourceCulture);
             }
@@ -134,7 +134,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Host.
         /// </summary>
-        public static string Global_Host {
+        internal static string Global_Host {
             get {
                 return ResourceManager.GetString("Global_Host", resourceCulture);
             }
@@ -143,7 +143,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Join.
         /// </summary>
-        public static string Global_Join {
+        internal static string Global_Join {
             get {
                 return ResourceManager.GetString("Global_Join", resourceCulture);
             }
@@ -152,7 +152,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Username.
         /// </summary>
-        public static string Global_Username {
+        internal static string Global_Username {
             get {
                 return ResourceManager.GetString("Global_Username", resourceCulture);
             }
@@ -161,7 +161,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to The Game Name is Invalid.
         /// </summary>
-        public static string MainHub_GameNameInvalid {
+        internal static string MainHub_GameNameInvalid {
             get {
                 return ResourceManager.GetString("MainHub_GameNameInvalid", resourceCulture);
             }
@@ -170,7 +170,7 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to There was an error hosting the game.
         /// </summary>
-        public static string MainHub_HostGame_UnhandledError {
+        internal static string MainHub_HostGame_UnhandledError {
             get {
                 return ResourceManager.GetString("MainHub_HostGame_UnhandledError", resourceCulture);
             }
@@ -179,9 +179,36 @@ namespace Octgn.UI.Resources {
         /// <summary>
         ///    Looks up a localized string similar to Your session is expired or invalid.
         /// </summary>
-        public static string MainHub_SessionError {
+        internal static string MainHub_SessionError {
             get {
                 return ResourceManager.GetString("MainHub_SessionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to The username provided is invalid.
+        /// </summary>
+        internal static string Models_Home_LoginModel_Username_Invalid {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_Username_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Username is required.
+        /// </summary>
+        internal static string Models_Home_LoginModel_Username_Required {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_Username_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Username must be between 2 and 24 characters long.
+        /// </summary>
+        internal static string Models_Home_LoginModel_Username_WrongLength {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_Username_WrongLength", resourceCulture);
             }
         }
     }
