@@ -11,7 +11,6 @@ _build
 /src/Octgn.Test/obj
 /src/Octgn.WindowsClient/bin
 /src/Octgn.WindowsClient/obj
-/src/wrap
 /src/packages
 /src/artifacts
 *.suo

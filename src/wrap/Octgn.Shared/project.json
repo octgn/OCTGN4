@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net451": {
+      "wrappedProject": "../../Octgn.Shared/Octgn.Shared.csproj",
+      "bin": {
+        "assembly": "../../Octgn.Shared/obj/{configuration}/Octgn.Shared.dll",
+        "pdb": "../../Octgn.Shared/obj/{configuration}/Octgn.Shared.pdb"
+      },
+      "dependencies": {
+        "Castle.Core": "3.3.3",
+        "Newtonsoft.Json": "8.0.2"
+      }
+    }
+  }
+}
