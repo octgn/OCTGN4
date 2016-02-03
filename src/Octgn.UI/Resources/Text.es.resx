@@ -135,6 +135,15 @@
   <data name="MainHub_SessionError" xml:space="preserve">
     <value>Su sesión ha caducado o no válido</value>
   </data>
+  <data name="Models_Home_LoginModel_Username_Invalid" xml:space="preserve">
+    <value>El nombre de usuario proporcionado no es válido</value>
+  </data>
+  <data name="Models_Home_LoginModel_Username_Required" xml:space="preserve">
+    <value>Se requiere nombre de usuario</value>
+  </data>
+  <data name="Models_Home_LoginModel_Username_WrongLength" xml:space="preserve">
+    <value>Nombre de usuario debe tener entre 2 y 24 caracteres</value>
+  </data>
   <data name="_Layout_Connected" xml:space="preserve">
     <value>Conectado</value>
   </data>

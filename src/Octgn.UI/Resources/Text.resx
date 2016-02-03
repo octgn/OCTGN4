@@ -135,6 +135,15 @@
   <data name="MainHub_SessionError" xml:space="preserve">
     <value>Your session is expired or invalid</value>
   </data>
+  <data name="Models_Home_LoginModel_Username_Invalid" xml:space="preserve">
+    <value>The username provided is invalid</value>
+  </data>
+  <data name="Models_Home_LoginModel_Username_Required" xml:space="preserve">
+    <value>Username is required</value>
+  </data>
+  <data name="Models_Home_LoginModel_Username_WrongLength" xml:space="preserve">
+    <value>Username must be between 2 and 24 characters long</value>
+  </data>
   <data name="_Layout_Connected" xml:space="preserve">
     <value>Connected</value>
   </data>

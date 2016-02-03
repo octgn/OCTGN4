@@ -184,5 +184,32 @@ namespace Octgn.UI.Resources {
                 return ResourceManager.GetString("MainHub_SessionError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to The username provided is invalid.
+        /// </summary>
+        public static string Models_Home_LoginModel_Username_Invalid {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_Username_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Username is required.
+        /// </summary>
+        public static string Models_Home_LoginModel_Username_Required {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_Username_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to Username must be between 2 and 24 characters long.
+        /// </summary>
+        public static string Models_Home_LoginModel_Username_WrongLength {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_Username_WrongLength", resourceCulture);
+            }
+        }
     }
 }
