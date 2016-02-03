@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNet.Localization;
-using System.Globalization;
 using Octgn.UI.Middleware;
+using Microsoft.AspNet.Mvc.Controllers;
+using Octgn.UI.Extensions;
+using System.Linq;
 
 namespace Octgn.UI
 {
@@ -14,9 +15,8 @@ namespace Octgn.UI
             services.AddSingleton<LocalServerManager>();
             services.AddSingleton<UserSessions>();
 
-            //services.AddLocalization(x => x.ResourcesPath = "Resources");
-            //services.AddMvc().AddDataAnnotationsLocalization();
-            services.AddMvc();  
+            services.AddTransient<IControllerActivator, ControllerActivator>();
+            services.AddMvc();
 
             //TODO Reimplement all this stuff
             //services.AddSignalR(opts => {

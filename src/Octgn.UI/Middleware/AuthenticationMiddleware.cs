@@ -22,6 +22,7 @@ namespace Octgn.UI.Middleware
             if(user != null)
             {
                 context.User = user;
+                
                 await _next(context);
                 return;
             }
