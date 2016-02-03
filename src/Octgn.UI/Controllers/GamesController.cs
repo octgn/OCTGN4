@@ -21,6 +21,7 @@ namespace Octgn.UI.Controllers
         {
             try
             {
+                ViewBag.Title = "Game Table";
                 if (!this.ModelState.IsValid)
                 {
                     this.Response.StatusCode = 400;

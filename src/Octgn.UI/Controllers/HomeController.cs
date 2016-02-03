@@ -13,18 +13,21 @@ namespace Octgn.UI.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+            ViewBag.Title = "Home";
             return View();
         }
 
         public IActionResult Login()
         {
+            ViewBag.Title = "Login";
             return View(new LoginModel());
         }
 
         [HttpPost]
         public IActionResult Login(LoginModel login)
         {
-            if(!this.ModelState.IsValid)
+            ViewBag.Title = "Login";
+            if (!this.ModelState.IsValid)
             {
                 return View(login);
             }
