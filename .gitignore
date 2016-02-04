@@ -1,8 +1,6 @@
 _build
 /src/Octgn.UI/bin
 /src/Octgn.UI/obj
-/src/Octgn.UI/bower_components
-/src/Octgn.UI/wwwroot/lib
 /src/Octgn.Shared/bin
 /src/Octgn.Shared/obj
 /src/Octgn.Server/bin
@@ -12,7 +10,6 @@ _build
 /src/Octgn.WindowsClient/bin
 /src/Octgn.WindowsClient/obj
 /src/packages
-/src/artifacts
 *.suo
 /src/.vs
 *.user

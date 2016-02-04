@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 
 namespace Octgn.UI.Gameplay
 {
@@ -47,7 +50,7 @@ namespace Octgn.UI.Gameplay
             lock (this)
             {
                 _client.User.UIRPC.fireStateReplaced(_fullState);
-                foreach (var dingdong in _state)
+                foreach(var dingdong in _state)
                 {
                     _client.User.UIRPC.firePropertyChanged(dingdong.Key, dingdong.Value);
                 }

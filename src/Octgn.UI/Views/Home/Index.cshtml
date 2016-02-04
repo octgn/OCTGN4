@@ -1,4 +1,5 @@
-@{Layout = "~/Views/Shared/_Layout.cshtml";}
+@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{Layout = "Views/Shared/_Layout.cshtml";}
 
-@Html.Partial("_PartialHostGame")
-@Html.Partial("_PartialJoinGame")
+@Html.Partial("Shared/_PartialHostGame.cshtml")
+@Html.Partial("Shared/_PartialJoinGame.cshtml")

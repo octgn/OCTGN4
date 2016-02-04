@@ -1,7 +1,7 @@
-﻿@using Octgn.UI.Resources
+﻿@inherits Octgn.UI.WebViewBase<dynamic>
 <div id="HostGame">
     <h2>Host Game</h2>
-    <label>@Text._Layout_HostGame_GameName</label>
+    <label>@RT("_Layout_HostGame_GameName")</label>
     <input id="HostGame_Input_GameName"/>
-    <button id="HostGame_Button_Host">@Text.Global_Host</button>
+    <button id="HostGame_Button_Host">@RT("Global_Host")</button>
 </div>

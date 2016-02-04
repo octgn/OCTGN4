@@ -1,8 +1,19 @@
-﻿@model Octgn.UI.Models.Home.LoginModel
-@{Layout = "~/Views/Shared/_Layout.cshtml";}
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Octgn.UI.Models.Home.LoginModel>
+@{
+    Layout = "Views/Shared/_Layout.cshtml";
+}
 
-<form action="/Home/Login" method="post">
-    @Html.ValidationSummary()
+<form action="/Login" method="post">
+    @if (!Html.RenderContext.Context.ModelValidationResult.IsValid)
+    {
+        foreach (var err in Html.RenderContext.Context.ModelValidationResult.Errors)
+        {
+            if (err.Key == "Username")
+            {
+                <div class="error">@err.Value[0].ErrorMessage</div>
+            }
+        }
+    }
     <label for="Username">Username</label>
     <input name="Username" value="@Model.Username" />
     <input type="submit" />

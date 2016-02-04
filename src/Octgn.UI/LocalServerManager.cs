@@ -1,8 +1,8 @@
 ﻿using Octgn.Server;
-using Octgn.Shared;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Reflection;
 
 namespace Octgn.UI
 {
@@ -15,8 +15,10 @@ namespace Octgn.UI
             _servers = new ConcurrentDictionary<int, GameServer>();
         }
 
-        public IGameServer LaunchServer(string gameName)
+        public GameServer LaunchServer(string gameName)
         {
+            //var bp = new FileInfo(typeof(LocalServerManager).Assembly.Location).Directory.FullName;
+            //var bp = Server.MapPath("/");
             var bp = AppDomain.CurrentDomain.BaseDirectory;
             bp = Path.Combine(bp, "Games\\Test");
             var rp = new GameResourceProvider(bp);
@@ -26,7 +28,7 @@ namespace Octgn.UI
             return gs;
         }
 
-        public IGameServer GetServer(int id)
+        public GameServer GetServer(int id)
         {
             GameServer ret = null;
             _servers.TryGetValue(id, out ret);

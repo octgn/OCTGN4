@@ -1,7 +1,7 @@
-﻿@using Octgn.UI.Resources
-@{ 
-    var baseUrl = this.Context.Request.PathBase;
-}
+﻿@inherits Octgn.UI.WebViewBase<dynamic>
+    @{ 
+        var baseUrl = this.Request.Url.BasePath;
+    }
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -11,25 +11,26 @@
 		var O = O || {};
 		O.state = {};
 	</script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/json-js/json2.js"></script>
-    <script src="~/lib/knockout.js/knockout.js"></script>
-    <script src="~/lib/alertify.js/lib/alertify.min.js"></script>
-    <script src="~/scripts/jquery.customDialog.js"></script>
-    <script src="~/scripts/LogForwarder.js"></script>
+    <script src="@Url.Content("~/Scripts/jquery-2.2.0.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/json2.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/knockout-3.4.0.debug.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.signalR-2.2.0.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/alertify.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/Custom/jquery.customDialog.js")"></script>
+    <script src="@Url.Content("~/Scripts/Custom/LogForwarder.js")"></script>
     <script src="@(baseUrl)/signalr/hubs"></script>
 
-    <link rel="stylesheet" href="~/css/Main.css"/>
-    <link rel="stylesheet" href="~/lib/alertify.js/themes/alertify.core.css"/>
-    <link rel="stylesheet" href="~/lib/alertify.js/themes/alertify.default.css"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/Main.css")"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/alertifyjs/alertify.min.css")"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/alertifyjs/themes/default.min.css")"/>
 </head>
-<body style="margin:0">
+<body style="margin:0px">
     <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
     @*<div>@RT("_Layout_ConnectionStatus"): <span id="IsConnected">@RT("_Layout_NotConnected")</span>&nbsp;|&nbsp;
         <span id="HostGame_Link_ShowDialog" class="link">@RT("_Layout_HostGame")</span>
     </div>*@
     @RenderBody()
-    @if (this.Context.User != null)
+    @if (this.Context.CurrentUser != null)
     {
         <script type="text/javascript">
             var gHub;
@@ -67,9 +68,9 @@
                         button.prop('disabled', false);
                     }).fail(function(error) {
                         if (error.source === 'HubException') {
-                            alertify.alert("@Text._Layout_HostGame", error.message);
+                            alertify.alert("@RT("_Layout_HostGame")", error.message);
                         } else{
-                            alertify.alert("@Text._Layout_HostGame", "@Text._Layout_UnknownHostingError");
+                            alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
                         }
                     });
                 });
@@ -84,9 +85,9 @@
                         button.prop('disabled', false);
                     }).fail(function(error) {
                         if (error.source === 'HubException') {
-                            alertify.alert("@Text._Layout_HostGame", error.message);
+                            alertify.alert("@RT("_Layout_HostGame")", error.message);
                         } else{
-                            alertify.alert("@Text._Layout_HostGame", "@Text._Layout_UnknownHostingError");
+                            alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
                         }
                     });
                 });
@@ -113,7 +114,7 @@
                 };
 
                 gHub.client.gameJoinError = function (error) {
-                	alertify.alert("@Text._Layout_HostGame", error);
+                	alertify.alert("@RT("_Layout_HostGame")", error);
                 };
 
                 gHub.client.fireStateReplaced = function (state) {

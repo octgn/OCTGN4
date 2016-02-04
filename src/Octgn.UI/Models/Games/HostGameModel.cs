@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Octgn.UI.Resources;
+﻿using Octgn.Shared.Resources;
+using System.ComponentModel.DataAnnotations;
 
 namespace Octgn.UI.Models.Games
 {

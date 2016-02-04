@@ -12,10 +12,10 @@ namespace Octgn.UI.Models.Games
 
 		}
 
-        public TableModel(GameClient client)
-        {
-            Id = client.Id;
-            Port = client.Port;
-        }
+		public TableModel(GameClient client)
+		{
+			Id = client.Id;
+			Port = client.Port;
+		}
     }
 }
