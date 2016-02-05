@@ -77,10 +77,15 @@
                 $('#JoinGame_Button_Join').on('click', function(){
                     var button = $(this);
                     button.prop('disabled', true);
-                    gHub.server.joinGame($('#JoinGame_Input_Host').val())
-                    .done( function(returnVal) {
-                        window.location.href = "Games/" + returnVal + "?sid=@ViewBag.Sid";
-                        console.log(returnVal);
+                    $.ajax({
+                        url: '/Games/Join' + '?sid=@ViewBag.Sid',
+                        type: 'Post',
+                        data: {
+                            gameName: $('#JoinGame_Input_Host').val()
+                        }
+                    })
+                    .done(function(returnVal) {
+                        window.location.href = "Games/" + returnVal + "/?sid=@ViewBag.Sid";
                     }).always( function() {
                         button.prop('disabled', false);
                     }).fail(function(error) {

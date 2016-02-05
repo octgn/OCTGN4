@@ -71,6 +71,35 @@ namespace Octgn.UI.Modules
                 }
             };
 
+            Post["/Join"] = ctx =>
+            {
+                try
+                {
+                    var game = this.BindAndValidate<JoinGameModel>();
+                    if (!this.ModelValidationResult.IsValid)
+                    {
+                        Context.Response = new Nancy.Response();
+                        Context.Response.StatusCode = HttpStatusCode.BadRequest;
+                        return this.ModelValidationResult.FormattedErrors;
+                    }
+                    var user = Context.CurrentUser as User;
+                    var client = user.JoinGame(game.Host);
+                    if (!client.Connect()){
+                        Context.Response = new Nancy.Response();
+                        Context.Response.StatusCode = HttpStatusCode.InternalServerError;
+                        return Text.MainHub_HostGame_UnhandledError;
+                    }
+                    return client.Id.ToString();
+                }
+                catch (System.Exception e)
+                {
+                    Log.Error(e.ToString());
+                    Context.Response = new Nancy.Response();
+                    Context.Response.StatusCode = HttpStatusCode.InternalServerError;
+                    return Text.MainHub_HostGame_UnhandledError;
+                }
+            };
+
             Get["/{id}/"] = ctx =>
             {
                 var id = (int)ctx.id;

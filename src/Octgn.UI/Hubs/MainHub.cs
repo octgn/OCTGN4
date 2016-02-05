@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.AspNet.SignalR;
-using Octgn.Shared.Resources;
+﻿using Microsoft.AspNet.SignalR;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using Octgn.Shared;
 
 namespace Octgn.UI.Hubs
@@ -22,23 +19,6 @@ namespace Octgn.UI.Hubs
         {
             _locserver = locserver;
             _sessions = sessions;
-        }
-
-        public int JoinGame(string host)
-        {
-            try
-            {
-                var user = Context.User.Identity as User;
-                var client = user.JoinGame(host);
-				Task.Run(()=>client.Connect());
-				return client.Id;
-            }
-            catch (System.Exception e)
-            {
-                if (e is HubException) throw;
-				Log.Error(e.ToString());
-                throw new HubException(Text.MainHub_HostGame_UnhandledError);
-            }
         }
 
 		public void Send(string name, object o)
