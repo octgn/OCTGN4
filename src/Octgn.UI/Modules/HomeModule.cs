@@ -3,7 +3,6 @@ using Nancy.ModelBinding;
 using Octgn.Shared;
 using Octgn.UI.Models.Games;
 using Octgn.UI.Models.Home;
-using System;
 using System.Text.RegularExpressions;
 
 namespace Octgn.UI.Modules
@@ -21,11 +20,12 @@ namespace Octgn.UI.Modules
 
             Post["/Login"] = data =>
             {
-                var login = this.Bind<LoginModel>();
-                if(!Regex.IsMatch(login.Username, @"^[a-zA-Z0-9]+[a-zA-Z0-9_]+$"))
+                var login = this.BindAndValidate<LoginModel>();
+                if (!this.ModelValidationResult.IsValid)
                 {
-                    this.ModelValidationResult.Errors.Add("Username", "*LOCALIZE THIS* Username can't be empty");
-                    return View["Login", login];
+                    Context.Response = new Nancy.Response();
+                    Context.Response.StatusCode = HttpStatusCode.BadRequest;
+                    return this.ModelValidationResult.FormattedErrors;
                 }
 
                 var user = sessions.Create(login.Username);
@@ -87,7 +87,7 @@ namespace Octgn.UI.Modules
                     if (!client.Connect()){
                         Context.Response = new Nancy.Response();
                         Context.Response.StatusCode = HttpStatusCode.InternalServerError;
-                        return Text.MainHub_HostGame_UnhandledError;
+                        return Text.Modules_HomeModule_JoinGame_CouldNotConnect;
                     }
                     return client.Id.ToString();
                 }
@@ -96,7 +96,7 @@ namespace Octgn.UI.Modules
                     Log.Error(e.ToString());
                     Context.Response = new Nancy.Response();
                     Context.Response.StatusCode = HttpStatusCode.InternalServerError;
-                    return Text.MainHub_HostGame_UnhandledError;
+                    return Text.Modules_HomeModule_JoinGame_UnhandledError;
                 }
             };
 

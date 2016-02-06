@@ -135,6 +135,21 @@
   <data name="MainHub_SessionError" xml:space="preserve">
     <value>Su sesión ha caducado o no válido</value>
   </data>
+  <data name="Models_Games_JoinGameModel_HostRequired" xml:space="preserve">
+    <value>Se requiere juego de acogida</value>
+  </data>
+  <data name="Models_Home_LoginModel_UsernameInvalid" xml:space="preserve">
+    <value>El nombre de usuario no es válido . Se debe tener entre 2 y 24 caracteres de longitud</value>
+  </data>
+  <data name="Models_Home_LoginModel_UsernameRequired" xml:space="preserve">
+    <value>Se requiere nombre de usuario</value>
+  </data>
+  <data name="Modules_HomeModule_JoinGame_CouldNotConnect" xml:space="preserve">
+    <value>No se pudo conectar al juego</value>
+  </data>
+  <data name="Modules_HomeModule_JoinGame_UnhandledError" xml:space="preserve">
+    <value>Hubo un error al unirse al juego</value>
+  </data>
   <data name="_Layout_Connected" xml:space="preserve">
     <value>Conectado</value>
   </data>
@@ -149,6 +164,9 @@
   </data>
   <data name="_Layout_HostGame_GameName" xml:space="preserve">
     <value>Nombre del juego</value>
+  </data>
+  <data name="_Layout_JoinGame" xml:space="preserve">
+    <value>Unete al juego</value>
   </data>
   <data name="_Layout_NotConnected" xml:space="preserve">
     <value>No conectado</value>

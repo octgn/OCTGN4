@@ -12,7 +12,7 @@ namespace Octgn.UI.Models.Games
 
     public class JoinGameModel
     {
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Text), ErrorMessageResourceName = "Models_Games_JoinGameModel_HostRequired")]
         public string Host { get; set; }
     }
 }

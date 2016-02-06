@@ -106,6 +106,15 @@ namespace Octgn.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Join Game.
+        /// </summary>
+        public static string _Layout_JoinGame {
+            get {
+                return ResourceManager.GetString("_Layout_JoinGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Connected.
         /// </summary>
         public static string _Layout_NotConnected {
@@ -183,6 +192,51 @@ namespace Octgn.Shared.Resources {
         public static string MainHub_SessionError {
             get {
                 return ResourceManager.GetString("MainHub_SessionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game host is required.
+        /// </summary>
+        public static string Models_Games_JoinGameModel_HostRequired {
+            get {
+                return ResourceManager.GetString("Models_Games_JoinGameModel_HostRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The username is invalid. It must be between 2 and 24 characters long..
+        /// </summary>
+        public static string Models_Home_LoginModel_UsernameInvalid {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_UsernameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username is required.
+        /// </summary>
+        public static string Models_Home_LoginModel_UsernameRequired {
+            get {
+                return ResourceManager.GetString("Models_Home_LoginModel_UsernameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not connect to game.
+        /// </summary>
+        public static string Modules_HomeModule_JoinGame_CouldNotConnect {
+            get {
+                return ResourceManager.GetString("Modules_HomeModule_JoinGame_CouldNotConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error joining the game.
+        /// </summary>
+        public static string Modules_HomeModule_JoinGame_UnhandledError {
+            get {
+                return ResourceManager.GetString("Modules_HomeModule_JoinGame_UnhandledError", resourceCulture);
             }
         }
     }

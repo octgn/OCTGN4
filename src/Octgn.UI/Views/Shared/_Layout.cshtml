@@ -90,9 +90,9 @@
                         button.prop('disabled', false);
                     }).fail(function(error) {
                         if (error.source === 'HubException') {
-                            alertify.alert("@RT("_Layout_HostGame")", error.message);
+                            alertify.alert("@RT("_Layout_JoinGame")", error.message);
                         } else{
-                            alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
+                            alertify.alert("@RT("_Layout_JoinGame")", "@RT("Modules_HomeModule_JoinGame_UnhandledError")");
                         }
                     });
                 });

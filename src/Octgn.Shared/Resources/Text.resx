@@ -135,6 +135,21 @@
   <data name="MainHub_SessionError" xml:space="preserve">
     <value>Your session is expired or invalid</value>
   </data>
+  <data name="Models_Games_JoinGameModel_HostRequired" xml:space="preserve">
+    <value>Game host is required</value>
+  </data>
+  <data name="Models_Home_LoginModel_UsernameInvalid" xml:space="preserve">
+    <value>The username is invalid. It must be between 2 and 24 characters long.</value>
+  </data>
+  <data name="Models_Home_LoginModel_UsernameRequired" xml:space="preserve">
+    <value>Username is required</value>
+  </data>
+  <data name="Modules_HomeModule_JoinGame_CouldNotConnect" xml:space="preserve">
+    <value>Could not connect to game</value>
+  </data>
+  <data name="Modules_HomeModule_JoinGame_UnhandledError" xml:space="preserve">
+    <value>There was an error joining the game</value>
+  </data>
   <data name="_Layout_Connected" xml:space="preserve">
     <value>Connected</value>
   </data>
@@ -149,6 +164,9 @@
   </data>
   <data name="_Layout_HostGame_GameName" xml:space="preserve">
     <value>Game Name</value>
+  </data>
+  <data name="_Layout_JoinGame" xml:space="preserve">
+    <value>Join Game</value>
   </data>
   <data name="_Layout_NotConnected" xml:space="preserve">
     <value>Not Connected</value>
