@@ -258,6 +258,7 @@
     <Compile Include="LoggerOwinMiddleware.cs" />
     <Compile Include="Models\Games\HostGameModel.cs" />
     <Compile Include="Models\Home\LoginModel.cs" />
+    <Compile Include="Modules\GamesModule.cs" />
     <Compile Include="NancyBootstrapper.cs" />
     <Compile Include="Gameplay\GameClient.cs" />
     <Compile Include="LocalServerManager.cs" />

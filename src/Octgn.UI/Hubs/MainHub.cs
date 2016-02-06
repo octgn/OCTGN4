@@ -60,5 +60,24 @@ namespace Octgn.UI.Hubs
         {
             get { return GlobalHost.ConnectionManager.GetHubContext<GameHub>(); }
         }
+
+        public override Task OnConnected()
+        {
+            var user = Context.User.Identity as User;
+            //TODO should probably have a hub per game, instead of piggy backing OR make sure to append the game id to calls that need it
+            //user.UIRPC = this.Clients.Caller;
+            user.UIRPC = this.Clients.User(user.UserName);
+            if (user.GameClient != null)
+                user.GameClient.SendStateToUI();
+
+            return base.OnConnected();
+        }
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            var user = Context.User.Identity as User;
+            user.UIRPC = null;
+            return base.OnDisconnected(stopCalled);
+        }
     }
 }

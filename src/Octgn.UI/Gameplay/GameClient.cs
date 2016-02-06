@@ -1,9 +1,7 @@
 ﻿using Castle.DynamicProxy;
 using Octgn.Shared;
 using Octgn.Shared.Networking;
-using Octgn.Shared.Resources;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

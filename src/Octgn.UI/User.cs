@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using Nancy.Security;
 using System.Security.Principal;
-using System;
 using Octgn.UI.Gameplay;
 
 namespace Octgn.UI
@@ -21,8 +20,14 @@ namespace Octgn.UI
 
 		public bool IsAuthenticated { get { return true; } }
 
+        // TODO
+        // This is like a request context item
+        // Should move it
 		public GameClient GameClient { get; set; }
 
+        // TODO
+        // This is like a request context item
+        // Should move it
 		public dynamic UIRPC { get; set; }
 
 		private ConcurrentDictionary<int, GameClient> _clients;
