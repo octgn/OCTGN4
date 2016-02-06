@@ -7,10 +7,6 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title - OCTGN</title>
-	<script type="text/javascript">
-		var O = O || {};
-		O.state = {};
-	</script>
     <script src="@Url.Content("~/Scripts/jquery-2.2.0.min.js")"></script>
     <script src="@Url.Content("~/Scripts/json2.min.js")"></script>
     <script src="@Url.Content("~/Scripts/knockout-3.4.0.debug.js")"></script>
@@ -25,159 +21,13 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/alertifyjs/themes/default.min.css")"/>
 </head>
 <body style="margin:0px">
-    <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
-    @*<div>@RT("_Layout_ConnectionStatus"): <span id="IsConnected">@RT("_Layout_NotConnected")</span>&nbsp;|&nbsp;
-        <span id="HostGame_Link_ShowDialog" class="link">@RT("_Layout_HostGame")</span>
-    </div>*@
     @RenderBody()
     @if (this.Context.CurrentUser != null)
     {
         <script type="text/javascript">
-            var gHub;
-            function onDisconnected(){
-                console.log("[UI]: disconnected");
-                @*$("#IsConnected").html("@RT("_Layout_Disconnected")");*@
-                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
-
-                $('#PingClient').off('click');
-                $('#HostGame_Button_Host').off('click');
-                $('#JoinGame_Button_Join').off('click');
-            }
-            function onConnected(){
-                console.log("[UI]: connected");
-                @*$("#IsConnected").html("@RT("_Layout_Connected")");*@
-                $("#ConnectionStatus-UI").removeClass("ConnectionStatus-NotConnected").addClass("ConnectionStatus-Connected");
-
-                $('#PingClient').on('click', function () {
-                    gHub.server.pingClient();
-                });
-                $('#HostGame_Button_Host').on('click', function(){
-                    var button = $(this);
-                    button.prop('disabled', true);
-                    $.ajax({
-                        url: '/Games' + '?sid=@ViewBag.Sid',
-                        type: 'Put',
-                        data: {
-                            gameName: $('#HostGame_Input_GameName').val()
-                        }
-                    })
-                    .done(function(returnVal) {
-                        window.location.href = "Games/" + returnVal + "/?sid=@ViewBag.Sid";
-                        //console.log(returnVal);
-                    }).always( function() {
-                        button.prop('disabled', false);
-                    }).fail(function(error) {
-                        if (error.source === 'HubException') {
-                            alertify.alert("@RT("_Layout_HostGame")", error.message);
-                        } else{
-                            alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
-                        }
-                    });
-                });
-                $('#JoinGame_Button_Join').on('click', function(){
-                    var button = $(this);
-                    button.prop('disabled', true);
-                    $.ajax({
-                        url: '/Games/Join' + '?sid=@ViewBag.Sid',
-                        type: 'Post',
-                        data: {
-                            gameName: $('#JoinGame_Input_Host').val()
-                        }
-                    })
-                    .done(function(returnVal) {
-                        window.location.href = "Games/" + returnVal + "/?sid=@ViewBag.Sid";
-                    }).always( function() {
-                        button.prop('disabled', false);
-                    }).fail(function(error) {
-                        if (error.source === 'HubException') {
-                            alertify.alert("@RT("_Layout_JoinGame")", error.message);
-                        } else{
-                            alertify.alert("@RT("_Layout_JoinGame")", "@RT("Modules_HomeModule_JoinGame_UnhandledError")");
-                        }
-                    });
-                });
-            }
-            function onReconnecting() {
-                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Reconnecting");
-            }
-            function setupSignalr(){
-                // Declare a proxy to reference the hub.
-                gHub = $.connection.mainHub;
-
-                //Set the hubs URL for the connection
-                $.connection.hub.url = window.location.origin + "/signalr";
-                if(window.location.search)
-                    $.connection.hub.qs = window.location.search.substr(1);
-
-                // Create a function that the hub can call to broadcast messages.
-                gHub.client.ping = function () {
-                	alertify.alert("ping");
-                };
-
-                gHub.client.gameStatusUpdated = function (status) {
-                	alertify.alert(!!status ? "Connected" : "Disconnected");
-                };
-
-                gHub.client.gameJoinError = function (error) {
-                	alertify.alert("@RT("_Layout_HostGame")", error);
-                };
-
-                gHub.client.fireStateReplaced = function (state) {
-                    O.state = JSON.parse(state);
-                    console.log("fireStateReplaced", state);
-                }
-
-                gHub.client.firePropertyChanged = function(name, obj){
-                    console.log("firePropertyChanged", {
-                        name: name,
-                        obj: obj
-                    });
-                    var parts = name.split('.');
-                    var curObj = O.state;
-                    var curProp = "";
-                    for (var i = 0; i < parts.length; i++) {
-                        curProp = parts[i];
-                        if (!curObj[curProp]) {
-                            curObj[curProp] = {};
-                        }
-                        if (i < parts.length - 1)
-                            curObj = curObj[curProp];
-                        else
-                            curObj[curProp] = obj;
-                    }
-                }
-
-                gHub.client.fireSetLayout = function (layout) {
-                	$('#GameTable').load(window.location.pathname + '/Resources/' + layout + "?sid=@ViewBag.Sid");
-                }
-
-                // Start the connection.
-                $.connection.hub.start().done(function () {
-                    $.connection.hub.connectionSlow(function () {
-                    });
-                    $.connection.hub.reconnecting(function () {
-                        onReconnecting();
-                    });
-                    $.connection.hub.reconnected(function () {
-                        onConnected();
-                    });
-
-                    $.connection.hub.disconnected(function () {
-                        setTimeout(function () {
-                            $.connection.hub.start();
-                        }, 5000); // Restart connection after 5 seconds.
-                        onDisconnected();
-                    });
-                    onConnected();
-					gHub.server.browserOpened();
-                });
-            }
             $(function () {
             	BELOG = new LogForwarderClass();
             	BELOG.init();
-                setupSignalr();
-				if(O.com)
-					O.com.init();
             });
         </script>
     }

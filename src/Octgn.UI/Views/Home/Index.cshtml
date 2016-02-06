@@ -1,5 +1,53 @@
-@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@inherits Octgn.UI.WebViewBase<dynamic>
 @{Layout = "Views/Shared/_Layout.cshtml";}
 
 @Html.Partial("Shared/_PartialHostGame.cshtml")
 @Html.Partial("Shared/_PartialJoinGame.cshtml")
+<script type="text/javascript">
+    $(function () {
+        $('#HostGame_Button_Host').on('click', function () {
+            var button = $(this);
+            button.prop('disabled', true);
+            $.ajax({
+                url: '/Games' + '?sid=@ViewBag.Sid',
+                type: 'Put',
+                data: {
+                    gameName: $('#HostGame_Input_GameName').val()
+                }
+            })
+            .done(function (returnVal) {
+                window.location.href = "Games/" + returnVal + "/?sid=@ViewBag.Sid";
+            }).always(function () {
+                button.prop('disabled', false);
+            }).fail(function (error) {
+                if (error.source === 'HubException') {
+                    alertify.alert("@RT("_Layout_HostGame")", error.message);
+                } else {
+                    alertify.alert("@RT("_Layout_HostGame")", "@RT("_Layout_UnknownHostingError")");
+                }
+            });
+        });
+        $('#JoinGame_Button_Join').on('click', function () {
+            var button = $(this);
+            button.prop('disabled', true);
+            $.ajax({
+                url: '/Games/Join' + '?sid=@ViewBag.Sid',
+                type: 'Post',
+                data: {
+                    gameName: $('#JoinGame_Input_Host').val()
+                }
+            })
+            .done(function (returnVal) {
+                window.location.href = "Games/" + returnVal + "/?sid=@ViewBag.Sid";
+            }).always(function () {
+                button.prop('disabled', false);
+            }).fail(function (error) {
+                if (error.source === 'HubException') {
+                    alertify.alert("@RT("_Layout_JoinGame")", error.message);
+                } else {
+                    alertify.alert("@RT("_Layout_JoinGame")", "@RT("Modules_HomeModule_JoinGame_UnhandledError")");
+                }
+            });
+        });
+    });
+</script>

@@ -39,7 +39,7 @@ namespace Octgn.UI
 			{
 				var snum = context.Request.Path.ToString().Split(new[] { "/" }, System.StringSplitOptions.RemoveEmptyEntries)[1];
 				var num = int.Parse(snum);
-				user.GameClient = user.GetGame(num);
+				user.CurrentGameClient = user.GetGame(num);
 			}
             context.Request.User = new GenericPrincipal(user, new string[]{});
             await Next.Invoke(context);

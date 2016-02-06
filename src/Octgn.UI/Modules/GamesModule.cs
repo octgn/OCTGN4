@@ -86,7 +86,7 @@ namespace Octgn.UI.Modules
             Get["/{id}/Resources/{pars*}"] = ctx =>
             {
                 var user = (this.Context.CurrentUser as User);
-                Gameplay.ResourceResolver.ResourceResolverResult resource = user.GameClient.ResourceResolver.Get(ctx.pars);
+                Gameplay.ResourceResolver.ResourceResolverResult resource = user.CurrentGameClient.ResourceResolver.Get(ctx.pars);
 
                 if (resource.StatusCode == 404)
                     return HttpStatusCode.NotFound;

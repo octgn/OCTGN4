@@ -31,7 +31,7 @@ namespace Octgn.UI.Gameplay
                 else
                     _state[name] = realo;
 
-                _client.User.UIRPC.firePropertyChanged(name, realo);
+                _client.UIRPC.FirePropertyChanged(name, realo);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Octgn.UI.Gameplay
             {
                 _fullState = val;
 
-                _client.User.UIRPC.fireStateReplaced(val);
+                _client.UIRPC.FireStateReplaced(val);
             }
         }
 
@@ -49,10 +49,10 @@ namespace Octgn.UI.Gameplay
         {
             lock (this)
             {
-                _client.User.UIRPC.fireStateReplaced(_fullState);
+                _client.UIRPC.FireStateReplaced(_fullState);
                 foreach(var dingdong in _state)
                 {
-                    _client.User.UIRPC.firePropertyChanged(dingdong.Key, dingdong.Value);
+                    _client.UIRPC.FirePropertyChanged(dingdong.Key, dingdong.Value);
                 }
             }
         }

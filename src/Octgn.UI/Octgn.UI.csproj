@@ -252,8 +252,10 @@
   <ItemGroup>
     <Compile Include="Gameplay\GameState.cs" />
     <Compile Include="Gameplay\ResourceResolver.cs" />
+    <Compile Include="GameUIRPC.cs" />
     <Compile Include="HtmlTagHelpers.cs" />
     <Compile Include="HubLogger.cs" />
+    <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Hubs\LoggingHub.cs" />
     <Compile Include="LoggerOwinMiddleware.cs" />
     <Compile Include="Models\Games\HostGameModel.cs" />
@@ -262,7 +264,6 @@
     <Compile Include="NancyBootstrapper.cs" />
     <Compile Include="Gameplay\GameClient.cs" />
     <Compile Include="LocalServerManager.cs" />
-    <Compile Include="Hubs\MainHub.cs" />
     <Compile Include="Models\Games\TableModel.cs" />
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="OwinStartup.cs" />

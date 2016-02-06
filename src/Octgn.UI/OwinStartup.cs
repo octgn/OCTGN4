@@ -35,6 +35,7 @@ namespace Octgn.UI
                     var hubConfiguration = new HubConfiguration();
                     hubConfiguration.Resolver.Register(typeof(IHubActivator), () => activator);
                     hubConfiguration.Resolver.Resolve<IHubPipeline>().AddModule(new Modules.SignalrPipelineModule(applicationLifetimeKernel));
+                    hubConfiguration.EnableDetailedErrors = true;
 
                     map.RunSignalR(hubConfiguration);
                 }

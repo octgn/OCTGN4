@@ -22,11 +22,12 @@ namespace Octgn.UI.Gameplay
 			{
 				if (value == _connected) return;
 				_connected = value;
-				User.UIRPC.GameStatusUpdated(_connected);
+                UIRPC.GameStatusUpdated(_connected);
 			}
 		}
 
 		public int Id { get; private set; }
+        public GameUIRPC UIRPC { get; private set; }
 		public ResourceResolver ResourceResolver { get; private set; }
 		private GameSocket _socket;
         private GameState _state;
@@ -48,6 +49,7 @@ namespace Octgn.UI.Gameplay
             _state = new GameState(this);
 			RPC = _generator.CreateInterfaceProxyWithoutTarget<IC2SComs>(new RpcInterceptor(_socket));
 			ResourceResolver = new ResourceResolver(this);
+            UIRPC = new GameUIRPC();
 		}
 
 		public bool Connect()
@@ -109,7 +111,7 @@ namespace Octgn.UI.Gameplay
 
         public void RemoteCall(string name, object obj)
         {
-            this.User.UIRPC.invoke(name, obj);
+            UIRPC.Invoke(name, obj);
         }
 
         public void StateChange(int id, string name, object val)
@@ -131,7 +133,7 @@ namespace Octgn.UI.Gameplay
 
 		public void SetLayout(string layout)
 		{
-			this.User.UIRPC.fireSetLayout(layout);
+			UIRPC.FireSetLayout(layout);
 		}
 
 		public void GetResourceResp(int reqId, byte[] data, string contentType)

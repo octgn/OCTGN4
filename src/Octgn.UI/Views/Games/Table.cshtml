@@ -1,7 +1,77 @@
-@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Octgn.UI.Models.Games.TableModel>
-@{Layout = "Views/Shared/_Layout.cshtml";}
-<script src="@Url.Content("~/Scripts/Custom/GameTable.js")"></script>
-Game @Model.Id : @Model.Port
-<div id="GameTable">
+@inherits Octgn.UI.WebViewBase<Octgn.UI.Models.Games.TableModel>
+@{
+    var baseUrl = this.Request.Url.BasePath;
+}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Game Table - OCTGN</title>
+    <script src="@Url.Content("~/Scripts/jquery-2.2.0.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/json2.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/knockout-3.4.0.debug.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.signalR-2.2.0.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/alertify.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/Custom/jquery.customDialog.js")"></script>
+    <script src="@Url.Content("~/Scripts/Custom/LogForwarder.js")"></script>
+    @*<script src="@(baseUrl)/signalr/hubs"></script>*@
 
-</div>
+    <link rel="stylesheet" href="@Url.Content("~/Content/Main.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/alertifyjs/alertify.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/alertifyjs/themes/default.min.css")" />
+</head>
+<body style="margin:0px">
+    <script type="text/javascript">
+        $(function () {
+            BELOG = new LogForwarderClass();
+            BELOG.init();
+            O.init();
+        });
+    </script>
+    <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
+    <script src="@Url.Content("~/Scripts/Custom/GameTable.js")"></script>
+    Game @Model.Id : @Model.Port
+    <div id="GameTable">
+
+    </div>
+    <script type="text/javascript">
+        O.be.on("con:disconnected", onDisconnected);
+        O.be.on("con:connected", onConnected);
+        O.be.on("con:reconnecting", onReconnecting);
+        O.be.on("con:reconnected", onConnected);
+        function onDisconnected() {
+            console.log("[UI]: disconnected");
+            $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
+
+            $('#PingClient').off('click');
+        }
+        function onConnected() {
+            console.log("[UI]: connected");
+            $("#ConnectionStatus-UI").removeClass("ConnectionStatus-NotConnected").addClass("ConnectionStatus-Connected");
+
+            $('#PingClient').on('click', function () {
+                O.com.send('ping');
+            });
+        }
+        function onReconnecting() {
+            $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Reconnecting");
+        }
+
+        O.be.on('ping', function () {
+            alertify.alert("ping");
+        });
+
+        O.be.on('gameStatusUpdated', function (status) {
+            alertify.alert(!!status ? "Connected" : "Disconnected");
+        });
+
+        O.be.on('gameJoinError', function (error) {
+            alertify.alert("@RT("_Layout_HostGame")", error);
+        });
+
+        O.be.on('fireSetLayout', function (layout) {
+            $('#GameTable').load(window.location.pathname + '/Resources/' + layout + "?sid=@ViewBag.Sid");
+        });
+    </script>
+</body>
+</html>
