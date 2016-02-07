@@ -10,12 +10,13 @@ namespace Octgn.Server
     {
         private static ILogger Log = LoggerFactory.Create<GameThread>();
         private Task _gameThread;
-        private ConcurrentQueue<Task> _invokeQueue;
+        private ConcurrentQueue<Action> _invokeQueue;
         private bool _disposing = false;
+        private int _threadId = 0;
         public GameThread()
         {
             Log.Trace();
-            _invokeQueue = new ConcurrentQueue<Task>();
+            _invokeQueue = new ConcurrentQueue<Action>();
             _gameThread = new Task(_run, TaskCreationOptions.LongRunning);
         }
 
@@ -24,25 +25,27 @@ namespace Octgn.Server
             _gameThread.Start();
         }
 
-        internal Task Invoke(Action a)
+        internal void Invoke(Action a)
         {
-            var task = new Task(a);
-            _invokeQueue.Enqueue(task);
-            return task;
+            if (Thread.CurrentThread.ManagedThreadId == _threadId)
+                a();
+            else {
+                _invokeQueue.Enqueue(a);
+            }
         }
 
         private void _run()
         {
+            _threadId = Thread.CurrentThread.ManagedThreadId;
             while (!_disposing)
             {
                 Run();
-                Task a = null;
+                Action a = null;
                 while (_invokeQueue.IsEmpty == false)
                 {
                     if (_invokeQueue.TryDequeue(out a))
                     {
-                        a.Start();
-                        a.Wait();
+                        a();
                     }
                 }
 

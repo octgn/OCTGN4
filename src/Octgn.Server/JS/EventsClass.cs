@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,25 +15,22 @@ namespace Octgn.Server.JS
 
         internal void Fire_User_Authenticate(object ctx)
         {
-            Fire_on("user.authenticate", ctx).Wait();
+            Fire_on("user.authenticate", ctx);
         }
 
         internal void Fire_User_Initialize(object ctx)
         {
-            Fire_on("user.initialize", ctx).Wait();
+            Fire_on("user.initialize", ctx);
         }
 
-        internal Task Fire_on(string name, object obj)
+        internal void Fire_on(string name, object obj)
         {
-            return _engine.Invoke(() =>
+            if (!_callbacks.ContainsKey(name))
+                return;
+            foreach (var i in _callbacks[name])
             {
-                if (!_callbacks.ContainsKey(name))
-                    return;
-                foreach (var i in _callbacks[name])
-                {
-                    i(obj);
-                }
-            });
+                i(obj);
+            }
         }
 
         public void on(string name, dynamic callback)
