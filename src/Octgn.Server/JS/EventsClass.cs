@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Octgn.Server.JS
 {
@@ -14,23 +15,19 @@ namespace Octgn.Server.JS
             _callbacks = new Dictionary<string, List<dynamic>>();
         }
 
-        internal void Fire_BrowserOpened(EventContext ctx)
+        internal void Fire_User_Authenticate(object ctx)
         {
-            _engine.Invoke(() =>
-            {
-                var name = "browser.opened";
-                if (!_callbacks.ContainsKey(name))
-                    return;
-                foreach (var i in _callbacks[name])
-                {
-                    i(ctx);
-                }
-            });
+            Fire_on("user.authenticate", ctx).Wait();
         }
 
-        internal void Fire_on(string name, object obj)
+        internal void Fire_User_Initialize(object ctx)
         {
-            _engine.Invoke(() =>
+            Fire_on("user.initialize", ctx).Wait();
+        }
+
+        internal Task Fire_on(string name, object obj)
+        {
+            return _engine.Invoke(() =>
             {
                 if (!_callbacks.ContainsKey(name))
                     return;
@@ -49,7 +46,6 @@ namespace Octgn.Server.JS
                     _callbacks.Add(name, new List<dynamic>());
                 _callbacks[name].Add(callback);
             });
-
         }
     }
 }

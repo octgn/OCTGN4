@@ -34,7 +34,7 @@
                 url: '/Games/Join' + '?sid=@ViewBag.Sid',
                 type: 'Post',
                 data: {
-                    gameName: $('#JoinGame_Input_Host').val()
+                    Host: $('#JoinGame_Input_Host').val()
                 }
             })
             .done(function (returnVal) {

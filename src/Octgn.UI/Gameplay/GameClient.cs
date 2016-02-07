@@ -106,7 +106,8 @@ namespace Octgn.UI.Gameplay
 
 		public void Kicked(string message)
 		{
-			throw new NotImplementedException();
+            Log.Standard("Kicked: " + message);
+            Dispose();
 		}
 
         public void RemoteCall(string name, object obj)

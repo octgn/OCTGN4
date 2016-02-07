@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using Octgn.Shared;
 using Octgn.Server.JS;
+using System.Dynamic;
 
 namespace Octgn.Server
 {
@@ -87,6 +88,16 @@ namespace Octgn.Server
 
         public override void Hello(string username)
         {
+            dynamic context = new ExpandoObject();
+            context.user = new UserClass(this);
+            context.allow = true;
+            this.Server.Engine.O.events.Fire_User_Authenticate(context);
+
+            if(context.allow == false)
+            {
+                this.RPC.Kicked("You cannot join");
+                return;
+            }
             this.RPC.HelloResp(this.Server);
 
             foreach(var change in Server.Engine.StateHistory.GetLatestChanges())
@@ -109,17 +120,17 @@ namespace Octgn.Server
         public AuthenticatedUser(UnauthenticatedUser user) 
             : base(user)
         {
+            dynamic context = new ExpandoObject();
+            context.user = new UserClass(this);
+            context.layout = "";
+            this.Server.Engine.O.events.Fire_User_Initialize(context);
+
+            this.RPC.SetLayout(context.layout);
         }
 
         public override void RemoteCall(string name, object obj)
         {
             this.Server.Engine.O.com.Fire_on(name, obj);
-        }
-
-        public override void BrowserOpened()
-        {
-			var ctx = new EventContext(new UserClass(this));
-            this.Server.Engine.O.events.Fire_BrowserOpened(ctx);
         }
 
 		public override void GetResource(int reqId, string path)

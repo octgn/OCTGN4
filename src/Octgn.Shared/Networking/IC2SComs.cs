@@ -4,7 +4,6 @@
     {
         void Hello(string username);
         void RemoteCall(string name, object obj);
-        void BrowserOpened();
 		void GetResource(int reqId, string path);
     }
 
