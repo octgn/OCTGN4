@@ -9,7 +9,7 @@
 
     public interface IS2CComs
     {
-        void HelloResp(IGameServer server);
+        void HelloResp(HelloResponse resp);
         void Kicked(string message);
         void RemoteCall(string name, object obj);
         void StateChange(int id, string name, object val);

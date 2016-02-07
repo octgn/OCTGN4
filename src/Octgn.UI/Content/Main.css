@@ -20,7 +20,7 @@
 }
 
 .ConnectionStatus-Connected{
-    background-color: green;
+    background-color: greenyellow;
 }
 
 .ConnectionStatus-NotConnected{

@@ -21,6 +21,7 @@ namespace Octgn.Server
             O = new OClass(this);
             _engine = new JavascriptEngine();
             _engine.AddObject("O", O);
+            _engine.Execute("O.state.users = new Array()");
             _engine.Execute(Resources.ReadEntryPoint());
             Start();
         }

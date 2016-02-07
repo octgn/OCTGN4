@@ -1,6 +1,5 @@
 ﻿using Castle.DynamicProxy;
 using Octgn.Shared.Networking;
-using System.Linq;
 using System;
 using Octgn.Shared;
 using Octgn.Server.JS;
@@ -15,6 +14,7 @@ namespace Octgn.Server
         private static int _lastId = 0;
         public bool Connected { get; private set; }
         public int Id { get; private set; }
+        public string Username { get; protected set; }
         internal UserBase Replaced { get; private set; }
         internal IS2CComs RPC { get; private set; }
         internal IInterceptor RPCInterceptor { get; private set; }
@@ -22,6 +22,7 @@ namespace Octgn.Server
         private GameSocket _socket;
         public UserBase(GameServer server, GameSocket sock)
         {
+            Username = "";
             Server = server;
             _socket = sock;
             Connected = true;
@@ -39,6 +40,7 @@ namespace Octgn.Server
             Id = user.Id;
             user.Replaced = this;
 			RPCInterceptor = user.RPCInterceptor;
+            Username = user.Username.Clone() as string;
         }
 
         public virtual void Hello(string username)
@@ -74,7 +76,7 @@ namespace Octgn.Server
         protected void ReplaceSelf(UserBase user)
         {
 			// Need to use this method so that things don't get GC'd
-            Log.Debug("User {0} became {1}", user.Id, user.GetType().Name);
+            Log.Debug("User {0}:{1} became {2}", user.Id, user.Username, user.GetType().Name);
         }
 	}
     internal class UnauthenticatedUser : UserBase
@@ -88,6 +90,7 @@ namespace Octgn.Server
 
         public override void Hello(string username)
         {
+            this.Username = username;
             dynamic context = new ExpandoObject();
             context.user = new UserClass(this);
             context.allow = true;
@@ -98,19 +101,26 @@ namespace Octgn.Server
                 this.RPC.Kicked("You cannot join");
                 return;
             }
-            this.RPC.HelloResp(this.Server);
+            var resp = new HelloResponse(Server, Id);
+            this.RPC.HelloResp(resp);
+
 
             foreach(var change in Server.Engine.StateHistory.GetLatestChanges())
             {
                 if (change.IsFullState)
                 {
-                    this.RPC.FullState(change.Id, change.Change);
+                    this.RPC.FullState(change.Id, change.Change.ToString());
                 }
                 else
                 {
-                    this.RPC.StateChange(change.Id, change.Name, change.Change);
+                    this.RPC.StateChange(change.Id, change.Name, change.Change.ToString());
                 }
             }
+            this.Server.Engine.O.state.AddUser(this.Id, username);
+            context = new ExpandoObject();
+            context.user = new UserClass(this);
+            context.layout = "";
+            this.Server.Engine.O.events.Fire_User_Initialize(context);
 			this.ReplaceSelf(new AuthenticatedUser(this));
         }
     }
@@ -120,12 +130,6 @@ namespace Octgn.Server
         public AuthenticatedUser(UnauthenticatedUser user) 
             : base(user)
         {
-            dynamic context = new ExpandoObject();
-            context.user = new UserClass(this);
-            context.layout = "";
-            this.Server.Engine.O.events.Fire_User_Initialize(context);
-
-            this.RPC.SetLayout(context.layout);
         }
 
         public override void RemoteCall(string name, object obj)

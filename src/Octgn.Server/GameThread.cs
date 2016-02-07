@@ -37,6 +37,7 @@ namespace Octgn.Server
         private void _run()
         {
             _threadId = Thread.CurrentThread.ManagedThreadId;
+            Thread.CurrentThread.Name = "ServerGameThread:" + Thread.CurrentThread.ManagedThreadId;
             while (!_disposing)
             {
                 Run();

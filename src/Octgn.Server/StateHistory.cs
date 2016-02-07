@@ -27,7 +27,8 @@ namespace Octgn.Server
             {
                 _locker.EnterWriteLock();
                 var id = Interlocked.Increment(ref _nextId);
-                var change = JsonConvert.SerializeObject(val);
+                //var change = JsonConvert.SerializeObject(val);
+                var change = val.ToString();
                 var c = new StateChange(id, name, change);
                 _changes.Add(id, c);
                 return id;
@@ -43,7 +44,8 @@ namespace Octgn.Server
             try
             {
                 _locker.EnterWriteLock();
-                var change = JsonConvert.SerializeObject(val);
+                //var change = JsonConvert.SerializeObject(val);
+                var change = val.ToString();
                 var c = new StateChange(id, "%%FULL%%", change);
                 _fullStateDump.Add(id, c);
             }

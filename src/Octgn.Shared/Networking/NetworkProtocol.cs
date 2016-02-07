@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -77,7 +78,7 @@ namespace Octgn.Shared.Networking
 
             var arrText = new byte[4096];
             var sb = new StringBuilder();
-            for (long i = 0; i < len; )
+            for (long i = 0; i < len;)
             {
                 var takeCount = (int)Math.Min(4096, len - i);
                 _stream.Read(arrText, 0, takeCount);
@@ -89,31 +90,31 @@ namespace Octgn.Shared.Networking
             return sb.ToString();
         }
 
-		public byte[] ReadByteArray()
-		{
-			var ibyte = (byte)_stream.ReadByte();
-			if ((ibyte) != 0x09) throw new InvalidDataException($"Trying to ReadByteArray but streams identifier byte is {ibyte}");
-			var lenlen = (int)ReadByte();
-			var lenbytes = new byte[lenlen];
-			_stream.Read(lenbytes, 0, lenlen);
-			var lenstr = System.Text.Encoding.ASCII.GetString(lenbytes);
-			var len = Int64.Parse(lenstr);
+        public byte[] ReadByteArray()
+        {
+            var ibyte = (byte)_stream.ReadByte();
+            if ((ibyte) != 0x09) throw new InvalidDataException($"Trying to ReadByteArray but streams identifier byte is {ibyte}");
+            var lenlen = (int)ReadByte();
+            var lenbytes = new byte[lenlen];
+            _stream.Read(lenbytes, 0, lenlen);
+            var lenstr = System.Text.Encoding.ASCII.GetString(lenbytes);
+            var len = Int64.Parse(lenstr);
 
-			var ret = new List<byte>();
-			var arr = new byte[4096];
-			var sb = new StringBuilder();
-			for (long i = 0; i < len;)
-			{
-				var takeCount = (int)Math.Min(4096, len - i);
-				_stream.Read(arr, 0, takeCount);
-				ret.AddRange(arr.Take(takeCount));
+            var ret = new List<byte>();
+            var arr = new byte[4096];
+            var sb = new StringBuilder();
+            for (long i = 0; i < len;)
+            {
+                var takeCount = (int)Math.Min(4096, len - i);
+                _stream.Read(arr, 0, takeCount);
+                ret.AddRange(arr.Take(takeCount));
 
-				i += takeCount;
-			}
-			return ret.ToArray();
-		}
+                i += takeCount;
+            }
+            return ret.ToArray();
+        }
 
-		public object ReadObject()
+        public object ReadObject()
         {
             var ibyte = (byte)_stream.ReadByte();
             if ((ibyte) != 0x08) throw new InvalidDataException($"Trying to ReadObject but streams identifier byte is {ibyte}");
@@ -170,7 +171,7 @@ namespace Octgn.Shared.Networking
             var mname = ReadString();
             var pnum = (int)ReadByte();
             var parr = new MethodParameter[pnum];
-            for(var i = 0;i< pnum; i++)
+            for (var i = 0; i < pnum; i++)
             {
                 parr[i] = ReadMethodParameter();
             }
@@ -194,7 +195,7 @@ namespace Octgn.Shared.Networking
             _stream.WriteByte(0x03);
             var bytes = BitConverter.GetBytes(s);
             _stream.Write(bytes, 0, bytes.Length);
-            for(var i = 0; i < (2 - bytes.Length); i++)
+            for (var i = 0; i < (2 - bytes.Length); i++)
             {
                 _stream.WriteByte(0);
             }
@@ -205,7 +206,7 @@ namespace Octgn.Shared.Networking
             _stream.WriteByte(0x04);
             var bytes = BitConverter.GetBytes(s);
             _stream.Write(bytes, 0, bytes.Length);
-            for(var i = 0; i < (4 - bytes.Length); i++)
+            for (var i = 0; i < (4 - bytes.Length); i++)
             {
                 _stream.WriteByte(0);
             }
@@ -216,7 +217,7 @@ namespace Octgn.Shared.Networking
             _stream.WriteByte(0x05);
             var bytes = BitConverter.GetBytes(s);
             _stream.Write(bytes, 0, bytes.Length);
-            for(var i = 0; i < (8 - bytes.Length); i++)
+            for (var i = 0; i < (8 - bytes.Length); i++)
             {
                 _stream.WriteByte(0);
             }
@@ -227,7 +228,7 @@ namespace Octgn.Shared.Networking
             _stream.WriteByte(0x06);
             var bytes = BitConverter.GetBytes(s);
             _stream.Write(bytes, 0, bytes.Length);
-            for(var i = 0; i < (4 - bytes.Length); i++)
+            for (var i = 0; i < (4 - bytes.Length); i++)
             {
                 _stream.WriteByte(0);
             }
@@ -243,16 +244,16 @@ namespace Octgn.Shared.Networking
             _stream.Write(strBytes, 0, strBytes.Length);
         }
 
-		public void WriteByteArray(byte[] arr)
-		{
-			_stream.WriteByte(0x09);
-			var lenbytes = Encoding.ASCII.GetBytes(arr.Length.ToString());
-			WriteByte((byte)lenbytes.Length);
-			_stream.Write(lenbytes, 0, lenbytes.Length);
-			_stream.Write(arr, 0, arr.Length);
-		}
+        public void WriteByteArray(byte[] arr)
+        {
+            _stream.WriteByte(0x09);
+            var lenbytes = Encoding.ASCII.GetBytes(arr.Length.ToString());
+            WriteByte((byte)lenbytes.Length);
+            _stream.Write(lenbytes, 0, lenbytes.Length);
+            _stream.Write(arr, 0, arr.Length);
+        }
 
-		public void WriteObject(object o)
+        public void WriteObject(object o)
         {
             _stream.WriteByte(0x08);
             var str = JsonConvert.SerializeObject(o);
@@ -261,34 +262,34 @@ namespace Octgn.Shared.Networking
 
         public void WriteVariable(object o)
         {
-            if(o is byte)
+            if (o is byte)
             {
                 WriteByte((byte)o);
             }
-            else if(o is short)
+            else if (o is short)
             {
                 WriteShort((short)o);
             }
-            else if(o is Int32)
+            else if (o is Int32)
             {
                 WriteInt32((Int32)o);
             }
-            else if(o is Int64)
+            else if (o is Int64)
             {
                 WriteInt64((Int64)o);
             }
-            else if(o is float)
+            else if (o is float)
             {
                 WriteFloat((float)o);
             }
-            else if(o is string)
+            else if (o is string)
             {
                 WriteString((string)o);
             }
-			else if(o is byte[])
-			{
-				WriteByteArray((byte[])o);
-			}
+            else if (o is byte[])
+            {
+                WriteByteArray((byte[])o);
+            }
             else
             {
                 WriteObject(o);
@@ -307,7 +308,7 @@ namespace Octgn.Shared.Networking
             _stream.WriteByte(0xC8);
             WriteString(p.Name);
             WriteByte((byte)p.Parameters.Length);
-            for(var i = 0; i < p.Parameters.Length; i++)
+            for (var i = 0; i < p.Parameters.Length; i++)
             {
                 WriteMethodParameter(p.Parameters[i]);
             }
@@ -342,7 +343,7 @@ namespace Octgn.Shared.Networking
             {
                 _loadedTypes = AppDomain.CurrentDomain.GetAssemblies()
                     // Filter out shit we shouldn't need(hopefully)
-                    .Where(x=>x == Assembly.GetEntryAssembly() || x == typeof(Packet).Assembly)
+                    .Where(x => x == Assembly.GetEntryAssembly()) //|| x == typeof(Packet).Assembly)
                     .SelectMany(x => x.GetTypes())
                     .Where(x => x.IsInterface == false)
                     .Where(x => x.IsAbstract == false)
@@ -355,6 +356,8 @@ namespace Octgn.Shared.Networking
                 var method = methods.First(x => x.Name == Name);
                 var parameters = method.GetParameters();
                 var parr = new object[parameters.Length];
+                var settings = new JsonSerializerSettings();
+                var serializer = JsonSerializer.Create(settings);
                 for (var i = 0; i < parameters.Length; i++)
                 {
                     var mp = Parameters.FirstOrDefault(x => x.Equals(parameters[i].Name));
@@ -375,7 +378,7 @@ namespace Octgn.Shared.Networking
                                 parr[i] = (mp.Value as JObject).ToObject(type);
                             }
                             else {
-                                parr[i] = (mp.Value as JObject).ToObject(parameters[i].ParameterType);
+                                parr[i] = (mp.Value as JObject).ToObject(parameters[i].ParameterType, serializer);
                             }
                         }
                         else {
@@ -387,12 +390,12 @@ namespace Octgn.Shared.Networking
                 method.Invoke(obj, parr);
             }
 
-			public static void AddType<T>()
-			{
-				var lst = new System.Collections.Generic.List<Type>(_loadedTypes);
-				lst.Add(typeof(T));
-				_loadedTypes = lst.ToArray();
-			}
+            public static void AddType<T>()
+            {
+                var lst = new System.Collections.Generic.List<Type>(_loadedTypes);
+                lst.Add(typeof(T));
+                _loadedTypes = lst.ToArray();
+            }
         }
     }
 }

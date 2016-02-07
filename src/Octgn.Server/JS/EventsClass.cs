@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Octgn.Server.JS
 {
@@ -35,12 +34,9 @@ namespace Octgn.Server.JS
 
         public void on(string name, dynamic callback)
         {
-            _engine.Invoke(() =>
-            {
-                if (!_callbacks.ContainsKey(name))
-                    _callbacks.Add(name, new List<dynamic>());
-                _callbacks[name].Add(callback);
-            });
+            if (!_callbacks.ContainsKey(name))
+                _callbacks.Add(name, new List<dynamic>());
+            _callbacks[name].Add(callback);
         }
     }
 }

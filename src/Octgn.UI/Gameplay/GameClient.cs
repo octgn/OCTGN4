@@ -27,6 +27,7 @@ namespace Octgn.UI.Gameplay
 		}
 
 		public int Id { get; private set; }
+        public int UserId { get; private set; }
         public GameUIRPC UIRPC { get; private set; }
 		public ResourceResolver ResourceResolver { get; private set; }
 		private GameSocket _socket;
@@ -98,10 +99,11 @@ namespace Octgn.UI.Gameplay
 			Log.Debug("Finished processing messages");
 		}
 
-		public void HelloResp(IGameServer server)
+		public void HelloResp(HelloResponse resp)
 		{
 			Log.Debug("HelloResp");
 			Connected = true;
+            UserId = resp.UserId;
 		}
 
 		public void Kicked(string message)

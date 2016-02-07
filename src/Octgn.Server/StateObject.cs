@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text;
 
 namespace Octgn.Server
 {
@@ -9,6 +10,7 @@ namespace Octgn.Server
     {
         public string Name { get; private set; }
         public StateObjectMeta Meta { get; set; }
+        public bool IsArray { get; private set; }
 
         private DynamicObject _underlyingObject;
         private Dictionary<string, object> _properties;
@@ -24,6 +26,10 @@ namespace Octgn.Server
             _parent = parent;
             _underlyingObject = o;
             dynamic d = o;
+            if(d.constructor.name == "Array")
+            {
+                this.IsArray = true;
+            }
             Type type = d.GetType();
             var meth = type.GetMethods().First(x => x.Name == "GetProperty" && x.GetParameters().Length == 2);
             foreach (var propName in o.GetDynamicMemberNames())
@@ -76,6 +82,17 @@ namespace Octgn.Server
             return true;
         }
 
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            AddProperty(indexes[0].ToString(), value, true);
+            return true;
+        }
+
+        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+        {
+            return _properties.TryGetValue(indexes[0].ToString(), out result);
+        }
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return _properties.Keys;
@@ -108,7 +125,25 @@ namespace Octgn.Server
 
         protected virtual void OnPropertyChanged(StateObject sender, string name, object val)
         {
-            _parent.OnPropertyChanged(sender, this.Name + "." + name, val);
+            const string propString = "{0}.{1}";
+            const string arrString = "{0}['{1}']"; // Maybe this shouldn't always be quotes, but for now it's just easier this way
+            var str = string.Format(IsArray ? arrString : propString, this.Name, name);
+            _parent.OnPropertyChanged(sender, str, val);
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("{");
+            var first = true;
+            foreach(var prop in _properties)
+            {
+                if (first) first = false;
+                else sb.Append(",");
+                sb.AppendFormat("'{0}':'{1}'", prop.Key, prop.Value.ToString());
+            }
+            sb.Append("}");
+            return sb.ToString();
         }
     }
 }

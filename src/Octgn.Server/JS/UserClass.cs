@@ -4,13 +4,15 @@ namespace Octgn.Server.JS
 {
 	public class UserClass
 	{
-		public int id { get; set; }
+		public string id { get; set; }
+        public string Username { get; set; }
 		private UserBase _user;
 
 		public UserClass(UserBase usr)
 		{
 			_user = usr;
-			this.id = usr.Id;
+			this.id = usr.Id.ToString();
+            this.Username = usr.Username;
 		}
 
 		public void setLayout(string layout)

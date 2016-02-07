@@ -54,6 +54,7 @@
     <Compile Include="Models\GameManifest.cs" />
     <Compile Include="Models\GameServerModel.cs" />
     <Compile Include="Networking\GameSocket.cs" />
+    <Compile Include="Networking\HelloResponse.cs" />
     <Compile Include="Networking\IC2SComs.cs" />
     <Compile Include="Networking\ISocket.cs" />
     <Compile Include="Networking\NetworkHelper.cs" />

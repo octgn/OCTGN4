@@ -84,24 +84,13 @@ var BackendCommunicationClass = function () {
             console.log("fireStateReplaced", state);
 		});
 
-		hub.on('firePropertyChanged', function (name, ob) {
+		hub.on('firePropertyChanged', function (name, obj) {
             console.log("firePropertyChanged", {
                 name: name,
                 obj: obj
             });
-            var parts = name.split('.');
-            var curObj = O.state;
-            var curProp = "";
-            for (var i = 0; i < parts.length; i++) {
-                curProp = parts[i];
-                if (!curObj[curProp]) {
-                    curObj[curProp] = {};
-                }
-                if (i < parts.length - 1)
-                    curObj = curObj[curProp];
-                else
-                    curObj[curProp] = obj;
-            }
+            var cur = 'O.state.' + name + ' = ' + JSON.stringify(obj);
+            eval(cur);
 		});
 
 		this.Connection.reconnecting(function () {

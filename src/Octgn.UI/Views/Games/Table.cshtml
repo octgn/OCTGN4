@@ -1,4 +1,4 @@
-@inherits Octgn.UI.WebViewBase<Octgn.UI.Models.Games.TableModel>
+﻿@inherits Octgn.UI.WebViewBase<Octgn.UI.Models.Games.TableModel>
 @{
     var baseUrl = this.Request.Url.BasePath;
 }
@@ -26,13 +26,14 @@
             BELOG = new LogForwarderClass();
             BELOG.init();
             O.init();
+
+            ko.applyBindings(ko.observable(O.state));
         });
     </script>
     <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
     <script src="@Url.Content("~/Scripts/Custom/GameTable.js")"></script>
     Game @Model.Id : @Model.Port
-    <div id="GameTable">
-
+    <div id="GameTable" data-bind="html: O.layout">
     </div>
     <script type="text/javascript">
         O.be.on("con:disconnected", onDisconnected);
