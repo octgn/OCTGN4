@@ -1,24 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-
-namespace Octgn.Server.JS
+﻿namespace Octgn.Server.JS
 {
     public class StateClass : StateObject
     {
+        private UserListClass _users;
         private GameEngine _engine;
         internal StateClass(string name, GameEngine engine)
             : base(name)
         {
             _engine = engine;
+            _users = new UserListClass(this);
+            AddProperty("users", _users, false);
         }
 
-        internal void AddUser(int id, string username)
+        internal UserClass AddUser(int id, string username)
         {
-            var users = ((dynamic)this).users;
-            users[id.ToString()] = $"{{id: {id}, username: {username}}}";
-            //users[id.ToString()].id = id.ToString();
-            //users[id.ToString()].username = username;
+            var ub = this._engine.Users.Get(id);
+            var uc = new UserClass(ub, _users);
+            _users.Add(uc);
+            return uc;
         }
         protected override void OnPropertyChanged(StateObject sender, string name, object val)
         {

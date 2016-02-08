@@ -23,6 +23,12 @@ namespace Octgn.Server
                 _users.Add(user);
         }
 
+        internal UserBase Get(int id)
+        {
+            lock(this)
+                return _users.FirstOrDefault(x => x.Id == id);
+        }
+
         internal void ProcessUsers()
         {
             lock (this)

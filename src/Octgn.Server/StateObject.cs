@@ -10,7 +10,7 @@ namespace Octgn.Server
     {
         public string Name { get; private set; }
         public StateObjectMeta Meta { get; set; }
-        public bool IsArray { get; private set; }
+        public bool IsArray { get; protected set; }
 
         private DynamicObject _underlyingObject;
         private Dictionary<string, object> _properties;
@@ -21,14 +21,27 @@ namespace Octgn.Server
             _properties = new Dictionary<string, object>();
         }
 
+        protected StateObject(string name, StateObject parent)
+        {
+            Name = name;
+            _parent = parent;
+            _properties = new Dictionary<string, object>();
+        }
+
         protected StateObject(string name, StateObject parent, DynamicObject o) : this(name)
         {
             _parent = parent;
             _underlyingObject = o;
             dynamic d = o;
-            if(d.constructor.name == "Array")
+            try {
+                if (d.constructor.name == "Array")
+                {
+                    this.IsArray = true;
+                }
+            }
+            catch
             {
-                this.IsArray = true;
+
             }
             Type type = d.GetType();
             var meth = type.GetMethods().First(x => x.Name == "GetProperty" && x.GetParameters().Length == 2);
@@ -100,7 +113,7 @@ namespace Octgn.Server
 
         protected void AddProperty(string name, object value, bool firePropertyChanged = true)
         {
-            if (value is DynamicObject)
+            if (value is DynamicObject && !(value is StateObject))
             {
                 if (name == "_meta")
                 {

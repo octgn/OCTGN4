@@ -92,7 +92,8 @@ namespace Octgn.Server
         {
             this.Username = username;
             dynamic context = new ExpandoObject();
-            context.user = new UserClass(this);
+            context.id = this.Id;
+            context.username = this.Username;
             context.allow = true;
             this.Server.Engine.O.events.Fire_User_Authenticate(context);
 
@@ -116,10 +117,9 @@ namespace Octgn.Server
                     this.RPC.StateChange(change.Id, change.Name, change.Change.ToString());
                 }
             }
-            this.Server.Engine.O.state.AddUser(this.Id, username);
+            var uc = this.Server.Engine.O.state.AddUser(this.Id, username);
             context = new ExpandoObject();
-            context.user = new UserClass(this);
-            context.layout = "";
+            context.user = uc;
             this.Server.Engine.O.events.Fire_User_Initialize(context);
 			this.ReplaceSelf(new AuthenticatedUser(this));
         }

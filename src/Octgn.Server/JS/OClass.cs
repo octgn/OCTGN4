@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Octgn.Server.JS
+﻿namespace Octgn.Server.JS
 {
     internal class OClass
     {
