@@ -240,8 +240,6 @@
     <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\json2.min.js" />
-    <Content Include="Scripts\knockout-3.4.0.debug.js" />
-    <Content Include="Scripts\knockout-3.4.0.js" />
     <Content Include="Web.config" />
     <Content Include="Views\Games\Table.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />

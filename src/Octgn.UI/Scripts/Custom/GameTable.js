@@ -1,5 +1,64 @@
-﻿var O = O || {};
-O.state = {};
+﻿var OClass = function () {
+    this.com = new CommunicationsClass();
+    this.be = new BackendCommunicationClass();
+    this.state = {};
+
+    this.init = function () {
+        O.be.init();
+        O.com.init();
+    }
+
+    var callbacks = [];
+    this.on = function (event, callback, filter) {
+        if (!callbacks[event])
+            callbacks[event] = [];
+        var item = {
+            name: event,
+            callback: callback,
+            filter: filter
+        };
+        callbacks[event].push(item);
+        return item;
+    }
+    this.off = function (callback) {
+        if (!callbacks[callback.name]) return;
+        var idx = callbacks[callback.name].indexOf(callback.callback);
+        if (idx == -1) return;
+        callbacks[callback.name].splice(idx, 1);
+    }
+    this.fireOn = function (event, obj, filterable) {
+        Object.keys(callbacks).reduce(function (prev, cur) {
+            if (event != cur) return prev;
+            for (var i = 0; i < callbacks[cur].length; i++) {
+                var currentCallback = callbacks[cur][i];
+                if (filterable && currentCallback.filter) {
+                    var match = filterable.match(currentCallback.filter);
+                    if (match) {
+                        prev.push({
+                            callback: currentCallback,
+                            match: match
+                        });
+                    }
+                } else {
+                    prev.push({
+                        callback: currentCallback
+                    })
+                }
+            }
+            return prev;
+        }, []).forEach(function (cur) {
+            var args = [];
+            if (cur.match) {
+                args = cur.match.slice(1);
+            }
+            var t = {
+                name: cur.callback.name,
+                value: obj
+            };
+            cur.callback.callback.apply(t, args)
+        });
+    }
+}
 
 var CommunicationsClass = function () {
 	var callbacks = [];
@@ -52,15 +111,6 @@ var BackendCommunicationClass = function () {
         var args = [].slice.apply(arguments);
         return hub.invoke.apply(hub, args);
     }
-    function fireCallback(name, obj) {
-        var cb = callbacks[name];
-        if (!cb) {
-            return;
-        }
-        for (var i = 0; i < cb.length; i++) {
-            cb[i](obj);
-        }
-    }
 	function setupSignalr() {
 		// Declare a proxy to reference the hub.
 	    this.Connection = $.hubConnection("/signalr", { useDefaultPath: false });
@@ -89,19 +139,25 @@ var BackendCommunicationClass = function () {
                 name: name,
                 obj: obj
             });
-            var cur = 'O.state.' + name + ' = ' + JSON.stringify(obj);
+            var fullName = 'O.state.' + name;
+            var cur = fullName + ' = ' + JSON.stringify(obj);
             eval(cur);
+            var obj = eval(fullName);
+            O.fireOn('state:PropertyChanged', obj, name);
+		});
+
+		hub.on('loadCompleted', function () {
 		});
 
 		this.Connection.reconnecting(function () {
-		    fireCallback("con:reconnecting");
+		    O.fireOn("connection:StatusChanged", 'reconnecting', 'reconnecting');
         });
 		this.Connection.reconnected(function () {
-		    fireCallback("con:reconnected");
+		    O.fireOn("connection:StatusChanged", 'reconnected', 'reconnected');
         });
 
 		this.Connection.disconnected(function () {
-		    fireCallback("con:disconnected");
+		    O.fireOn("connection:StatusChanged", 'disconnected', 'disconnected');
             setTimeout(function () {
                 ConnectToSignalR();
             }, 5000); // Restart connection after 5 seconds.
@@ -115,15 +171,9 @@ var BackendCommunicationClass = function () {
 	    var connection = this.Connection;
 	    var obj = this.Connection.start().done(function () {
 	        console.log("Connected to Game Backend");
-	        fireCallback("con:connected");
+	        O.fireOn("connection:StatusChanged", 'connected', 'connected');
 	    });
 	}
 }
 
-O.com = new CommunicationsClass();
-O.be = new BackendCommunicationClass();
-
-O.init = function () {
-    O.be.init();
-    O.com.init();
-}
+var O = new OClass();

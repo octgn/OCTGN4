@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Octgn.UI
@@ -34,6 +35,19 @@ namespace Octgn.UI
             foreach(var c in cs)
             {
                 c.Invoke(name, obj);
+            }
+        }
+
+        internal void LoadCompleted()
+        {
+            dynamic[] cs = new dynamic[0];
+            lock (_clients)
+            {
+                cs = _clients.ToArray();
+            }
+            foreach(var c in cs)
+            {
+                c.LoadCompleted();
             }
         }
 

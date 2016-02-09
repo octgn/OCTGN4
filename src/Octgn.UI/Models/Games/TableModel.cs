@@ -6,6 +6,7 @@ namespace Octgn.UI.Models.Games
     {
 		public int Port { get; private set; }
         public int Id { get; private set; }
+        public int UserId { get; private set; }
 
 		public TableModel()
 		{
@@ -16,6 +17,7 @@ namespace Octgn.UI.Models.Games
 		{
 			Id = client.Id;
 			Port = client.Port;
+            UserId = client.UserId;
 		}
     }
 }

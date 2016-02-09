@@ -27,6 +27,8 @@ namespace Octgn.UI.Hubs
 
             gc.SendStateToUI();
 
+            gc.UIRPC.LoadCompleted();
+
             return base.OnConnected();
         }
 

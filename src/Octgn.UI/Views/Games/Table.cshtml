@@ -9,7 +9,6 @@
     <title>Game Table - OCTGN</title>
     <script src="@Url.Content("~/Scripts/jquery-2.2.0.min.js")"></script>
     <script src="@Url.Content("~/Scripts/json2.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/knockout-3.4.0.debug.js")"></script>
     <script src="@Url.Content("~/Scripts/jquery.signalR-2.2.0.min.js")"></script>
     <script src="@Url.Content("~/Scripts/alertify.min.js")"></script>
     <script src="@Url.Content("~/Scripts/Custom/jquery.customDialog.js")"></script>
@@ -26,20 +25,20 @@
             BELOG = new LogForwarderClass();
             BELOG.init();
             O.init();
-
-            ko.applyBindings(ko.observable(O.state));
         });
     </script>
     <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
     <script src="@Url.Content("~/Scripts/Custom/GameTable.js")"></script>
     Game @Model.Id : @Model.Port
-    <div id="GameTable" data-bind="html: O.layout">
+    <div id="GameTable">
     </div>
     <script type="text/javascript">
-        O.be.on("con:disconnected", onDisconnected);
-        O.be.on("con:connected", onConnected);
-        O.be.on("con:reconnecting", onReconnecting);
-        O.be.on("con:reconnected", onConnected);
+        O.on('connection:StatusChanged', function () {
+            if (this.value == 'connected') onConnected();
+            else if (this.value == 'disconnected') onDisconnected();
+            else if (this.value == 'reconnecting') onReconnecting();
+            else if (this.value == 'reconnected') onConnected();
+        });
         function onDisconnected() {
             console.log("[UI]: disconnected");
             $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
@@ -73,6 +72,14 @@
         O.be.on('fireSetLayout', function (layout) {
             $('#GameTable').load(window.location.pathname + '/Resources/' + layout + "?sid=@ViewBag.Sid");
         });
+
+        var prevLayout = '';
+        O.on('state:PropertyChanged', function (uid) {
+            if (uid != '@Model.UserId') return;
+            var user = O.state.users['@Model.UserId'];
+            if (prevLayout == user.layout) return;
+            $('#GameTable').load(window.location.pathname + '/Resources/' + user.layout + "?sid=@ViewBag.Sid");
+        }, /users\['(\d+)'\]/);
     </script>
 </body>
 </html>
