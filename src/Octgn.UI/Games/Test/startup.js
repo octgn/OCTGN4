@@ -8,6 +8,6 @@ O.events.on('user.initialize', function (ctx) {
     };
 });
 
-O.com.on('ping', function (obj) {
-    O.com.broadcast('ping', obj);
+O.com.on('msg', function (obj) {
+    O.com.broadcast('msg', obj);
 });

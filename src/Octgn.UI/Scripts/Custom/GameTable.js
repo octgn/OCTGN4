@@ -61,27 +61,13 @@
 }
 
 var CommunicationsClass = function () {
-	var callbacks = [];
-	this.init = function() {
-	    O.be.on('invoke', function (name, obj) {
-	        var cb = callbacks[name];
-	        if (!cb) {
-	            console.log("Missed call '" + name + "' because no listeners were defined.");
-	            return;
-	        }
-	        for (var i = 0; i < cb.length; i++) {
-	            cb[i](obj);
-	        }
-	    });
-	};
-	this.on = function (name, callback) {
-		if (!callbacks[name])
-			callbacks[name] = [];
-		callbacks[name].push(callback);
-	}
-	this.send = function (name, obj) {
-	    O.be.invoke('Send', name, obj);
-	}
+    this.init = function () {
+    };
+    this.on = function (name, callback) {
+    }
+    this.send = function (name, obj) {
+        O.be.invoke('Send', name, obj);
+    }
 }
 
 var BackendCommunicationClass = function () {
@@ -111,30 +97,30 @@ var BackendCommunicationClass = function () {
         var args = [].slice.apply(arguments);
         return hub.invoke.apply(hub, args);
     }
-	function setupSignalr() {
-		// Declare a proxy to reference the hub.
-	    this.Connection = $.hubConnection("/signalr", { useDefaultPath: false });
-	    hub = this.Connection.createHubProxy('GameHub');
+    function setupSignalr() {
+        // Declare a proxy to reference the hub.
+        this.Connection = $.hubConnection("/signalr", { useDefaultPath: false });
+        hub = this.Connection.createHubProxy('GameHub');
 
-		//Set the hubs URL for the connection
-	    this.Connection.url = window.location.origin + "/signalr";
-		if(window.location.search)
-		    this.Connection.qs = window.location.search.substr(1);
+        //Set the hubs URL for the connection
+        this.Connection.url = window.location.origin + "/signalr";
+        if (window.location.search)
+            this.Connection.qs = window.location.search.substr(1);
 
-		Object.keys(srcallbacks).forEach(function (key) {
-		    var cbs = srcallbacks[key]
-		    for (var i = 0; i < cbs.length; i++) {
-		        hub.on(key, cbs[i]);
-		    }
-		})
-		delete srcallbacks;
+        Object.keys(srcallbacks).forEach(function (key) {
+            var cbs = srcallbacks[key]
+            for (var i = 0; i < cbs.length; i++) {
+                hub.on(key, cbs[i]);
+            }
+        })
+        delete srcallbacks;
 
-		hub.on('fireStateReplaced', function (state) {
-		    O.state = JSON.parse(state);
+        hub.on('fireStateReplaced', function (state) {
+            O.state = JSON.parse(state);
             console.log("fireStateReplaced", state);
-		});
+        });
 
-		hub.on('firePropertyChanged', function (name, obj) {
+        hub.on('firePropertyChanged', function (name, obj) {
             console.log("firePropertyChanged", {
                 name: name,
                 obj: obj
@@ -144,36 +130,40 @@ var BackendCommunicationClass = function () {
             eval(cur);
             var obj = eval(fullName);
             O.fireOn('state:PropertyChanged', obj, name);
-		});
-
-		hub.on('loadCompleted', function () {
-		});
-
-		this.Connection.reconnecting(function () {
-		    O.fireOn("connection:StatusChanged", 'reconnecting', 'reconnecting');
-        });
-		this.Connection.reconnected(function () {
-		    O.fireOn("connection:StatusChanged", 'reconnected', 'reconnected');
         });
 
-		this.Connection.disconnected(function () {
-		    O.fireOn("connection:StatusChanged", 'disconnected', 'disconnected');
+        hub.on('loadCompleted', function () {
+        });
+
+        hub.on('invoke', function (name, obj) {
+            O.fireOn('com:' + name, obj, name);
+        });
+
+        this.Connection.reconnecting(function () {
+            O.fireOn("connection:StatusChanged", 'reconnecting', 'reconnecting');
+        });
+        this.Connection.reconnected(function () {
+            O.fireOn("connection:StatusChanged", 'reconnected', 'reconnected');
+        });
+
+        this.Connection.disconnected(function () {
+            O.fireOn("connection:StatusChanged", 'disconnected', 'disconnected');
             setTimeout(function () {
                 ConnectToSignalR();
             }, 5000); // Restart connection after 5 seconds.
         });
 
-	    // Start the connection.
-		ConnectToSignalR();
-	}
+        // Start the connection.
+        ConnectToSignalR();
+    }
 
-	function ConnectToSignalR() {
-	    var connection = this.Connection;
-	    var obj = this.Connection.start().done(function () {
-	        console.log("Connected to Game Backend");
-	        O.fireOn("connection:StatusChanged", 'connected', 'connected');
-	    });
-	}
+    function ConnectToSignalR() {
+        var connection = this.Connection;
+        var obj = this.Connection.start().done(function () {
+            console.log("Connected to Game Backend");
+            O.fireOn("connection:StatusChanged", 'connected', 'connected');
+        });
+    }
 }
 
 var O = new OClass();

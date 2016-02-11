@@ -34,7 +34,7 @@ namespace Octgn.UI
             }
             foreach(var c in cs)
             {
-                c.Invoke(name, obj);
+                c.invoke(name, obj);
             }
         }
 
@@ -48,19 +48,6 @@ namespace Octgn.UI
             foreach(var c in cs)
             {
                 c.LoadCompleted();
-            }
-        }
-
-        public void FireSetLayout(string layout)
-        {
-            dynamic[] cs = new dynamic[0];
-            lock (_clients)
-            {
-                cs = _clients.ToArray();
-            }
-            foreach(var c in cs)
-            {
-                c.FireSetLayout(layout);
             }
         }
 

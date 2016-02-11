@@ -32,7 +32,6 @@ namespace Octgn.WindowsClient
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            //UIBackend.PingClients();
         }
     }
 }

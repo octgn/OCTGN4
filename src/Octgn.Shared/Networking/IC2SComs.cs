@@ -14,7 +14,6 @@
         void RemoteCall(string name, object obj);
         void StateChange(int id, string name, object val);
         void FullState(int id, string val);
-		void SetLayout(string layout);
 		void GetResourceResp(int reqId, byte[] data, string contentType);
     }
 }

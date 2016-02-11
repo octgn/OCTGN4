@@ -134,11 +134,6 @@ namespace Octgn.UI.Gameplay
             _state.UpdateFullState(id, val);
         }
 
-		public void SetLayout(string layout)
-		{
-			UIRPC.FireSetLayout(layout);
-		}
-
 		public void GetResourceResp(int reqId, byte[] data, string contentType)
 		{
 			this.ResourceResolver.FinishRequest(reqId, data, contentType);

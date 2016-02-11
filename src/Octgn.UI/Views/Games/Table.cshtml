@@ -42,24 +42,14 @@
         function onDisconnected() {
             console.log("[UI]: disconnected");
             $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
-
-            $('#PingClient').off('click');
         }
         function onConnected() {
             console.log("[UI]: connected");
             $("#ConnectionStatus-UI").removeClass("ConnectionStatus-NotConnected").addClass("ConnectionStatus-Connected");
-
-            $('#PingClient').on('click', function () {
-                O.com.send('ping');
-            });
         }
         function onReconnecting() {
             $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Reconnecting");
         }
-
-        O.be.on('ping', function () {
-            alertify.alert("ping");
-        });
 
         O.be.on('gameStatusUpdated', function (status) {
             alertify.alert(!!status ? "Connected" : "Disconnected");
@@ -67,10 +57,6 @@
 
         O.be.on('gameJoinError', function (error) {
             alertify.alert("@RT("_Layout_HostGame")", error);
-        });
-
-        O.be.on('fireSetLayout', function (layout) {
-            $('#GameTable').load(window.location.pathname + '/Resources/' + layout + "?sid=@ViewBag.Sid");
         });
 
         var prevLayout = '';

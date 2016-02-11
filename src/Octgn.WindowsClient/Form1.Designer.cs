@@ -62,7 +62,7 @@
             this.linkLabel2.Size = new System.Drawing.Size(153, 25);
             this.linkLabel2.TabIndex = 1;
             this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Ping Webpage";
+            this.linkLabel2.Text = "Webpage";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // Form1

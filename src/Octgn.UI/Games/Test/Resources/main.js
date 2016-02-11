@@ -1,10 +1,10 @@
 ﻿$(function () {
-    O.com.on('ping', function (obj) {
-        $("#MessageList").append("<li>" + obj + "</li>");
+    O.on('com:msg', function () {
+        $("#MessageList").append("<li>" + this.value + "</li>");
     });
 
     $("#btnSend").on('click', function () {
         var txt = $("#Message").val();
-        O.com.send('ping', txt);
+        O.com.send('msg', txt);
     });
 });
