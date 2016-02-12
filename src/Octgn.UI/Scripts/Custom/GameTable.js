@@ -3,9 +3,9 @@
     this.be = new BackendCommunicationClass();
     this.state = {};
 
-    this.init = function () {
+    this.init = function (port) {
         O.be.init();
-        O.com.init();
+        O.com.init(port);
     }
 
     var callbacks = [];
@@ -62,7 +62,9 @@
 
 var CommunicationsClass = function () {
     this.ConnectionStatus = 'disconnected';
-    this.init = function () {
+    this.port = 0;
+    this.init = function (port) {
+        this.port = port;
     };
     this.on = function (name, callback) {
     }
@@ -71,6 +73,7 @@ var CommunicationsClass = function () {
     }
     this.setConnectionStatus = function(status){
         O.com.ConnectionStatus = status;
+        console.log("[Connection] Server " + status);
         O.fireOn("connection:Changed", O.com, 'server:' + status);
     }
 }
@@ -154,6 +157,7 @@ var BackendCommunicationClass = function () {
 
     this.setConnectionStatus = function(status){
         THIS.ConnectionStatus = status;
+        console.log("[Connection] Backend " + status);
         O.fireOn("connection:Changed", THIS, 'backend:' + status);
     }
 }

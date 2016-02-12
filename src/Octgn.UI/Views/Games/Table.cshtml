@@ -24,43 +24,55 @@
         $(function () {
             BELOG = new LogForwarderClass();
             BELOG.init();
-            O.init();
+            O.init(@Model.Port);
         });
     </script>
-    <div id="ConnectionStatus-UI" class="ConnectionStatus-NotConnected"></div>
+    <div id="OctgnLoadingDiv" class="ConnectionStatus-NotConnected">
+        <div>
+            <div>Loading</div>
+            <div class="spinner">
+                <div class="c1"></div>
+                <div class="c2"></div>
+            </div>
+        </div>
+    </div>
     <script src="@Url.Content("~/Scripts/Custom/GameTable.js")"></script>
-    Game @Model.Id : @Model.Port
     <div id="GameTable">
     </div>
     <script type="text/javascript">
         O.on('connection:Changed', function () {
             console.log("backend:" + this.value.ConnectionStatus);
             if (this.value.ConnectionStatus == 'connected') {
-                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Connected");
+                $('#OctgnLoadingDiv')
+                    .removeClass('ConnectionStatus-NotConnected')
+                    .removeClass('ConnectionStatus-Connecting')
+                    .addClass('ConnectionStatus-Connected');
             }
             else if (this.value.ConnectionStatus == 'disconnected') {
-                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
+                $('#OctgnLoadingDiv')
+                    .removeClass('ConnectionStatus-Connected')
+                    .removeClass('ConnectionStatus-Connecting')
+                    .addClass('ConnectionStatus-NotConnected');
             }
             else if (this.value.ConnectionStatus == 'connecting') {
-                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Connecting");
+                $('#OctgnLoadingDiv')
+                    .removeClass('ConnectionStatus-Connected')
+                    .removeClass('ConnectionStatus-NotConnected')
+                    .addClass('ConnectionStatus-Connecting');
             }
         }, 'backend(.)+');
-
-        O.on('connection:Changed', function () {
-            console.log("server:" + this.value.ConnectionStatus);
-            if (this.value.ConnectionStatus == 'connected') {
-            }
-            else if (this.value.ConnectionStatus == 'disconnected') {
-            }
-            else if (this.value.ConnectionStatus == 'connecting') {
-            }
-        }, 'server(.)+');
 
         var prevLayout = '';
         O.on('state:PropertyChanged', function (uid) {
             if (uid != '@Model.UserId') return;
             var user = O.state.users['@Model.UserId'];
             if (prevLayout == user.layout) return;
+            if (!user.layout) return;
+            setTimeout(function () {
+                $("#OctgnLoadingDiv").fadeOut(1000, function () {
+                    $("#OctgnLoadingDiv").remove();
+                });
+            }, 2000);
             $('#GameTable').load(window.location.pathname + '/Resources/' + user.layout + "?sid=@ViewBag.Sid");
         }, /users\['(\d+)'\]/);
     </script>
