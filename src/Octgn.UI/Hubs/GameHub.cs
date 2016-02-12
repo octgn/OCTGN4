@@ -29,6 +29,8 @@ namespace Octgn.UI.Hubs
 
             gc.UIRPC.LoadCompleted();
 
+            gc.UIRPC.ServerConnectionUpdated(gc.ConnectionStatus);
+
             return base.OnConnected();
         }
 

@@ -14,7 +14,7 @@
     font-weight: bold;
 }
 
-.ConnectionStatus-NotConnected, .ConnectionStatus-Connected, .ConnectionStatus-Reconnecting{
+.ConnectionStatus-NotConnected, .ConnectionStatus-Connected, .ConnectionStatus-Connecting{
     width:16px;
     height:16px;
 }
@@ -27,6 +27,6 @@
     background-color: red;
 }
 
-.ConnectionStatus-Reconnecting{
+.ConnectionStatus-Connecting{
     background-color: orange;
 }

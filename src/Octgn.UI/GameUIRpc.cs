@@ -12,7 +12,7 @@ namespace Octgn.UI
             _clients = new List<dynamic>();
         }
 
-        public void GameStatusUpdated(bool connected)
+        public void ServerConnectionUpdated(string val)
         {
             dynamic[] cs = new dynamic[0];
             lock (_clients)
@@ -21,7 +21,7 @@ namespace Octgn.UI
             }
             foreach(var c in cs)
             {
-                c.GameStatusUpdated(connected);
+                c.serverConnectionUpdated(val);
             }
         }
 

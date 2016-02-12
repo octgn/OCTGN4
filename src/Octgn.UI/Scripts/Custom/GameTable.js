@@ -61,6 +61,7 @@
 }
 
 var CommunicationsClass = function () {
+    this.ConnectionStatus = 'disconnected';
     this.init = function () {
     };
     this.on = function (name, callback) {
@@ -68,30 +69,21 @@ var CommunicationsClass = function () {
     this.send = function (name, obj) {
         O.be.invoke('Send', name, obj);
     }
+    this.setConnectionStatus = function(status){
+        O.com.ConnectionStatus = status;
+        O.fireOn("connection:Changed", O.com, 'server:' + status);
+    }
 }
 
 var BackendCommunicationClass = function () {
-    var callbacks = [];
-    var srcallbacks = [];
-    this.Connection = {}
+    var connection = {}
     var hub;
+    var THIS = this;
+
+    this.ConnectionStatus = 'disconnected';
+
     this.init = function () {
         setupSignalr();
-    }
-    this.on = function (name, callback) {
-        if (name.indexOf('con:') === 0) {
-            if (!callbacks[name])
-                callbacks[name] = [];
-            callbacks[name].push(callback);
-        } else {
-            if (hub)
-                hub.on(name, callback);
-            else {
-                if (!srcallbacks[name])
-                    srcallbacks[name] = [];
-                srcallbacks[name].push(callback);
-            }
-        }
     }
     this.invoke = function (name) {
         var args = [].slice.apply(arguments);
@@ -99,21 +91,17 @@ var BackendCommunicationClass = function () {
     }
     function setupSignalr() {
         // Declare a proxy to reference the hub.
-        this.Connection = $.hubConnection("/signalr", { useDefaultPath: false });
-        hub = this.Connection.createHubProxy('GameHub');
+        connection = $.hubConnection("/signalr", { useDefaultPath: false });
+        hub = connection.createHubProxy('GameHub');
 
         //Set the hubs URL for the connection
-        this.Connection.url = window.location.origin + "/signalr";
+        connection.url = window.location.origin + "/signalr";
         if (window.location.search)
-            this.Connection.qs = window.location.search.substr(1);
+            connection.qs = window.location.search.substr(1);
 
-        Object.keys(srcallbacks).forEach(function (key) {
-            var cbs = srcallbacks[key]
-            for (var i = 0; i < cbs.length; i++) {
-                hub.on(key, cbs[i]);
-            }
-        })
-        delete srcallbacks;
+        hub.on('serverConnectionUpdated', function (status) {
+            O.com.setConnectionStatus(status);
+        });
 
         hub.on('fireStateReplaced', function (state) {
             O.state = JSON.parse(state);
@@ -139,15 +127,15 @@ var BackendCommunicationClass = function () {
             O.fireOn('com:' + name, obj, name);
         });
 
-        this.Connection.reconnecting(function () {
-            O.fireOn("connection:StatusChanged", 'reconnecting', 'reconnecting');
+        connection.reconnecting(function () {
+            THIS.setConnectionStatus('connecting');
         });
-        this.Connection.reconnected(function () {
-            O.fireOn("connection:StatusChanged", 'reconnected', 'reconnected');
+        connection.reconnected(function () {
+            THIS.setConnectionStatus('connected');
         });
 
-        this.Connection.disconnected(function () {
-            O.fireOn("connection:StatusChanged", 'disconnected', 'disconnected');
+        connection.disconnected(function () {
+            THIS.setConnectionStatus('disconnected');
             setTimeout(function () {
                 ConnectToSignalR();
             }, 5000); // Restart connection after 5 seconds.
@@ -158,11 +146,15 @@ var BackendCommunicationClass = function () {
     }
 
     function ConnectToSignalR() {
-        var connection = this.Connection;
-        var obj = this.Connection.start().done(function () {
-            console.log("Connected to Game Backend");
-            O.fireOn("connection:StatusChanged", 'connected', 'connected');
+        THIS.setConnectionStatus('connecting');
+        var obj = connection.start().done(function () {
+            THIS.setConnectionStatus('connected');
         });
+    }
+
+    this.setConnectionStatus = function(status){
+        THIS.ConnectionStatus = status;
+        O.fireOn("connection:Changed", THIS, 'backend:' + status);
     }
 }
 

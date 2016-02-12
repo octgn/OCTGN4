@@ -33,31 +33,28 @@
     <div id="GameTable">
     </div>
     <script type="text/javascript">
-        O.on('connection:StatusChanged', function () {
-            if (this.value == 'connected') onConnected();
-            else if (this.value == 'disconnected') onDisconnected();
-            else if (this.value == 'reconnecting') onReconnecting();
-            else if (this.value == 'reconnected') onConnected();
-        });
-        function onDisconnected() {
-            console.log("[UI]: disconnected");
-            $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
-        }
-        function onConnected() {
-            console.log("[UI]: connected");
-            $("#ConnectionStatus-UI").removeClass("ConnectionStatus-NotConnected").addClass("ConnectionStatus-Connected");
-        }
-        function onReconnecting() {
-            $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Reconnecting");
-        }
+        O.on('connection:Changed', function () {
+            console.log("backend:" + this.value.ConnectionStatus);
+            if (this.value.ConnectionStatus == 'connected') {
+                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Connected");
+            }
+            else if (this.value.ConnectionStatus == 'disconnected') {
+                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-NotConnected");
+            }
+            else if (this.value.ConnectionStatus == 'connecting') {
+                $("#ConnectionStatus-UI").removeClass().addClass("ConnectionStatus-Connecting");
+            }
+        }, 'backend(.)+');
 
-        O.be.on('gameStatusUpdated', function (status) {
-            alertify.alert(!!status ? "Connected" : "Disconnected");
-        });
-
-        O.be.on('gameJoinError', function (error) {
-            alertify.alert("@RT("_Layout_HostGame")", error);
-        });
+        O.on('connection:Changed', function () {
+            console.log("server:" + this.value.ConnectionStatus);
+            if (this.value.ConnectionStatus == 'connected') {
+            }
+            else if (this.value.ConnectionStatus == 'disconnected') {
+            }
+            else if (this.value.ConnectionStatus == 'connecting') {
+            }
+        }, 'server(.)+');
 
         var prevLayout = '';
         O.on('state:PropertyChanged', function (uid) {
