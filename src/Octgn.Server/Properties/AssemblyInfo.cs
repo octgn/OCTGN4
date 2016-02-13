@@ -21,6 +21,9 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("b6b5d47a-fc8a-47dd-b9f3-b66f1cc25b1f")]
+[assembly:InternalsVisibleTo("ClearScript", AllInternalsVisible = true)]
+[assembly:InternalsVisibleTo("nunit.framework", AllInternalsVisible = true)]
+[assembly:InternalsVisibleTo("Octgn.Test", AllInternalsVisible = true)]
 
 // Version information for an assembly consists of the following four values:
 //

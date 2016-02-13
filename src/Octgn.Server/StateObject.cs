@@ -33,7 +33,10 @@ namespace Octgn.Server
             _parent = parent;
             _underlyingObject = o;
             dynamic d = o;
-            try {
+            try
+            {
+                var otype = d.constructor.name;
+                var co = d.prototype;
                 if (d.constructor.name == "Array")
                 {
                     this.IsArray = true;
@@ -132,7 +135,7 @@ namespace Octgn.Server
             {
                 _properties[name] = value;
             }
-            if(firePropertyChanged)
+            if (firePropertyChanged)
                 OnPropertyChanged(this, name, value);
         }
 
@@ -149,7 +152,7 @@ namespace Octgn.Server
             var sb = new StringBuilder();
             sb.Append("{");
             var first = true;
-            foreach(var prop in _properties)
+            foreach (var prop in _properties)
             {
                 if (first) first = false;
                 else sb.Append(",");

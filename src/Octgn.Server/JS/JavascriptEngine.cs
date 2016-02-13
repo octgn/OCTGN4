@@ -13,7 +13,7 @@ namespace Octgn.Server.JS
 
         public void AddObject(string name, object o)
         {
-            _engine.AddHostObject("O", o);
+            _engine.AddHostObject(name, o);
         }
 
         public void Execute(string js)

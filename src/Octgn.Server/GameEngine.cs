@@ -8,7 +8,7 @@ namespace Octgn.Server
         internal GameResourceProvider Resources { get; private set; }
         internal StateHistory StateHistory {get;private set;}
 
-        private JavascriptEngine _engine;
+        internal JavascriptEngine Javascript { get; protected set; }
         internal OClass O { get; private set; }
 
         public UserList Users {get; private set;}
@@ -19,10 +19,10 @@ namespace Octgn.Server
             Users = new UserList();
             StateHistory = new StateHistory();
             O = new OClass(this);
-            _engine = new JavascriptEngine();
-            _engine.AddObject("O", O);
-            _engine.Execute("O.state.users = new Array()");
-            _engine.Execute(Resources.ReadEntryPoint());
+            Javascript = new JavascriptEngine();
+            Javascript.AddObject("O", O);
+            Javascript.Execute("O.state.users = new Array()");
+            //_engine.Execute(Resources.ReadEntryPoint());
             Start();
         }
 
@@ -33,7 +33,7 @@ namespace Octgn.Server
 
         public override void Dispose()
         {
-            _engine.Dispose();  
+            Javascript.Dispose();  
             base.Dispose();
         }
     }
