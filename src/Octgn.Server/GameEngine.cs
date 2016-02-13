@@ -8,7 +8,7 @@ namespace Octgn.Server
         internal GameResourceProvider Resources { get; private set; }
         internal StateHistory StateHistory {get;private set;}
 
-        internal JavascriptEngine Javascript { get; protected set; }
+        internal JavascriptEngine Javascript { get; private set; }
         internal OClass O { get; private set; }
 
         public UserList Users {get; private set;}
@@ -22,7 +22,8 @@ namespace Octgn.Server
             Javascript = new JavascriptEngine();
             Javascript.AddObject("O", O);
             Javascript.Execute("O.state.users = new Array()");
-            //_engine.Execute(Resources.ReadEntryPoint());
+            if(Resources != null)
+                Javascript.Execute(Resources.ReadEntryPoint());
             Start();
         }
 

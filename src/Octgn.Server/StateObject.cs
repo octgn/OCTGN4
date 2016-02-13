@@ -6,32 +6,41 @@ using System.Text;
 
 namespace Octgn.Server
 {
-    public class StateObject : DynamicObject, IDynamicMetaObjectProvider
+    public class StateObject : DynamicObject
     {
         public string Name { get; private set; }
+        public string FullName { get; private set; }
         public StateObjectMeta Meta { get; set; }
         public bool IsArray { get; protected set; }
 
         private DynamicObject _underlyingObject;
         private Dictionary<string, object> _properties;
         private StateObject _parent;
-        protected StateObject(string name)
+        private GameEngine _engine;
+        internal StateObject(string name, GameEngine engine)
+            :this(name, null, engine, null)
         {
-            Name = name;
-            _properties = new Dictionary<string, object>();
         }
 
         protected StateObject(string name, StateObject parent)
+            : this(name, parent, null, null)
         {
-            Name = name;
-            _parent = parent;
-            _properties = new Dictionary<string, object>();
         }
 
-        protected StateObject(string name, StateObject parent, DynamicObject o) : this(name)
+        internal StateObject(string name, StateObject parent, GameEngine engine, DynamicObject o) 
         {
+            Name = name;
+            FullName = "";
             _parent = parent;
+            if(_parent != null)
+            {
+                FullName = _parent.FullName + ".";
+            }
+            FullName += Name;
+            _engine = engine == null ? parent._engine : engine;
             _underlyingObject = o;
+            _properties = new Dictionary<string, object>();
+            if (o == null) return;
             dynamic d = o;
             try
             {
@@ -48,9 +57,23 @@ namespace Octgn.Server
             }
             Type type = d.GetType();
             var meth = type.GetMethods().First(x => x.Name == "GetProperty" && x.GetParameters().Length == 2);
-            foreach (var propName in o.GetDynamicMemberNames())
+            var memberList = new List<string>();
+            memberList.AddRange(o.GetDynamicMemberNames());
+            var prototypeMethods = _engine.Javascript.Script.Object.getOwnPropertyNames(_engine.Javascript.Script.Object.getPrototypeOf(d));
+            for(var i = 0;i<prototypeMethods.length;i++)
+            {
+                var item = prototypeMethods[i];
+                string si = (string)item;
+                if(memberList.Contains(si) == false)
+                memberList.Add(si);
+            }
+            foreach (var propName in memberList)
             {
                 var val = meth.Invoke(d, new object[] { propName, new object[0] });
+                if(val == null)
+                {
+                    val = d[propName];
+                }
                 if (val == null)
                 {
                     _properties[propName] = null;
@@ -68,7 +91,7 @@ namespace Octgn.Server
                     {
                         if ((val as DynamicObject).GetDynamicMemberNames().Any(x => x == "_meta"))
                         {
-                            var so = new StateObject(propName, this, val as DynamicObject);
+                            var so = new StateObject(propName, this, null, val as DynamicObject);
                             _properties[propName] = so;
                             continue;
                         }
@@ -123,8 +146,7 @@ namespace Octgn.Server
                     this.Meta = new StateObjectMeta(value as DynamicObject);
                     return;
                 }
-                var jo = ((DynamicObject)value);
-                value = new StateObject(name, this, jo);
+                value = new StateObject(name, this, null, (DynamicObject)value);
             }
 
             if (!_properties.ContainsKey(name))

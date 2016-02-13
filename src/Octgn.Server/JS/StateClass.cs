@@ -5,7 +5,7 @@
         private UserListClass _users;
         private GameEngine _engine;
         internal StateClass(string name, GameEngine engine)
-            : base(name)
+            : base(name, engine)
         {
             _engine = engine;
             _users = new UserListClass(this);

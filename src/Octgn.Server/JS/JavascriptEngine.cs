@@ -5,10 +5,12 @@ namespace Octgn.Server.JS
 {
     internal class JavascriptEngine : IDisposable
     {
+        public dynamic Script { get; set; }
         private V8ScriptEngine _engine;
         public JavascriptEngine()
         {
             _engine = new V8ScriptEngine();
+            Script = _engine.Script;
         }
 
         public void AddObject(string name, object o)

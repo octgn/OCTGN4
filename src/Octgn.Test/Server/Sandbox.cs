@@ -10,11 +10,24 @@ namespace Octgn.Test.Server
         [Test]
         public void Whatever()
         {
-            using(var engine = new GameEngine(null))
+            using (var engine = new GameEngine(null))
             {
                 var o = new OClass(engine);
-                engine.Javascript.
+
+                engine.Javascript.Execute("var a = new Array();");
+                var obj = engine.Javascript.ExecuteAndReturn("a");
+                //engine.Javascript.
             }
-       }
+        }
+
+        [Test]
+        public void PreserveWrappedObject()
+        {
+            using (var engine = new GameEngine(null))
+            {
+                var o = new OClass(engine);
+                engine.Javascript.Execute("O.state.users.push(1)");
+            }
+        }
     }
 }
