@@ -45,7 +45,6 @@ namespace Octgn.Server
             try
             {
                 var otype = d.constructor.name;
-                var co = d.prototype;
                 if (d.constructor.name == "Array")
                 {
                     this.IsArray = true;
@@ -57,17 +56,7 @@ namespace Octgn.Server
             }
             Type type = d.GetType();
             var meth = type.GetMethods().First(x => x.Name == "GetProperty" && x.GetParameters().Length == 2);
-            var memberList = new List<string>();
-            memberList.AddRange(o.GetDynamicMemberNames());
-            var prototypeMethods = _engine.Javascript.Script.Object.getOwnPropertyNames(_engine.Javascript.Script.Object.getPrototypeOf(d));
-            for(var i = 0;i<prototypeMethods.length;i++)
-            {
-                var item = prototypeMethods[i];
-                string si = (string)item;
-                if(memberList.Contains(si) == false)
-                memberList.Add(si);
-            }
-            foreach (var propName in memberList)
+            foreach (var propName in o.GetDynamicMemberNames())
             {
                 var val = meth.Invoke(d, new object[] { propName, new object[0] });
                 if(val == null)

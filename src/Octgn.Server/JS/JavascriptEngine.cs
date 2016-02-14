@@ -1,4 +1,5 @@
-﻿using Microsoft.ClearScript.V8;
+﻿using Microsoft.ClearScript;
+using Microsoft.ClearScript.V8;
 using System;
 
 namespace Octgn.Server.JS
@@ -6,7 +7,7 @@ namespace Octgn.Server.JS
     internal class JavascriptEngine : IDisposable
     {
         public dynamic Script { get; set; }
-        private V8ScriptEngine _engine;
+        private ScriptEngine _engine;
         public JavascriptEngine()
         {
             _engine = new V8ScriptEngine();

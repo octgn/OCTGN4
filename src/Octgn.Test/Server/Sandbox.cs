@@ -16,7 +16,6 @@ namespace Octgn.Test.Server
 
                 engine.Javascript.Execute("var a = new Array();");
                 var obj = engine.Javascript.ExecuteAndReturn("a");
-                //engine.Javascript.
             }
         }
 
