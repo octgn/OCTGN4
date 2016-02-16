@@ -6,7 +6,7 @@ using Octgn.Shared;
 
 namespace Octgn.Server
 {
-    internal abstract class GameThread : IDisposable
+    public abstract class GameThread : IDisposable
     {
         private static ILogger Log = LoggerFactory.Create<GameThread>();
         private Task _gameThread;

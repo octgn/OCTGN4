@@ -1,31 +1,30 @@
 ﻿namespace Octgn.Server.JS
 {
-    public class StateClass : StateObject
+    public class StateClass : StatefullObject
     {
         private UserListClass _users;
-        private GameEngine _engine;
-        internal StateClass(string name, GameEngine engine)
-            : base(name, engine)
+        internal StateClass(GameEngine engine)
+            : base("O.state", engine, null)
         {
-            _engine = engine;
-            _users = new UserListClass(this);
-            AddProperty("users", _users, false);
+            _users = new UserListClass(engine, this);
+            dynamicObject.users = _users;
         }
 
         internal UserClass AddUser(int id, string username)
         {
-            var ub = this._engine.Users.Get(id);
-            var uc = new UserClass(ub, _users);
+            var ub = this.Engine.Users.Get(id);
+            var uc = new UserClass(Engine, ub, _users);
             _users.Add(uc);
             return uc;
         }
 
-        protected override void OnPropertyChanged(StateObject sender, string name, object val)
+        protected override void OnPropertyChanged(StatefullObject sender, PropertyChangedEventArgs args)
         {
-            var id = _engine.StateHistory.StoreChange(name, val);
+            var cname = sender.FullName + "." + args.PropertyName;
+            var id = Engine.StateHistory.StoreChange(cname, args.Value);
             if (id % 10 == 0)
-                _engine.StateHistory.StoreFullState(id, this);
-            _engine.Users.BroadcastRPC.StateChange(id, name, val.ToString());
+                Engine.StateHistory.StoreFullState(id, this);
+            Engine.Users.BroadcastRPC.StateChange(id, cname, args.Value.ToString());
         }
     }
 }

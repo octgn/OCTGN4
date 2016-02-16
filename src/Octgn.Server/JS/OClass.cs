@@ -19,11 +19,14 @@ namespace Octgn.Server.JS
             _engine = engine;
             com = new ComClass(engine);
             events = new EventsClass(engine);
-            state = new StateClass("O.state", _engine);
-            statefull = x => {
-                // TODO create a new thingy
-                return null;
-            };
+            state = new StateClass(_engine);
+            statefull = CreateStatefull;
+        }
+
+        private dynamic CreateStatefull(dynamic d)
+        {
+            var ret = StatefullObject.Create(_engine, null, d);
+            return ret;
         }
     }
 }

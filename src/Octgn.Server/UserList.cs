@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Octgn.Server
 {
-    internal class UserList : IInterceptor
+    public class UserList : IInterceptor
     {
         private static ProxyGenerator _generator = new ProxyGenerator();
         internal IS2CComs BroadcastRPC { get; private set; }

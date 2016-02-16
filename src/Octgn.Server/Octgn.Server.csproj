@@ -63,14 +63,15 @@
     <Compile Include="JS\EventsClass.cs" />
     <Compile Include="JS\JavascriptEngine.cs" />
     <Compile Include="JS\OClass.cs" />
+    <Compile Include="JS\PropertyChangedEventArgs.cs" />
     <Compile Include="JS\StateClass.cs" />
+    <Compile Include="JS\StatefullArray.cs" />
+    <Compile Include="JS\StatefullObject.cs" />
     <Compile Include="JS\UserClass.cs" />
+    <Compile Include="JS\UserListClass.cs" />
     <Compile Include="StateHistory.cs" />
-    <Compile Include="StateObject.cs" />
     <Compile Include="GameThread.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StateObjectMeta.cs" />
-    <Compile Include="StateObjectMetaPermission.cs" />
     <Compile Include="UserBase.cs" />
     <Compile Include="UserList.cs" />
   </ItemGroup>

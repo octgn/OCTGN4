@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Octgn.Server;
 using Octgn.Server.JS;
+using System;
 
 namespace Octgn.Test.Server
 {
@@ -25,11 +26,20 @@ namespace Octgn.Test.Server
             using (var engine = new GameEngine(null))
             {
                 var o = new OClass(engine);
-                var b = engine.Javascript.ExecuteAndReturn("O.statefull([])");
-                engine.Javascript.Execute("O.state.users.push(1)");
-                engine.Javascript.Execute("O.state.jim = 1");
-                var d = engine.Javascript.ExecuteAndReturn("O.state.users.constructor.name");
-                System.Console.WriteLine(d);
+                engine.Javascript.Execute("var test = O.statefull({})");
+                engine.Javascript.Execute("O.state.test = test");
+                engine.Javascript.Execute("O.state.test.jimmy = 12;");
+                var val = engine.Javascript.Script.test.jimmy;
+
+                var str = Newtonsoft.Json.JsonConvert.SerializeObject(engine.Javascript.Script.test);
+                Console.WriteLine(str);
+
+                Assert.AreEqual(12, val);
+                //engine.Javascript.Execute("O.statefull({})");
+                //engine.Javascript.Execute("O.state.users.push(1)");
+                //engine.Javascript.Execute("O.state.jim = 1");
+                //var d = engine.Javascript.ExecuteAndReturn("O.state.users.constructor.name");
+                //System.Console.WriteLine(d);
             }
         }
     }

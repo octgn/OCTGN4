@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace Octgn.Server.JS
 {
-	public class UserClass : StateObject
+	public class UserClass : StatefullObject
     {
 		public string id { get; protected set; }
         public string username { get; protected set; }
 		private UserBase _user;
 
-        internal UserClass(UserBase user, UserListClass parent)
-            :base(user.Id.ToString(), parent)
+        internal UserClass(GameEngine engine, UserBase user, UserListClass parent)
+            :base(user.Id.ToString(), engine, parent)
         {
             _user = user;
             id = user.Id.ToString();
@@ -39,20 +39,6 @@ namespace Octgn.Server.JS
             list.Add("id");
             list.Add("username");
             return list;
-        }
-    }
-
-    public class UserListClass : StateObject
-    {
-        internal UserListClass(StateClass cls)
-            :base("users", cls)
-        {
-            IsArray = true;
-        }
-
-        internal void Add(UserClass user)
-        {
-            AddProperty(user.id.ToString(), user, true);
         }
     }
 }
