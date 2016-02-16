@@ -19,9 +19,30 @@ namespace Octgn.Server
             Users = new UserList();
             StateHistory = new StateHistory();
             Javascript = new JavascriptEngine();
-            O = new OClass(this);
+			Javascript.Script.console = new
+			{
+				log = new Action<object>(ScriptLog)
+			};
+			Javascript.Script.__statefull = new Func<dynamic, dynamic>(x => {
+				var ret = StatefullObject.Create(this, null, x);
+				return ret;
+			});
+			O = new OClass(this);
             Javascript.AddObject("O", O);
-            Javascript.Execute("O.state.users = new Array()");
+			Javascript.Execute(@"
+var statefull = function(obj){
+	if(obj.constructor === Array){
+		var real = obj.slice(0);
+		var val = __statefull(obj);
+		val.array = real;
+	} else {
+		var val = __statefull(obj);
+	}
+	return val;
+};
+");
+			O.Init();
+            //Javascript.Execute("O.state.users = statefull([])");
             if(Resources != null)
                 Javascript.Execute(Resources.ReadEntryPoint());
             Start();
@@ -31,6 +52,11 @@ namespace Octgn.Server
         {
             Users.ProcessUsers();
         }
+
+		private void ScriptLog(object msg)
+		{
+			System.Console.WriteLine(msg);
+		}
 
         public override void Dispose()
         {

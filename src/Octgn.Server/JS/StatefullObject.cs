@@ -1,6 +1,8 @@
 ﻿using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 
 namespace Octgn.Server.JS
 {
@@ -52,6 +54,8 @@ namespace Octgn.Server.JS
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
+			var ret = (DynamicObject)dynamicObject.__proto__;
+			var rm = ret.GetDynamicMemberNames().ToArray();
             return _object.GetDynamicMemberNames();
         }
 
@@ -63,7 +67,8 @@ namespace Octgn.Server.JS
 
         public override string ToString()
         {
-            return base.ToString();
+			dynamic td = this;
+			return JsonConvert.SerializeObject(td);
         }
 
         public static StatefullObject Create(GameEngine engine, string name, DynamicObject obj)
@@ -85,5 +90,4 @@ namespace Octgn.Server.JS
             return (d.constructor != null && d.constructor.name == "Array");
         }
     }
-
 }
