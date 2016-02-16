@@ -1,4 +1,6 @@
-﻿namespace Octgn.Server.JS
+﻿using System;
+
+namespace Octgn.Server.JS
 {
     internal class OClass
     {
@@ -8,6 +10,8 @@
 
         public EventsClass events { get; private set; }
 
+        public Func<dynamic, dynamic> statefull { get; private set; }
+
         private GameEngine _engine;
 
         public OClass(GameEngine engine)
@@ -16,6 +20,10 @@
             com = new ComClass(engine);
             events = new EventsClass(engine);
             state = new StateClass("O.state", _engine);
+            statefull = x => {
+                // TODO create a new thingy
+                return null;
+            };
         }
     }
 }

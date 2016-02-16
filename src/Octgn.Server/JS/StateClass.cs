@@ -19,6 +19,7 @@
             _users.Add(uc);
             return uc;
         }
+
         protected override void OnPropertyChanged(StateObject sender, string name, object val)
         {
             var id = _engine.StateHistory.StoreChange(name, val);

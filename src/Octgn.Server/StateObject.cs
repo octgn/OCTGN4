@@ -48,6 +48,9 @@ namespace Octgn.Server
                 if (d.constructor.name == "Array")
                 {
                     this.IsArray = true;
+                    d.push = new Action<object>((x) => {
+                        System.Console.WriteLine(x.ToString());
+                    });
                 }
             }
             catch

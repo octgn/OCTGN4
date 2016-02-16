@@ -25,7 +25,11 @@ namespace Octgn.Test.Server
             using (var engine = new GameEngine(null))
             {
                 var o = new OClass(engine);
+                var b = engine.Javascript.ExecuteAndReturn("O.statefull([])");
                 engine.Javascript.Execute("O.state.users.push(1)");
+                engine.Javascript.Execute("O.state.jim = 1");
+                var d = engine.Javascript.ExecuteAndReturn("O.state.users.constructor.name");
+                System.Console.WriteLine(d);
             }
         }
     }
