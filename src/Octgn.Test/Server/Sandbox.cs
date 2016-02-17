@@ -32,30 +32,40 @@ namespace Octgn.Test.Server
                 engine.Javascript.Execute("O.state.test = test");
                 engine.Javascript.Execute("O.state.test.jimmy = 12;");
                 var val = engine.Javascript.Script.test.jimmy;
-				var list = engine.StateHistory.GetLatestChanges()
-					.Where(x=>x.Name.StartsWith("O.state.test"))
-					.ToArray();
+                var list = engine.StateHistory.GetLatestChanges()
+                    .Where(x => x.Name.StartsWith("O.state.test"))
+                    .ToArray();
 
                 Assert.AreEqual(12, val);
-				Assert.AreEqual("O.state.test", list[0].Name);
-				Assert.AreEqual("{}", list[0].Change);
-				Assert.AreEqual("O.state.test.jimmy", list[1].Name);
-				Assert.AreEqual("12", list[1].Change);
-			}
+                Assert.AreEqual("O.state.test", list[0].Name);
+                Assert.AreEqual("{}", list[0].Change);
+                Assert.AreEqual("O.state.test.jimmy", list[1].Name);
+                Assert.AreEqual("12", list[1].Change);
+            }
+        }
 
+        [Test]
+        public void StateArraySpec()
+        {
 			using(var engine = new GameEngine(null))
 			{
 				var results = new Dictionary<string,bool>();
 				engine.Javascript.AddObject("results", results);
 
-				engine.Javascript.Execute("O.state.test = statefull([])");
+				engine.Javascript.Execute("O.state.test = statefull([12,13])");
+                engine.Javascript.Execute(@"
+var items = O.state.test.splice(0, 1);
+var ify = JSON.stringify(items);
+");
+                Assert.AreEqual("[12,13]", engine.Javascript.Script.ify);
+                engine.Javascript.Execute("O.state.test.length = 0;");
 
 				engine.Javascript.Execute(@"
-results.Add('Count of 0', O.state.test.array.length === 0);
+results.Add('Count of 0', O.state.test.length === 0);
 O.state.test.push(1);
-results.Add('Count of 1', O.state.test.array.length === 1);
+results.Add('Count of 1', O.state.test.length === 1);
 O.state.test.pop();
-results.Add('Count of 0 after pop', O.state.test.array.length === 0);
+results.Add('Count of 0 after pop', O.state.test.length === 0);
 ");
 
 				var changes = engine.StateHistory.GetLatestChanges().ToArray();
