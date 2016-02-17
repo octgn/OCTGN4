@@ -68,16 +68,13 @@ O.state.test.pop();
 results.Add('Count of 0 after pop', O.state.test.length === 0);
 ");
 
-				var changes = engine.StateHistory.GetLatestChanges().ToArray();
 				foreach (var r in results.Keys)
 					Assert.IsTrue(results[r],r + " == false");
 
 				engine.Javascript.Execute("O.state.test[0] = 12");
 				Assert.AreEqual(12, engine.Javascript.Script.O.state.test[0]);
 
-				//engine.Javascript.Execute("O.state.test.push(1)");
-
-				//Assert.AreEqual(1, engine.Javascript.Script.test[0]);
+				var changes = engine.StateHistory.GetLatestChanges().ToArray();
 			}
         }
     }

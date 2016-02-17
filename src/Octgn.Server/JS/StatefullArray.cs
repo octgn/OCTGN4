@@ -161,9 +161,11 @@ namespace Octgn.Server.JS
             while (poopoo > (_items.Count - 1))
             {
                 _items.Add(null);
+				OnPropertyChanged(this, new PropertyChangedEventArgs(poopoo.ToString(), null));
             }
 
             _items[poopoo] = value;
+			OnPropertyChanged(this, new PropertyChangedEventArgs(binder.Name, value));
 
             return true;
         }
