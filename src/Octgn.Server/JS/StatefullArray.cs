@@ -167,5 +167,32 @@ namespace Octgn.Server.JS
 
             return true;
         }
-    }
+
+		public override bool TryGetMember(GetMemberBinder binder, out object result)
+		{
+            int poopoo = 0;
+            if (!int.TryParse(binder.Name, out poopoo))
+                return base.TryGetMember(binder, out result);
+
+			result = null;
+			if (poopoo >= _items.Count) return true;
+
+            result = _items[poopoo];
+
+            return true;
+		}
+
+		public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+		{
+			if((indexes[0] is int) == false)
+				return base.TryGetIndex(binder, indexes, out result);
+			var index = (int)indexes[0];
+
+			result = null;
+			if (index >= _items.Count) return true;
+
+            result = _items[index];
+			return true;
+		}
+	}
 }
