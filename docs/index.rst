@@ -29,3 +29,4 @@ We have multiple sections for our documentation:
 
    workflow
    network_protocol
+   state_history_format
