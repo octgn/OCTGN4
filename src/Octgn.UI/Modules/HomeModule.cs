@@ -20,9 +20,9 @@ namespace Octgn.UI.Modules
                 var login = this.BindAndValidate<LoginModel>();
                 if (!this.ModelValidationResult.IsValid)
                 {
-                    Context.Response = new Nancy.Response();
-                    Context.Response.StatusCode = HttpStatusCode.BadRequest;
-                    return this.ModelValidationResult.FormattedErrors;
+                    return Negotiate
+                        .WithModel(this.ModelValidationResult.FormattedErrors)
+                        .WithStatusCode(HttpStatusCode.BadRequest);
                 }
 
                 var user = sessions.Create(login.Username);

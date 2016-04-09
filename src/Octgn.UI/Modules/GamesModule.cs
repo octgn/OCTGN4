@@ -19,27 +19,27 @@ namespace Octgn.UI.Modules
                     var game = this.BindAndValidate<HostGameModel>();
                     if (!this.ModelValidationResult.IsValid)
                     {
-                        Context.Response = new Nancy.Response();
-                        Context.Response.StatusCode = HttpStatusCode.BadRequest;
-                        return this.ModelValidationResult.FormattedErrors;
+                        return Negotiate
+                           .WithModel(this.ModelValidationResult.FormattedErrors)
+                           .WithStatusCode(HttpStatusCode.BadRequest);
                     }
                     var user = Context.CurrentUser as User;
                     var server = locserver.LaunchServer(game.GameName);
                     var client = user.JoinGame("localhost:" + server.Port);
                     if (!client.Connect())
                     {
-                        Context.Response = new Nancy.Response();
-                        Context.Response.StatusCode = HttpStatusCode.InternalServerError;
-                        return Text.MainHub_HostGame_UnhandledError;
+                        return Negotiate
+                           .WithModel((string)Text.MainHub_HostGame_UnhandledError)
+                           .WithStatusCode(HttpStatusCode.InternalServerError);
                     }
                     return client.Id.ToString();
                 }
                 catch (System.Exception e)
                 {
                     Log.Error(e.ToString());
-                    Context.Response = new Nancy.Response();
-                    Context.Response.StatusCode = HttpStatusCode.InternalServerError;
-                    return Text.MainHub_HostGame_UnhandledError;
+                    return Negotiate
+                        .WithModel((string)Text.MainHub_HostGame_UnhandledError)
+                        .WithStatusCode(HttpStatusCode.InternalServerError);
                 }
             };
 
@@ -50,26 +50,26 @@ namespace Octgn.UI.Modules
                     var game = this.BindAndValidate<JoinGameModel>();
                     if (!this.ModelValidationResult.IsValid)
                     {
-                        Context.Response = new Nancy.Response();
-                        Context.Response.StatusCode = HttpStatusCode.BadRequest;
-                        return this.ModelValidationResult.FormattedErrors;
+                        return Negotiate
+                            .WithModel(this.ModelValidationResult.FormattedErrors)
+                            .WithStatusCode(HttpStatusCode.BadRequest);
                     }
                     var user = Context.CurrentUser as User;
                     var client = user.JoinGame(game.Host);
                     if (!client.Connect())
                     {
-                        Context.Response = new Nancy.Response();
-                        Context.Response.StatusCode = HttpStatusCode.InternalServerError;
-                        return Text.Modules_HomeModule_JoinGame_CouldNotConnect;
+                        return Negotiate
+                            .WithModel((string)Text.Modules_HomeModule_JoinGame_CouldNotConnect)
+                            .WithStatusCode(HttpStatusCode.InternalServerError);
                     }
                     return client.Id.ToString();
                 }
                 catch (System.Exception e)
                 {
                     Log.Error(e.ToString());
-                    Context.Response = new Nancy.Response();
-                    Context.Response.StatusCode = HttpStatusCode.InternalServerError;
-                    return Text.Modules_HomeModule_JoinGame_UnhandledError;
+                    return Negotiate
+                        .WithModel((string)Text.Modules_HomeModule_JoinGame_UnhandledError)
+                        .WithStatusCode(HttpStatusCode.InternalServerError);
                 }
             };
 
