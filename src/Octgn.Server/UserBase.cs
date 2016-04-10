@@ -71,6 +71,7 @@ namespace Octgn.Server
                 return;
 
             message.Invoke<IC2SComs>(this);
+            this.Server.Engine.O.state.ChangeTracker.ProcessChanges();
         }
 
         protected void ReplaceSelf(UserBase user)

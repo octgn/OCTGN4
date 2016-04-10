@@ -4,14 +4,13 @@ using System.Linq;
 
 namespace Octgn.Server.JS
 {
-	public class UserClass : StatefullObject
+	public class UserClass : DynamicObject
     {
 		public string id { get; protected set; }
         public string username { get; protected set; }
 		private UserBase _user;
 
-        internal UserClass(GameEngine engine, UserBase user, UserListClass parent)
-            :base(user.Id.ToString(), engine, parent)
+        internal UserClass(GameEngine engine, UserBase user)
         {
             _user = user;
             id = user.Id.ToString();

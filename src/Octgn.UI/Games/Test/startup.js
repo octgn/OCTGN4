@@ -12,7 +12,7 @@ O.com.on('msg', function (obj) {
     O.com.broadcast('msg', obj);
 });
 
-O.state.chatLog = O.statefull([]);
+O.state.chatLog = [];
 // Array item added
 O.state.chatLog.push(1);
 O.state.chatLog.push(2);
@@ -21,7 +21,7 @@ delete O.state.chatLog[0]
 // Array item is changed
 O.state.chatLog[0] = 12
 
-O.state.someObj = O.statefull({});
+O.state.someObj = {};
 // Property is created
 O.state.someObj.taco = 12;
 O.state.someObj.taco2 = 12;

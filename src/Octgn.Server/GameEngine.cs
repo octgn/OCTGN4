@@ -23,26 +23,9 @@ namespace Octgn.Server
 			{
 				log = new Action<object>(ScriptLog)
 			};
-			Javascript.Script.__statefull = new Func<dynamic, dynamic>(x => {
-				var ret = StatefullObject.Create(this, null, x);
-				return ret;
-			});
 			O = new OClass(this);
             Javascript.AddObject("O", O);
-			Javascript.Execute(@"
-var statefull = function(obj){
-	if(obj.constructor === Array){
-		var real = obj.slice(0);
-		var val = __statefull(obj);
-		val.array = real;
-	} else {
-		var val = __statefull(obj);
-	}
-	return val;
-};
-");
 			O.Init();
-            //Javascript.Execute("O.state.users = statefull([])");
             if(Resources != null)
                 Javascript.Execute(Resources.ReadEntryPoint());
             Start();
