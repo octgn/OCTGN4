@@ -7,8 +7,6 @@ using Octgn.Shared;
 using System.Dynamic;
 using Octgn.Server.JS;
 using Octgn.Server;
-using Microsoft.CSharp.RuntimeBinder;
-using System.Runtime.CompilerServices;
 using Dynamitey;
 
 namespace Octgn.Test.Shared
@@ -93,6 +91,71 @@ namespace Octgn.Test.Shared
                         Assert.AreEqual(prop.Value, objProps[prop.Key]);
                     }
                 }
+            }
+        }
+
+        [Test]
+        public void Diff()
+        {
+            using (var ge = new GameEngine(null))
+            {
+                var diff = new ObjectDiff();
+
+                dynamic sobj = new ExpandoObject();
+                dynamic eobj = new ExpandoObject();
+
+                eobj.Tim = new ExpandoObject();
+                eobj.Tim.bill = 12;
+
+                diff.Diff(sobj, eobj);
+                Assert.AreEqual(diff.Added["Tim"], eobj.Tim);
+                Assert.IsEmpty(diff.Deleted);
+                Assert.IsEmpty(diff.Modified);
+
+                // Equal
+                diff = new ObjectDiff();
+                sobj = eobj;
+                eobj = new ExpandoObject();
+
+                eobj.Tim = new ExpandoObject();
+                eobj.Tim.bill = 12;
+
+                diff.Diff(sobj, eobj);
+                Assert.IsEmpty(diff.Added);
+                Assert.IsEmpty(diff.Deleted);
+                Assert.IsEmpty(diff.Modified);
+
+                // Modify
+                diff = new ObjectDiff();
+                sobj = eobj;
+                eobj = new ExpandoObject();
+
+                eobj.Tim = new ExpandoObject();
+                eobj.Tim.bill = "chicken";
+
+                diff.Diff(sobj, eobj);
+                Assert.IsEmpty(diff.Added);
+                Assert.IsEmpty(diff.Deleted);
+                Assert.AreEqual(diff.Modified["Tim.bill"], "chicken");
+
+                // Delete
+                diff = new ObjectDiff();
+                sobj = eobj;
+                eobj = new ExpandoObject();
+
+                eobj.Tim = new ExpandoObject();
+
+                diff.Diff(sobj, eobj);
+                Assert.IsEmpty(diff.Added);
+                Assert.IsEmpty(diff.Modified);
+                Assert.Contains("Tim.bill", diff.Deleted);
+
+                eobj = new ExpandoObject();
+
+                diff.Diff(sobj, eobj);
+                Assert.IsEmpty(diff.Added);
+                Assert.IsEmpty(diff.Modified);
+                Assert.Contains("Tim", diff.Deleted);
             }
         }
     }

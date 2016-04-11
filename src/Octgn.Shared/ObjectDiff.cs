@@ -44,7 +44,7 @@ namespace Octgn.Shared
 
                 if (IsValue(prop.Value))
                 {
-                    if (prop.Value == prevProp) continue;
+                    if (object.Equals(prop.Value, prevProp)) continue;
                     Modified.Add(prefix + prop.Key, prop.Value);
                     continue;
                 }
