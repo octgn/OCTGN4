@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Octgn.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,12 +20,13 @@ namespace Octgn.Server
 
         public void ProcessChanges()
         {
+            var diff = new ObjectDiff();
 
-        }
+            diff.Diff(_objectProps, _object);
 
-        public void Change(object o)
-        {
-
+            // Store those changes(patch)
+            // Update the _objectProps object with new object
+            // Send those changes off
         }
     }
 }
