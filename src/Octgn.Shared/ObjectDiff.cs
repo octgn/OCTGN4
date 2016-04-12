@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Dynamic;
 using System.Linq;
@@ -7,17 +8,19 @@ namespace Octgn.Shared
 {
     public class ObjectDiff
     {
+        public DateTime DateCreated { get; set; }
         public Dictionary<string, object> Added { get; private set; } = new Dictionary<string, object>();
         public Dictionary<string, object> Modified { get; private set; } = new Dictionary<string, object>();
         public List<string> Deleted { get; private set; } = new List<string>();
 
         public ObjectDiff()
         {
-            
+            DateCreated = DateTime.Now;
         }
 
         public ObjectDiff(object prev, object cur)
         {
+            DateCreated = DateTime.Now;
             Diff(prev, cur);
         }
 
@@ -97,6 +100,21 @@ namespace Octgn.Shared
                     yield return kvp;
                 }
             }
+        }
+
+        public static Dictionary<string, object> ObjectToDictionary(object o)
+        {
+            Contract.Ensures(IsValue(o));
+            if (!IsValue(o)) throw new InvalidOperationException();
+            if (o == null) return new Dictionary<string, object>();
+
+            var dick = EnumerateProperties(o).ToDictionary(x => x.Key, x =>
+            {
+                if (IsValue(x.Value)) return x.Value;
+                return ObjectToDictionary(x.Value);
+            });
+
+            return dick;
         }
     }
 }

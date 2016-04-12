@@ -9,8 +9,10 @@ namespace Octgn.Server
 {
     internal class ChangeTracker
     {
+        private Dictionary<int, ObjectDiff> _changes;
         private Dictionary<string, object> _objectProps;
         private object _object;
+        private int _prevId;
 
         public ChangeTracker(object o)
         {
@@ -25,8 +27,10 @@ namespace Octgn.Server
             diff.Diff(_objectProps, _object);
 
             // Store those changes(patch)
+            _changes.Add(_prevId++, diff);
+
             // Update the _objectProps object with new object
-            // Send those changes off
+            _objectProps = ObjectDiff.ObjectToDictionary(_object);
         }
     }
 }

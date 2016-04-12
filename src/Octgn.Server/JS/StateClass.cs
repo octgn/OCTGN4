@@ -19,7 +19,7 @@ namespace Octgn.Server.JS
             _users = new Dictionary<int, UserClass>();
             _properties = new Dictionary<string, object>();
             _previous = new object();
-            ChangeTracker = new ChangeTracker(this);
+            ChangeTracker = engine.CreateChangeTracker(this);
         }
 
         internal UserClass AddUser(int id, string username)
