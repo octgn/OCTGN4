@@ -68,6 +68,11 @@ namespace Octgn.Shared
             return IsDifferent;
         }
 
+        public void Patch(object patchObject)
+        {
+            throw new NotImplementedException();
+        }
+
         public static bool IsValue(object o)
         {
             if (o == null) return true;

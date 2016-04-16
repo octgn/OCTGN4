@@ -7,27 +7,21 @@ namespace Octgn.UI.Gameplay
     public class GameState
     {
         private string _fullState;
-        private Dictionary<string, object> _state;
+        private Dictionary<int, ObjectDiff> _state;
         private GameClient _client;
 
         public GameState(GameClient client)
         {
             _client = client;
             _fullState = "{}";
-            _state = new Dictionary<string, object>();
+            _state = new Dictionary<int, ObjectDiff>();
         }
 
         internal void UpdateState(ObjectDiff diff)
         {
             lock (this)
             {
-                var realo = val is string
-                    ? JsonConvert.DeserializeObject(val as string) : val;
-
-                if (!_state.ContainsKey(name))
-                    _state.Add(name, realo);
-                else
-                    _state[name] = realo;
+                _state.Add(diff.Id, diff);
 
                 _client.UIRPC.FirePropertyChanged(name, realo);
             }
