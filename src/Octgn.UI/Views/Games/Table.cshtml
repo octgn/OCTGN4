@@ -63,8 +63,7 @@
         }, 'backend(.)+');
 
         var prevLayout = '';
-        O.on('state:StateUpdated', function (uid) {
-            if (uid != '@Model.UserId') return;
+        O.on('state:Updated', function (diff) {
             var user = O.state.users['@Model.UserId'];
             if (prevLayout == user.layout) return;
             if (!user.layout) return;
@@ -74,7 +73,7 @@
                 });
             }, 2000);
             $('#GameTable').load(window.location.pathname + '/Resources/' + user.layout + "?sid=@ViewBag.Sid");
-        }, /users\['(\d+)'\]/);
+        });
     </script>
 </body>
 </html>

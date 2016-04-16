@@ -109,6 +109,7 @@ var BackendCommunicationClass = function () {
         hub.on('fireStateReplaced', function (state) {
             O.state = state;
             console.log("fireStateReplaced", state);
+            O.fireOn('state:Updated', state);
         });
 
         hub.on('fireStateUpdated', function (diff) {

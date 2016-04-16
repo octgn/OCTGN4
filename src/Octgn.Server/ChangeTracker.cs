@@ -23,7 +23,7 @@ namespace Octgn.Server
 
             if (diff.Diff(_objectProps, _object))
             {
-                diff.Id = _prevId++;
+                diff.Id = ++_prevId;
                 // Store those changes(patch)
                 _changes.Add(diff.Id, diff);
 
