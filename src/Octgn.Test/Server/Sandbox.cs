@@ -13,8 +13,10 @@ namespace Octgn.Test.Server
         [Test]
         public void Whatever()
         {
+            GameThread.IgnoreThreadRestrictions = true;
             using (var engine = new GameEngine(null))
             {
+                engine.EngineInitialized.WaitOne();
                 var o = new OClass(engine);
 
                 engine.Javascript.Execute("var a = new Array();");
@@ -25,8 +27,10 @@ namespace Octgn.Test.Server
         [Test]
         public void Spec()
         {
+            GameThread.IgnoreThreadRestrictions = true;
             using (var engine = new GameEngine(null))
             {
+                engine.EngineInitialized.WaitOne();
                 var o = new OClass(engine);
                 engine.Javascript.Execute("O.state.test = {}");
                 engine.Javascript.Execute("O.state.test.jimmy = 12;");
@@ -46,8 +50,10 @@ namespace Octgn.Test.Server
         [Test]
         public void StateArraySpec()
         {
+            GameThread.IgnoreThreadRestrictions = true;
 			using(var engine = new GameEngine(null))
 			{
+                engine.EngineInitialized.WaitOne();
 				var results = new Dictionary<string,bool>();
 				engine.Javascript.AddObject("results", results);
 

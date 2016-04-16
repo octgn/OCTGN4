@@ -1,5 +1,4 @@
-﻿using Octgn.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 
 namespace Octgn.Server.JS
@@ -9,23 +8,22 @@ namespace Octgn.Server.JS
         internal ChangeTracker ChangeTracker { get; private set; }
 
         private Dictionary<string, object> _properties;
-        private Dictionary<int, UserClass> _users;
         private GameEngine _engine;
         private object _previous;
         internal StateClass(GameEngine engine)
         {
             _engine = engine;
-            _users = new Dictionary<int, UserClass>();
             _properties = new Dictionary<string, object>();
             _previous = new object();
             ChangeTracker = engine.CreateChangeTracker(this);
+            _properties.Add("users", _engine.Javascript.ExecuteAndReturn("[]"));
         }
 
-        internal UserClass AddUser(int id, string username)
+        internal dynamic AddUser(int id, string username)
         {
             var ub = _engine.Users.Get(id);
-            var uc = new UserClass(_engine, ub);
-            _users.Add(id, uc);
+            var uc = _engine.Javascript.ExecuteAndReturn($@"var OCTGNTEMP = {{ id: {id}, username: ""{username}""}}; OCTGNTEMP;");
+            _engine.Javascript.Script.O.state.users[id] = uc;
             return uc;
         }
 

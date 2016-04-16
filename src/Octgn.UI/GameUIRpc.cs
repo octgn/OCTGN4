@@ -1,3 +1,4 @@
+using Octgn.Shared;
 using System;
 using System.Collections.Generic;
 
@@ -51,7 +52,7 @@ namespace Octgn.UI
             }
         }
 
-        public void FirePropertyChanged(string name, object realo)
+        public void FireStateUpdated(ObjectDiff obj)
         {
             dynamic[] cs = new dynamic[0];
             lock (_clients)
@@ -60,11 +61,11 @@ namespace Octgn.UI
             }
             foreach(var c in cs)
             {
-                c.FirePropertyChanged(name, realo);
+                c.FireStateUpdated(obj);
             }
         }
 
-        public void FireStateReplaced(string state)
+        public void FireStateReplaced(object state)
         {
             dynamic[] cs = new dynamic[0];
             lock (_clients)

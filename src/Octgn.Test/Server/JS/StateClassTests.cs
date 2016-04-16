@@ -14,8 +14,10 @@ namespace Octgn.Test.Server.JS
         [Test]
         public void ImplementsDynamicObject()
         {
+            GameThread.IgnoreThreadRestrictions = true;
             using (var ge = new GameEngine(null))
             {
+                ge.EngineInitialized.WaitOne();
                 var obj = new StateClass(ge);
                 Assert.IsInstanceOf<DynamicObject>(obj);
 
@@ -50,6 +52,27 @@ namespace Octgn.Test.Server.JS
                     ge.Javascript.Execute("delete obj.Taco");
                     Assert.False(obj.GetDynamicMemberNames().Contains("Taco"));
                 }
+            }
+        }
+
+        [Test]
+        public void AddUser()
+        {
+            GameThread.IgnoreThreadRestrictions = true;
+            var id = 12;
+            var username = "jim";
+            
+            using(var ge = new GameEngine(null))
+            {
+                ge.EngineInitialized.WaitOne(5000);
+                var obj = new StateClass(ge);
+                var usr = obj.AddUser(id, username);
+                Assert.AreEqual(id, usr.id);
+                Assert.AreEqual(username, usr.username);
+
+                Assert.NotNull(ge.Javascript.Script.O.state.users[id]);
+                Assert.AreEqual(username, ge.Javascript.Script.O.state.users[id].username);
+                Assert.AreEqual(id, ge.Javascript.Script.O.state.users[id].id);
             }
         }
     }

@@ -1,8 +1,8 @@
 ﻿@inherits Octgn.UI.WebViewBase<Octgn.UI.Models.Games.TableModel>
+<!DOCTYPE html>
 @{
     var baseUrl = this.Request.Url.BasePath;
 }
-<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -63,7 +63,7 @@
         }, 'backend(.)+');
 
         var prevLayout = '';
-        O.on('state:PropertyChanged', function (uid) {
+        O.on('state:StateUpdated', function (uid) {
             if (uid != '@Model.UserId') return;
             var user = O.state.users['@Model.UserId'];
             if (prevLayout == user.layout) return;

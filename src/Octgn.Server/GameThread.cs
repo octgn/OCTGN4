@@ -9,6 +9,7 @@ namespace Octgn.Server
 {
     public abstract class GameThread : IDisposable
     {
+        public static bool IgnoreThreadRestrictions;
         private static ILogger Log = LoggerFactory.Create<GameThread>();
         private Task _gameThread;
         private ConcurrentQueue<Action> _invokeQueue;
@@ -39,7 +40,7 @@ namespace Octgn.Server
 
         internal void AssertRunningOnThisThread()
         {
-            Debug.Assert(Thread.CurrentThread.ManagedThreadId == this._threadId, "This code must be running on the GameThread");
+            Debug.Assert(IgnoreThreadRestrictions || Thread.CurrentThread.ManagedThreadId == this._threadId, "This code must be running on the GameThread");
         }
 
         private void _run()

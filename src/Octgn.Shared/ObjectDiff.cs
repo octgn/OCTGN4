@@ -68,9 +68,46 @@ namespace Octgn.Shared
             return IsDifferent;
         }
 
-        public void Patch(object patchObject)
+        public object Patch(object patchObject)
         {
-            throw new NotImplementedException();
+            Contract.Requires(patchObject != null);
+
+            var ret = ObjectToDictionary(patchObject);
+
+            foreach(var a in Added)
+            {
+                var keys = a.Key.Split('.');
+                var current = ret;
+                for(var i = 0;i<keys.Length - 1; i++)
+                {
+                    current = (Dictionary<string, object>)current[keys[i]];
+                }
+                current.Add(keys[keys.Length - 1], a.Value);
+            }
+
+            foreach(var m in Modified)
+            {
+                var keys = m.Key.Split('.');
+                var current = ret;
+                for(var i = 0;i<keys.Length - 1; i++)
+                {
+                    current = (Dictionary<string, object>)current[keys[i]];
+                }
+                current[keys[keys.Length - 1]] = m.Value;
+            }
+
+            foreach(var d in Deleted)
+            {
+                var keys = d.Split('.');
+                var current = ret;
+                for(var i = 0;i<keys.Length - 1; i++)
+                {
+                    current = (Dictionary<string, object>)current[keys[i]];
+                }
+                current.Remove(keys[keys.Length - 1]);
+            }
+
+            return ret;
         }
 
         public static bool IsValue(object o)
@@ -96,7 +133,7 @@ namespace Octgn.Shared
             else if(o is DynamicObject)
             {
                 var obj = o as DynamicObject;
-                foreach(var name in Dynamitey.Dynamic.GetMemberNames(o))
+                foreach (var name in obj.GetDynamicMemberNames())
                 {
                     var kvp = new KeyValuePair<string, object>(name, Dynamitey.Dynamic.InvokeGet(o, name));
                     yield return kvp;
@@ -114,8 +151,7 @@ namespace Octgn.Shared
 
         public static Dictionary<string, object> ObjectToDictionary(object o)
         {
-            Contract.Ensures(IsValue(o));
-            if (!IsValue(o)) throw new InvalidOperationException();
+            if (IsValue(o)) throw new InvalidOperationException();
             if (o == null) return new Dictionary<string, object>();
 
             var dick = EnumerateProperties(o).ToDictionary(x => x.Key, x =>

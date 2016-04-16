@@ -35,8 +35,10 @@ namespace Octgn.Test.Shared
         [Test]
         public void EnumerateProperties()
         {
+            GameThread.IgnoreThreadRestrictions = true;
             using (var ge = new GameEngine(null))
             {
+                ge.EngineInitialized.WaitOne();
                 var objs = new List<object>();
 
                 var adders = new
@@ -50,7 +52,6 @@ namespace Octgn.Test.Shared
                 };
                 var adderProps = adders.GetType().GetProperties();
                 IDictionary<string, object> adderPropsDick = adderProps.ToDictionary(x => x.Name, x => x.GetValue(adders));
-
                 {
                     dynamic obj = new ExpandoObject();
                     foreach (var prop in adderPropsDick)
@@ -71,6 +72,14 @@ namespace Octgn.Test.Shared
                     objs.Add(obj);
                 }
 
+                //{
+                //    var jstring = Newtonsoft.Json.JsonConvert.SerializeObject(adders);
+                //    ge.Javascript.Execute("var test = " + jstring + ";");
+                //    var obj = ge.Javascript.ExecuteAndReturn("test");
+
+                //    objs.Add(obj);
+                //}
+
                 {
                     objs.Add(adders);
                     objs.Add(adderPropsDick);
@@ -79,7 +88,9 @@ namespace Octgn.Test.Shared
 
                 foreach (var obj in objs)
                 {
-                    var objProps = ObjectDiff.EnumerateProperties(obj).ToDictionary(x=>x.Key, x=>x.Value);
+                    var objProps = ObjectDiff.EnumerateProperties(obj)
+                        .Where(x=>x.Key != "users")
+                        .ToDictionary(x=>x.Key, x=>x.Value);
                     foreach (var prop in objProps)
                     {
                         Assert.Contains(prop.Key, adderPropsDick.Keys.ToArray());
@@ -97,8 +108,10 @@ namespace Octgn.Test.Shared
         [Test]
         public void Diff()
         {
+            GameThread.IgnoreThreadRestrictions = true;
             using (var ge = new GameEngine(null))
             {
+                ge.EngineInitialized.WaitOne();
                 var diff = new ObjectDiff();
 
                 dynamic sobj = new ExpandoObject();
@@ -157,6 +170,65 @@ namespace Octgn.Test.Shared
                 Assert.IsEmpty(diff.Modified);
                 Assert.Contains("Tim", diff.Deleted);
             }
+        }
+
+        [Test]
+        public void ObjectToDictionary()
+        {
+            var po = ObjectDiff.ObjectToDictionary(new
+            {
+                a = 1,
+                b = 2,
+                c = new
+                {
+                    d = 3
+                }
+            });
+
+            Assert.AreEqual(1, po["a"]);
+            Assert.AreEqual(2, po["b"]);
+            Assert.IsInstanceOf<Dictionary<string, object>>(po["c"]);
+            Assert.AreEqual(3, ((Dictionary<string, object>)po["c"])["d"]);
+        }
+
+        [Test]
+        public void ObjectToDictionary_ThrowsOnValues([Values(null, "asdf", "", 12, 1.2)]object obj)
+        {
+            Assert.Throws<InvalidOperationException>(()=>ObjectDiff.ObjectToDictionary(obj));
+        }
+
+        [Test]
+        public void Patch()
+        {
+            var po = ObjectDiff.ObjectToDictionary(new {
+                a = 1,
+                b = 2,
+                c = new {
+                    d = 3
+                }
+            });
+
+            var co = ObjectDiff.ObjectToDictionary(new
+            {
+                a = 1,
+                b = 2,
+                c = new
+                {
+                    d = 3
+                }
+            });
+
+            co["a"] = 2;
+            (co["c"] as Dictionary<string, object>).Add("e", 4);
+            co.Remove("b");
+
+            var diff = new ObjectDiff(po, co);
+
+            var patch = diff.Patch(po) as Dictionary<string, object> ;
+
+            Assert.AreEqual(co["a"], patch["a"]);
+            Assert.False(patch.ContainsKey("b"));
+            Assert.AreEqual(4, (patch["c"] as Dictionary<string, object>)["e"]);
         }
     }
 }

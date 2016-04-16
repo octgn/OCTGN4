@@ -109,7 +109,6 @@
     <Compile Include="JS\JavascriptEngine.cs" />
     <Compile Include="JS\OClass.cs" />
     <Compile Include="JS\StateClass.cs" />
-    <Compile Include="JS\UserClass.cs" />
     <Compile Include="GameThread.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserBase.cs" />

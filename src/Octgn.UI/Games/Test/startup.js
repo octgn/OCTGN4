@@ -3,9 +3,7 @@
 });
 
 O.events.on('user.initialize', function (ctx) {
-    O.state.users[ctx.user.id] = {
-        layout: 'StartStage.html'
-    };
+    O.state.users[ctx.user.id].layout = "StartStage.html";
 });
 
 O.com.on('msg', function (obj) {

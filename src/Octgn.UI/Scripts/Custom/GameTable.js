@@ -107,20 +107,16 @@ var BackendCommunicationClass = function () {
         });
 
         hub.on('fireStateReplaced', function (state) {
-            O.state = JSON.parse(state);
+            O.state = state;
             console.log("fireStateReplaced", state);
         });
 
-        hub.on('firePropertyChanged', function (name, obj) {
-            console.log("firePropertyChanged", {
-                name: name,
+        hub.on('fireStateUpdated', function (diff) {
+            console.log("fireStateUpdated", {
                 obj: obj
             });
-            var fullName = 'O.state.' + name;
-            var cur = fullName + ' = ' + JSON.stringify(obj);
-            eval(cur);
-            var obj = eval(fullName);
-            O.fireOn('state:PropertyChanged', obj, name);
+            //TODO Need to take diff and patch it into the state object
+            O.fireOn('state:Updated', diff);
         });
 
         hub.on('loadCompleted', function () {

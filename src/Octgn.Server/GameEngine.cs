@@ -1,6 +1,7 @@
 ﻿using Octgn.Server.JS;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Octgn.Server
 {
@@ -9,14 +10,14 @@ namespace Octgn.Server
         internal GameResourceProvider Resources { get; private set; }
         internal JavascriptEngine Javascript { get; private set; }
         internal OClass O { get; private set; }
-
+        internal WaitHandle EngineInitialized { get; private set; }
         public UserList Users {get; private set;}
 
         private List<ChangeTracker> _changeTrackers;
 
         public GameEngine(GameResourceProvider resources)
         {
-            this.AssertRunningOnThisThread();
+            EngineInitialized = new ManualResetEvent(false);
             Resources = resources;
             _changeTrackers = new List<ChangeTracker>();
             Users = new UserList();
@@ -40,6 +41,7 @@ namespace Octgn.Server
             O.Init();
             if(Resources != null)
                 Javascript.Execute(Resources.ReadEntryPoint());
+            ((ManualResetEvent)EngineInitialized).Set();
         }
 
         protected override void Run()
