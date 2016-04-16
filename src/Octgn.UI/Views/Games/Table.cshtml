@@ -64,6 +64,7 @@
 
         var prevLayout = '';
         O.on('state:Updated', function (diff) {
+            debugger;
             var user = O.state.users['@Model.UserId'];
             if (prevLayout == user.layout) return;
             if (!user.layout) return;

@@ -20,6 +20,8 @@ namespace Octgn.UI.Hubs
 
         public override Task OnConnected()
         {
+            if (Context.User == null) return base.OnConnected();
+
             var user = Context.User.Identity as User;
             var gc = user.CurrentGameClient;
 
@@ -36,6 +38,8 @@ namespace Octgn.UI.Hubs
 
         public override Task OnDisconnected(bool stopCalled)
         {
+            if (Context.User == null) return base.OnDisconnected(stopCalled);
+
             var user = Context.User.Identity as User;
             var gc = user.CurrentGameClient;
 

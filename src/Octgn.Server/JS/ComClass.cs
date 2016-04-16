@@ -13,14 +13,14 @@ namespace Octgn.Server.JS
 			_callbacks = new Dictionary<string, List<dynamic>>();
         }
 
-        internal void Fire_on(string name, object obj)
+        internal void Fire_on(string name, EventContext context, object obj)
         {
             _engine.Invoke(() => {
                 if (!_callbacks.ContainsKey(name))
                     return;
                 foreach(var i in _callbacks[name])
                 {
-                    i(obj);
+                    i(context, obj);
                 }
             });
         }

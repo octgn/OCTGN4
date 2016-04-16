@@ -12,23 +12,23 @@ namespace Octgn.Server.JS
             _callbacks = new Dictionary<string, List<dynamic>>();
         }
 
-        internal void Fire_User_Authenticate(object ctx)
+        internal void Fire_User_Authenticate(EventContext ctx, object obj)
         {
-            Fire_on("user.authenticate", ctx);
+            Fire_on("user.authenticate", ctx, obj);
         }
 
-        internal void Fire_User_Initialize(object ctx)
+        internal void Fire_User_Initialize(EventContext ctx, object obj)
         {
-            Fire_on("user.initialize", ctx);
+            Fire_on("user.initialize", ctx, obj);
         }
 
-        internal void Fire_on(string name, object obj)
+        internal void Fire_on(string name, EventContext ctx, object obj)
         {
             if (!_callbacks.ContainsKey(name))
                 return;
             foreach (var i in _callbacks[name])
             {
-                i(obj);
+                i(ctx, obj);
             }
         }
 

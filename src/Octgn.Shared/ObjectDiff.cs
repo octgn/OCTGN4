@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Dynamic;
@@ -114,6 +115,7 @@ namespace Octgn.Shared
         {
             if (o == null) return true;
             if (o is string) return true;
+            if (o is JToken) return true;
             if (o.GetType().IsValueType) return true;
             return false;
         }
@@ -136,6 +138,15 @@ namespace Octgn.Shared
                 foreach (var name in obj.GetDynamicMemberNames())
                 {
                     var kvp = new KeyValuePair<string, object>(name, Dynamitey.Dynamic.InvokeGet(o, name));
+                    yield return kvp;
+                }
+            }
+            else if(o is JObject)
+            {
+                var obj = o as JObject;
+                foreach(var prop in obj.Properties())
+                {
+                    var kvp = new KeyValuePair<string, object>(prop.Name, prop.Value);
                     yield return kvp;
                 }
             }

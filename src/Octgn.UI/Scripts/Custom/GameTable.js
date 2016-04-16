@@ -116,7 +116,21 @@ var BackendCommunicationClass = function () {
             console.log("fireStateUpdated", {
                 obj: obj
             });
-            //TODO Need to take diff and patch it into the state object
+
+            for (var property in diff.Added) {
+                if (!object.hasOwnProperty(property)) continue;
+                var str = "O.state." + property + " = " + diff.Added[property];
+                eval(str);
+            }
+            for (var property in diff.Modified) {
+                if (!object.hasOwnProperty(property)) continue;
+                var str = "O.state." + property + " = " + diff.Added[property];
+                eval(str);
+            }
+            for (var property in diff.Deleted) {
+                var str = "delete O.state." + property;
+                eval(str);
+            }
             O.fireOn('state:Updated', diff);
         });
 
