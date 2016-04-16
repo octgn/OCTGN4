@@ -12,7 +12,6 @@ namespace Octgn.Server.JS
         private Dictionary<int, UserClass> _users;
         private GameEngine _engine;
         private object _previous;
-        private int _lastRefNum;
         internal StateClass(GameEngine engine)
         {
             _engine = engine;

@@ -1,9 +1,5 @@
 ﻿using Octgn.Shared;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Octgn.Server
 {
@@ -18,19 +14,24 @@ namespace Octgn.Server
         {
             _object = o;
             _objectProps = new Dictionary<string, object>();
+            _changes = new Dictionary<int, ObjectDiff>();
         }
 
-        public void ProcessChanges()
+        public ObjectDiff ProcessChanges()
         {
             var diff = new ObjectDiff();
 
-            diff.Diff(_objectProps, _object);
+            if (diff.Diff(_objectProps, _object))
+            {
+                diff.Id = _prevId++;
+                // Store those changes(patch)
+                _changes.Add(diff.Id, diff);
 
-            // Store those changes(patch)
-            _changes.Add(_prevId++, diff);
+                // Update the _objectProps object with new object
+                _objectProps = ObjectDiff.ObjectToDictionary(_object);
+            }
 
-            // Update the _objectProps object with new object
-            _objectProps = ObjectDiff.ObjectToDictionary(_object);
+            return diff;
         }
     }
 }

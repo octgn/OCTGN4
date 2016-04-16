@@ -19,7 +19,7 @@ namespace Octgn.Test.Shared.Networking
         [Test]
         public void Invoke_NoParameters([Values(true, false)]bool withArgs)
         {
-            var packet = new NetworkProtocol.Packet()
+            var packet = new NetworkProtocol.Packet
             {
                 Name = "Method1",
                 Parameters = new NetworkProtocol.MethodParameter[0]
@@ -29,7 +29,7 @@ namespace Octgn.Test.Shared.Networking
             {
                 packet.Parameters = new NetworkProtocol.MethodParameter[]
                 {
-                    new NetworkProtocol.MethodParameter() {
+                    new NetworkProtocol.MethodParameter {
                         Name = "a",
                         Value = "Asdf"
                     },
@@ -44,14 +44,14 @@ namespace Octgn.Test.Shared.Networking
         [Test, Combinatorial]
         public void Invoke_MultipleParameters([Values(null, "asdf")]string arg1, [Values(null, 2)]int? arg2, [Values(null, 1.4f)]float? arg3, [Values(false, true)] bool doArg4, [Values(false, true)] bool doArg4AsJObject)
         {
-            var packet = new NetworkProtocol.Packet()
+            var packet = new NetworkProtocol.Packet
             {
                 Name = "Method2",
             };
 
             var pars = new List<NetworkProtocol.MethodParameter>();
             if (arg1 != null) {
-                var p = new NetworkProtocol.MethodParameter()
+                var p = new NetworkProtocol.MethodParameter
                 {
                     Name = "a",
                     Value = arg1
@@ -59,7 +59,7 @@ namespace Octgn.Test.Shared.Networking
                 pars.Add(p);
             }
             if (arg2 != null) {
-                var p = new NetworkProtocol.MethodParameter()
+                var p = new NetworkProtocol.MethodParameter
                 {
                     Name = "b",
                     Value = arg2.Value
@@ -67,7 +67,7 @@ namespace Octgn.Test.Shared.Networking
                 pars.Add(p);
             }
             if (arg3 != null) {
-                var p = new NetworkProtocol.MethodParameter()
+                var p = new NetworkProtocol.MethodParameter
                 {
                     Name = "c",
                     Value = arg3.Value
@@ -78,7 +78,7 @@ namespace Octgn.Test.Shared.Networking
 			var jobject = JObject.FromObject(faketest);
 			if(doArg4)
 			{
-				var p = new NetworkProtocol.MethodParameter()
+				var p = new NetworkProtocol.MethodParameter
 				{
 					Name = "d",
 					Value = (doArg4AsJObject ? (object)jobject : faketest)

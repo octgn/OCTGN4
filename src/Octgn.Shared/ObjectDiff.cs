@@ -8,10 +8,13 @@ namespace Octgn.Shared
 {
     public class ObjectDiff
     {
+        public int Id { get; set; }
         public DateTime DateCreated { get; set; }
         public Dictionary<string, object> Added { get; private set; } = new Dictionary<string, object>();
         public Dictionary<string, object> Modified { get; private set; } = new Dictionary<string, object>();
         public List<string> Deleted { get; private set; } = new List<string>();
+
+        public bool IsDifferent { get; private set; }
 
         public ObjectDiff()
         {
@@ -24,7 +27,7 @@ namespace Octgn.Shared
             Diff(prev, cur);
         }
 
-        public void Diff(object prev, object cur, string parent = null)
+        public bool Diff(object prev, object cur, string parent = null)
         {
             Contract.Requires(prev != null);
             Contract.Requires(cur != null);
@@ -61,6 +64,8 @@ namespace Octgn.Shared
             {
                 Deleted.Add(prefix + prevProp.Key);
             }
+            IsDifferent = Added.Count + Modified.Count + Deleted.Count > 0;
+            return IsDifferent;
         }
 
         public static bool IsValue(object o)

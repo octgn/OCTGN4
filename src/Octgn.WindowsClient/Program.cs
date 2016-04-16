@@ -16,7 +16,9 @@ namespace Octgn.WindowsClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+#pragma warning disable CC0022 // Should dispose object
             Application.Run(new Form1());
+#pragma warning restore CC0022 // Should dispose object
         }
     }
 }

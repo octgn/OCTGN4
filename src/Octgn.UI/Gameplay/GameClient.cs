@@ -118,7 +118,7 @@ namespace Octgn.UI.Gameplay
             UIRPC.Invoke(name, obj);
         }
 
-        public void StateChange(int id, string name, object val)
+        public void StateChange(int id, ObjectDiff diff)
         {
             if (id != _lastState + 1)
             {
@@ -127,7 +127,7 @@ namespace Octgn.UI.Gameplay
                 throw new NotImplementedException();
             }
             _lastState = id;
-            _state.UpdateState(id, name, val);
+            _state.UpdateState(diff);
         }
 
         public void FullState(int id, string val)

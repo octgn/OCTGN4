@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Octgn.Shared;
 using System.Collections.Generic;
 
 namespace Octgn.UI.Gameplay
@@ -16,7 +17,7 @@ namespace Octgn.UI.Gameplay
             _state = new Dictionary<string, object>();
         }
 
-        internal void UpdateState(int id, string name, object val)
+        internal void UpdateState(ObjectDiff diff)
         {
             lock (this)
             {

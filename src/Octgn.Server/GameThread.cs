@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Octgn.Shared;
+using System.Diagnostics;
 
 namespace Octgn.Server
 {
@@ -13,7 +14,7 @@ namespace Octgn.Server
         private ConcurrentQueue<Action> _invokeQueue;
         private bool _disposing = false;
         private int _threadId = 0;
-        public GameThread()
+        protected GameThread()
         {
             Log.Trace();
             _invokeQueue = new ConcurrentQueue<Action>();
@@ -27,11 +28,18 @@ namespace Octgn.Server
 
         internal void Invoke(Action a)
         {
+            System.Diagnostics.Contracts.Contract.Requires(a != null);
+
             if (Thread.CurrentThread.ManagedThreadId == _threadId)
-                a();
+                a?.Invoke();
             else {
                 _invokeQueue.Enqueue(a);
             }
+        }
+
+        internal void AssertRunningOnThisThread()
+        {
+            Debug.Assert(Thread.CurrentThread.ManagedThreadId == this._threadId, "This code must be running on the GameThread");
         }
 
         private void _run()

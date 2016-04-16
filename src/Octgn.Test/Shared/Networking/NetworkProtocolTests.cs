@@ -183,14 +183,15 @@ namespace Octgn.Test.Shared.Networking
         [Test]
         public void TestPacket()
         {
+#pragma warning disable CC0008 // Use object initializer
             var packet = new NetworkProtocol.Packet();
             packet.Name = "ChickenBoy";
             packet.Parameters = new NetworkProtocol.MethodParameter[] {
-                new NetworkProtocol.MethodParameter() {
+                new NetworkProtocol.MethodParameter {
                     Name = "p1",
                     Value = "Asdf"
                 },
-                new NetworkProtocol.MethodParameter() {
+                new NetworkProtocol.MethodParameter {
                     Name = "p2",
                     Value = (byte)0xFF
                 }
@@ -203,6 +204,7 @@ namespace Octgn.Test.Shared.Networking
             {
                 Assert.AreEqual(packet.Parameters[i], ret.Parameters[i]);
             }
+#pragma warning restore CC0008 // Use object initializer
         }
     }
 }

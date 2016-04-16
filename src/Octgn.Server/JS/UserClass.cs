@@ -9,9 +9,11 @@ namespace Octgn.Server.JS
 		public string id { get; protected set; }
         public string username { get; protected set; }
 		private UserBase _user;
+        private GameEngine _engine;
 
         internal UserClass(GameEngine engine, UserBase user)
         {
+            _engine = engine;
             _user = user;
             id = user.Id.ToString();
             username = user.Username;
@@ -19,12 +21,12 @@ namespace Octgn.Server.JS
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            if(binder.Name == "id")
+            if(binder.Name == nameof(id))
             {
                 result = id;
                 return true;
             }
-            if(binder.Name == "username")
+            if(binder.Name == nameof(username))
             {
                 result = username;
                 return true;
@@ -35,8 +37,8 @@ namespace Octgn.Server.JS
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             var list = base.GetDynamicMemberNames().ToList();
-            list.Add("id");
-            list.Add("username");
+            list.Add(nameof(id));
+            list.Add(nameof(username));
             return list;
         }
     }
