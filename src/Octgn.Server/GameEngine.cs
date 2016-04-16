@@ -1,59 +1,79 @@
 ﻿using Octgn.Server.JS;
 using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Octgn.Server
 {
     public class GameEngine : GameThread, IDisposable
     {
         internal GameResourceProvider Resources { get; private set; }
-        internal StateHistory StateHistory {get;private set;}
-
         internal JavascriptEngine Javascript { get; private set; }
         internal OClass O { get; private set; }
-
+        internal WaitHandle EngineInitialized { get; private set; }
         public UserList Users {get; private set;}
+
+        private List<ChangeTracker> _changeTrackers;
 
         public GameEngine(GameResourceProvider resources)
         {
+            EngineInitialized = new ManualResetEvent(false);
             Resources = resources;
+            _changeTrackers = new List<ChangeTracker>();
             Users = new UserList();
-            StateHistory = new StateHistory();
+            Start();
+            this.Invoke(InitializeJS);
+        }
+
+        private void InitializeJS()
+        {
+            this.AssertRunningOnThisThread();
+
             Javascript = new JavascriptEngine();
 			Javascript.Script.console = new
 			{
 				log = new Action<object>(ScriptLog)
 			};
-			Javascript.Script.__statefull = new Func<dynamic, dynamic>(x => {
-				var ret = StatefullObject.Create(this, null, x);
-				return ret;
-			});
 			O = new OClass(this);
+#pragma warning disable CC0021 // Use nameof
             Javascript.AddObject("O", O);
-			Javascript.Execute(@"
-var statefull = function(obj){
-	if(obj.constructor === Array){
-		var real = obj.slice(0);
-		var val = __statefull(obj);
-		val.array = real;
-	} else {
-		var val = __statefull(obj);
-	}
-	return val;
-};
-");
-			O.Init();
-            //Javascript.Execute("O.state.users = statefull([])");
+#pragma warning restore CC0021 // Use nameof
+            O.Init();
             if(Resources != null)
                 Javascript.Execute(Resources.ReadEntryPoint());
-            Start();
+            ((ManualResetEvent)EngineInitialized).Set();
         }
 
         protected override void Run()
         {
-            Users.ProcessUsers();
+            this.AssertRunningOnThisThread();
+            if (Users.ProcessUsers()) {
+                ProcessChangeTrackers();
+            }
         }
 
-		private void ScriptLog(object msg)
+        internal ChangeTracker CreateChangeTracker(object o)
+        {
+            this.AssertRunningOnThisThread();
+            var ret = new ChangeTracker(o);
+
+            _changeTrackers.Add(ret);
+
+            return ret;
+        }
+
+        internal void ProcessChangeTrackers()
+        {
+            this.AssertRunningOnThisThread();
+            foreach(var c in _changeTrackers) {
+                var diff = c.ProcessChanges();
+                if (!diff.IsDifferent) continue;
+                
+                this.Users.BroadcastRPC.StateChange(diff.Id, diff);
+            }
+        }
+
+		private static void ScriptLog(object msg)
 		{
 			System.Console.WriteLine(msg);
 		}

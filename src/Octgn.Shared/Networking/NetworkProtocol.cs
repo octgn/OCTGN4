@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -345,8 +344,8 @@ namespace Octgn.Shared.Networking
                     // Filter out shit we shouldn't need(hopefully)
                     .Where(x => x == Assembly.GetEntryAssembly()) //|| x == typeof(Packet).Assembly)
                     .SelectMany(x => x.GetTypes())
-                    .Where(x => x.IsInterface == false)
-                    .Where(x => x.IsAbstract == false)
+                    .Where(x => !x.IsInterface)
+                    .Where(x => !x.IsAbstract)
                 .ToArray();
             }
 

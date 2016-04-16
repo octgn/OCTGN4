@@ -20,7 +20,7 @@ namespace Octgn.Server
         internal IInterceptor RPCInterceptor { get; private set; }
         protected GameServer Server;
         private GameSocket _socket;
-        public UserBase(GameServer server, GameSocket sock)
+        protected UserBase(GameServer server, GameSocket sock)
         {
             Username = "";
             Server = server;
@@ -31,7 +31,7 @@ namespace Octgn.Server
             Id = System.Threading.Interlocked.Increment(ref _lastId);
         }
 
-        public UserBase(UserBase user)
+        protected UserBase(UserBase user)
         {
             _socket = user._socket;
             Server = user.Server;
@@ -63,14 +63,16 @@ namespace Octgn.Server
 			throw new NotImplementedException();
 		}
 
-        internal void ProcessMessages()
+        internal bool ProcessMessages()
         {
+            this.Server.Engine.AssertRunningOnThisThread();
             var message = _socket.Read();
 
             if(message == null)
-                return;
+                return false;
 
             message.Invoke<IC2SComs>(this);
+            return true;
         }
 
         protected void ReplaceSelf(UserBase user)
@@ -90,6 +92,7 @@ namespace Octgn.Server
 
         public override void Hello(string username)
         {
+            this.Server.Engine.AssertRunningOnThisThread();
             this.Username = username;
             dynamic context = new ExpandoObject();
             context.id = this.Id;
@@ -105,18 +108,6 @@ namespace Octgn.Server
             var resp = new HelloResponse(Server, Id);
             this.RPC.HelloResp(resp);
 
-
-            foreach(var change in Server.Engine.StateHistory.GetLatestChanges())
-            {
-                if (change.IsFullState)
-                {
-                    this.RPC.FullState(change.Id, change.Change.ToString());
-                }
-                else
-                {
-                    this.RPC.StateChange(change.Id, change.Name, change.Change.ToString());
-                }
-            }
             var uc = this.Server.Engine.O.state.AddUser(this.Id, username);
             context = new ExpandoObject();
             context.user = uc;
@@ -134,11 +125,13 @@ namespace Octgn.Server
 
         public override void RemoteCall(string name, object obj)
         {
+            this.Server.Engine.AssertRunningOnThisThread();
             this.Server.Engine.O.com.Fire_on(name, obj);
         }
 
 		public override void GetResource(int reqId, string path)
 		{
+            this.Server.Engine.AssertRunningOnThisThread();
 			var data = this.Server.Engine.Resources.Get(path);
 
 			this.RPC.GetResourceResp(reqId, data.Data, data.ContentType);

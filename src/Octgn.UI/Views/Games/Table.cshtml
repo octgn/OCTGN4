@@ -1,8 +1,8 @@
 ﻿@inherits Octgn.UI.WebViewBase<Octgn.UI.Models.Games.TableModel>
+<!DOCTYPE html>
 @{
     var baseUrl = this.Request.Url.BasePath;
 }
-<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -63,8 +63,7 @@
         }, 'backend(.)+');
 
         var prevLayout = '';
-        O.on('state:PropertyChanged', function (uid) {
-            if (uid != '@Model.UserId') return;
+        O.on('state:Updated', function (diff) {
             var user = O.state.users['@Model.UserId'];
             if (prevLayout == user.layout) return;
             if (!user.layout) return;
@@ -74,7 +73,7 @@
                 });
             }, 2000);
             $('#GameTable').load(window.location.pathname + '/Resources/' + user.layout + "?sid=@ViewBag.Sid");
-        }, /users\['(\d+)'\]/);
+        });
     </script>
 </body>
 </html>

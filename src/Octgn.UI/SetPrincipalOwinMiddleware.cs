@@ -9,11 +9,9 @@ namespace Octgn.UI
 {
     internal class SetPrincipalOwinMiddleware : OwinMiddleware
     {
-        private readonly ILogger _logger;
         private readonly IKernel _kernel;
         public SetPrincipalOwinMiddleware(OwinMiddleware next, IAppBuilder app, IKernel kernel): base (next)
         {
-            //_logger = app.CreateLogger<LoggerOwinMiddleware>();
             _kernel = kernel;
         }
 
@@ -38,7 +36,7 @@ namespace Octgn.UI
 			if (context.Request.Path.ToString().StartsWith("/Games/"))
 			{
 				var snum = context.Request.Path.ToString().Split(new[] { "/" }, System.StringSplitOptions.RemoveEmptyEntries)[1];
-                int num = 0;
+                var num = 0;
                 if(int.TryParse(snum, out num))
                     user.CurrentGameClient = user.GetGame(num);
 			}

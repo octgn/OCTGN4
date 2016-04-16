@@ -5,9 +5,9 @@ namespace Octgn.Server.JS
 {
 	public class EventContext
 	{
-		public UserClass user { get; set; }
+		public dynamic user { get; set; }
 
-		public EventContext(UserClass user)
+		public EventContext(dynamic user)
 		{
 			this.user = user;
 		}

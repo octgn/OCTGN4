@@ -29,7 +29,9 @@ namespace Octgn.Server
                 if (socket != null)
                 {
                     // Need to be able to create this and send it back
-                    _onSocket(new GameSocket(socket));
+#pragma warning disable CC0022 // Should dispose object
+                    _onSocket?.Invoke(new GameSocket(socket));
+#pragma warning restore CC0022 // Should dispose object
                 }
             }
         }

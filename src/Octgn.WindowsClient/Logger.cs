@@ -33,7 +33,7 @@ namespace Octgn.WindowsClient
             WriteLine($"{caller}() | " + message, args: args);
         }
 
-        protected void WriteLine(string str, [CallerMemberName] string cmem = "", params object[] args)
+        protected static void WriteLine(string str, [CallerMemberName] string cmem = "", params object[] args)
         {
             var strr = $"[{cmem.ToUpper()} {DateTime.Now}] - {string.Format(str, args)}";
             //System.Diagnostics.Debug.WriteLine(strr);

@@ -29,10 +29,12 @@ namespace Octgn.Server
                 return _users.FirstOrDefault(x => x.Id == id);
         }
 
-        internal void ProcessUsers()
+        internal bool ProcessUsers()
         {
+            // TODO this lock could be a potential deadlock situation, should overanalize it.
             lock (this)
             {
+                var anyProcessed = false;
                 foreach(var user in _users.ToArray())
                 {
                     if (user.Replaced != null)
@@ -41,8 +43,10 @@ namespace Octgn.Server
 						_users.Add(user.Replaced);
                         continue;
                     }
-                    user.ProcessMessages();
+                    if (user.ProcessMessages())
+                        anyProcessed = true;
                 }
+                return anyProcessed;
             }
         }
 

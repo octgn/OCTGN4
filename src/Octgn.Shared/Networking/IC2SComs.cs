@@ -12,7 +12,7 @@
         void HelloResp(HelloResponse resp);
         void Kicked(string message);
         void RemoteCall(string name, object obj);
-        void StateChange(int id, string name, object val);
+        void StateChange(int id, ObjectDiff changes);
         void FullState(int id, string val);
 		void GetResourceResp(int reqId, byte[] data, string contentType);
     }
