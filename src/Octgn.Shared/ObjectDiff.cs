@@ -115,7 +115,7 @@ namespace Octgn.Shared
         {
             if (o == null) return true;
             if (o is string) return true;
-            if (o is JToken) return true;
+            if (o is JToken && ((JToken)o).Type != JTokenType.Object) return true;
             if (o.GetType().IsValueType) return true;
             return false;
         }
@@ -129,7 +129,7 @@ namespace Octgn.Shared
             {
                 foreach(var i in (o as IEnumerable<KeyValuePair<string, object>>))
                 {
-                    yield return new KeyValuePair<string, object>(i.Key, i.Value);
+                    yield return new KeyValuePair<string, object>(i.Key, GetValue(i.Value));
                 }
             }
             else if(o is DynamicObject)
@@ -137,7 +137,7 @@ namespace Octgn.Shared
                 var obj = o as DynamicObject;
                 foreach (var name in obj.GetDynamicMemberNames())
                 {
-                    var kvp = new KeyValuePair<string, object>(name, Dynamitey.Dynamic.InvokeGet(o, name));
+                    var kvp = new KeyValuePair<string, object>(name, GetValue(Dynamitey.Dynamic.InvokeGet(o, name)));
                     yield return kvp;
                 }
             }
@@ -146,7 +146,7 @@ namespace Octgn.Shared
                 var obj = o as JObject;
                 foreach(var prop in obj.Properties())
                 {
-                    var kvp = new KeyValuePair<string, object>(prop.Name, prop.Value);
+                    var kvp = new KeyValuePair<string, object>(prop.Name, GetValue(prop.Value));
                     yield return kvp;
                 }
             }
@@ -154,7 +154,7 @@ namespace Octgn.Shared
             {
                 foreach(var prop in o.GetType().GetProperties())
                 {
-                    var kvp = new KeyValuePair<string, object>(prop.Name, prop.GetValue(o));
+                    var kvp = new KeyValuePair<string, object>(prop.Name, GetValue(prop.GetValue(o)));
                     yield return kvp;
                 }
             }
@@ -167,11 +167,44 @@ namespace Octgn.Shared
 
             var dick = EnumerateProperties(o).ToDictionary(x => x.Key, x =>
             {
-                if (IsValue(x.Value)) return x.Value;
+                if (IsValue(x.Value)) return GetValue(x.Value);
                 return ObjectToDictionary(x.Value);
             });
 
             return dick;
+        }
+
+        public static object GetValue(object o) {
+            if (!(o is JToken)) return o;
+            var j = (JToken)o;
+
+            switch (j.Type) {
+                case JTokenType.Boolean:
+                    return j.Value<bool>();
+                case JTokenType.Date:
+                    return j.Value<DateTime>();
+                case JTokenType.Float:
+                    return j.Value<float>();
+                case JTokenType.Guid:
+                    return j.Value<Guid>();
+                case JTokenType.Integer:
+                    return j.Value<long>();
+                case JTokenType.Undefined:
+                case JTokenType.None:
+                case JTokenType.Null:
+                    return null;
+                case JTokenType.Raw:
+                case JTokenType.String:
+                    return j.Value<string>();
+                case JTokenType.TimeSpan:
+                    return j.Value<TimeSpan>();
+                case JTokenType.Uri:
+                    return j.Value<Uri>();
+                case JTokenType.Object:
+                    return ObjectToDictionary(j.Value<object>());
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

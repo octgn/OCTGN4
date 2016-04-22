@@ -114,17 +114,17 @@ var BackendCommunicationClass = function () {
 
         hub.on('fireStateUpdated', function (diff) {
             console.log("fireStateUpdated", {
-                obj: obj
+                obj: diff
             });
 
             for (var property in diff.Added) {
-                if (!object.hasOwnProperty(property)) continue;
-                var str = "O.state." + property + " = " + diff.Added[property];
+                if (diff.hasOwnProperty(property)) continue;
+                var str = "O.state." + property + " = " + JSON.stringify(diff.Added[property]);
                 eval(str);
             }
             for (var property in diff.Modified) {
-                if (!object.hasOwnProperty(property)) continue;
-                var str = "O.state." + property + " = " + diff.Added[property];
+                if (diff.hasOwnProperty(property)) continue;
+                var str = "O.state." + property + " = " + JSON.stringify(diff.Added[property]);
                 eval(str);
             }
             for (var property in diff.Deleted) {

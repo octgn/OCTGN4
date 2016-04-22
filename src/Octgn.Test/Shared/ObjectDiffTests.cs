@@ -8,6 +8,8 @@ using System.Dynamic;
 using Octgn.Server.JS;
 using Octgn.Server;
 using Dynamitey;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Octgn.Test.Shared
 {
@@ -102,6 +104,30 @@ namespace Octgn.Test.Shared
                         Assert.AreEqual(prop.Value, objProps[prop.Key]);
                     }
                 }
+            }
+        }
+
+        [Test]
+        public void EnumerateProperties_JObject() {
+            GameThread.IgnoreThreadRestrictions = true;
+            using (var ge = new GameEngine(null)) {
+                ge.EngineInitialized.WaitOne();
+                var objs = new List<object>();
+
+                var adders = new {
+                    a = 12,
+                    b = 14,
+                    c = new {
+                        d = 15
+                    }
+                };
+
+                var obj = JObject.FromObject(adders);
+
+                var props = ObjectDiff.EnumerateProperties(obj).ToDictionary(x => x.Key, x => x.Value);
+
+                Assert.AreEqual(12, props["a"]);
+                Assert.AreEqual(14, props["b"]);
             }
         }
 
