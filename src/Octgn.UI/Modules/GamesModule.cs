@@ -12,7 +12,7 @@ namespace Octgn.UI.Modules
 
         public GamesModule(LocalServerManager locserver) : base("/Games")
         {
-            Put["/"] = ctx =>
+            Put["/", true] = async (x, ctx) =>
             {
                 try
                 {
@@ -26,7 +26,7 @@ namespace Octgn.UI.Modules
                     var user = Context.CurrentUser as User;
                     var server = locserver.LaunchServer(game.GameName);
                     var client = user.JoinGame("localhost:" + server.Port);
-                    if (!client.Connect())
+                    if (!await client.Connect())
                     {
                         return Negotiate
                            .WithModel((string)Text.MainHub_HostGame_UnhandledError)
@@ -43,7 +43,7 @@ namespace Octgn.UI.Modules
                 }
             };
 
-            Post["/Join"] = ctx =>
+            Post["/Join", true] = async (x, ctx) =>
             {
                 try
                 {
@@ -56,7 +56,8 @@ namespace Octgn.UI.Modules
                     }
                     var user = Context.CurrentUser as User;
                     var client = user.JoinGame(game.Host);
-                    if (!client.Connect())
+                    client.Connect().Wait(10000);
+                    if (!await client.Connect())
                     {
                         return Negotiate
                             .WithModel((string)Text.Modules_HomeModule_JoinGame_CouldNotConnect)

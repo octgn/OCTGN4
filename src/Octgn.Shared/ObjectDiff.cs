@@ -83,7 +83,8 @@ namespace Octgn.Shared
                 {
                     current = (Dictionary<string, object>)current[keys[i]];
                 }
-                current.Add(keys[keys.Length - 1], a.Value);
+                var val = IsValue(a.Value) ? a.Value : ObjectToDictionary(a.Value);
+                current.Add(keys[keys.Length - 1], val);
             }
 
             foreach(var m in Modified)
@@ -94,7 +95,8 @@ namespace Octgn.Shared
                 {
                     current = (Dictionary<string, object>)current[keys[i]];
                 }
-                current[keys[keys.Length - 1]] = m.Value;
+                var val = IsValue(m.Value) ? m.Value : ObjectToDictionary(m.Value);
+                current[keys[keys.Length - 1]] = val;
             }
 
             foreach(var d in Deleted)
