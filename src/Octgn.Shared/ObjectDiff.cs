@@ -57,7 +57,12 @@ namespace Octgn.Shared
                 }
 
                 // This is an object
-                Diff(prevProp, prop.Value, prefix + prop.Key);
+                var key = prop.Key;
+                if(((dynamic)cur).constructor.name == "Array")
+                {
+                    key = "[" + key + "]";
+                }
+                Diff(prevProp, prop.Value, prefix + key);
             }
 
             // Deleted
