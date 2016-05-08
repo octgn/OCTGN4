@@ -256,5 +256,42 @@ namespace Octgn.Test.Shared
             Assert.False(patch.ContainsKey("b"));
             Assert.AreEqual(4, (patch["c"] as Dictionary<string, object>)["e"]);
         }
+
+        [Test]
+        public void IsArray()
+        {
+            var arrays = new object[] {
+                new string[1] {"a"},
+
+            };
+            var notArrays = new object[]
+            {
+
+            };
+
+            for(var i = 0;i<arrays.Length;i++)
+            {
+                try
+                {
+                    Assert.True(ObjectDiff.IsArray(arrays[i]), "Item {0} is an array", i);
+                }
+                catch(Exception e)
+                {
+                    throw new Exception($"Item {i} in arrays threw an exception", e);
+                }
+            }
+
+            for(var i = 0;i< notArrays.Length;i++)
+            {
+                try
+                {
+                    Assert.False(ObjectDiff.IsArray(notArrays[i]), "Item {0} is not an array", i);
+                }
+                catch(Exception e)
+                {
+                    throw new Exception($"Item {i} in notArrays threw an exception", e);
+                }
+            }
+        }
     }
 }

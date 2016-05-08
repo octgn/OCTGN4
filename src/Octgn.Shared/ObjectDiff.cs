@@ -58,7 +58,7 @@ namespace Octgn.Shared
 
                 // This is an object
                 var key = prop.Key;
-                if(((dynamic)cur).constructor.name == "Array")
+                if(IsArray(cur))
                 {
                     key = "[" + key + "]";
                 }
@@ -124,6 +124,15 @@ namespace Octgn.Shared
             if (o is string) return true;
             if (o is JToken && ((JToken)o).Type != JTokenType.Object) return true;
             if (o.GetType().IsValueType) return true;
+            return false;
+        }
+
+        public static bool IsArray(object o)
+        {
+            if(((dynamic)o).constructor.name == "Array")
+            {
+                return true;
+            }
             return false;
         }
 
