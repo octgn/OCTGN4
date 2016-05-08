@@ -260,13 +260,16 @@ namespace Octgn.Test.Shared
         [Test]
         public void IsArray()
         {
+            var js = new JavascriptEngine();
             var arrays = new object[] {
+                js.ExecuteAndReturn("[\"a\"]"),
                 new string[1] {"a"},
-
             };
             var notArrays = new object[]
             {
-
+                js.ExecuteAndReturn("\"a\""),
+                new ExpandoObject(),
+                new Dictionary<int, string>()
             };
 
             for(var i = 0;i<arrays.Length;i++)

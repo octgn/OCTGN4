@@ -129,9 +129,17 @@ namespace Octgn.Shared
 
         public static bool IsArray(object o)
         {
-            if(((dynamic)o).constructor.name == "Array")
+            if (o == null) return false;
+            if (o.GetType().IsArray)
             {
                 return true;
+            }
+            else if (o.GetType().Name == "V8ScriptItem")
+            {
+                if (((dynamic)o).constructor.name == "Array")
+                {
+                    return true;
+                }
             }
             return false;
         }
