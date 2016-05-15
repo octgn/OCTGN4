@@ -30,22 +30,20 @@ namespace Octgn.Shared
             Contract.Requires(prev != null);
             Contract.Requires(cur != null);
 
-            // TODO Should convert all things to Json.net files before comparing and storing and stuff
-            // that should fix most issues I think
-            var prevProps = EnumerateProperties(prev, parent).ToDictionary(x => x.Key, x => x.Value);
-            var curProps = EnumerateProperties(cur, parent).ToDictionary(x => x.Key, x => x.Value);
+            var prevObj = ToJObject(prev);
+            var curObj = ToJObject(cur);
 
             // Added and modified
-            foreach (var prop in curProps) {
-                object prevProp;
-                var key = prop.Key;
+            foreach (var prop in curObj.Properties()) {
+                JToken prevProp;
+                var key = prop.Name;
                 var prefix = parent == null ? string.Empty : parent;
                 if (IsArray(cur)) {
                     key = "[" + key + "]";
                 } else if (parent != null) {
                     prefix += ".";
                 }
-                if (!prevProps.TryGetValue(prop.Key, out prevProp)) {
+                if (!prevObj.TryGetValue(prop.Name, out prevProp)) {
                     Added.Add(prefix + key, prop.Value);
                     continue;
                 }
@@ -61,8 +59,8 @@ namespace Octgn.Shared
             }
 
             // Deleted
-            foreach (var prevProp in prevProps.Where(x => !curProps.ContainsKey(x.Key))) {
-                var key = prevProp.Key;
+            foreach (var prevProp in prevObj.Properties().Where(x => !curObj.Properties().Any(y => y.Name == x.Name))) {
+                var key = prevProp.Name;
                 var prefix = parent == null ? string.Empty : parent;
                 if (IsArray(cur)) {
                     key = "[" + key + "]";
@@ -134,100 +132,66 @@ namespace Octgn.Shared
             return false;
         }
 
-        public static IEnumerable<KeyValuePair<string, object>> EnumerateProperties( object o, string parent = null ) {
-            Contract.Ensures(Contract.Result<IEnumerable<KeyValuePair<string, object>>>() == null);
+        public static JObject ToJObject( object o ) {
+            Contract.Ensures(Contract.Result<JObject>() != null);
+            if (o == null) return JObject.FromObject(null);
+
+            var ret = new JObject();
+            foreach (var prop in EnumerateProperties(o)) {
+                ret.Add(prop.Name, prop.Value);
+            }
+
+            return ret;
+        }
+
+        public static IEnumerable<JProperty> EnumerateProperties( object o, string parent = null ) {
+            Contract.Ensures(Contract.Result<IEnumerable<JProperty>>() != null);
             var prefix = "";
             if (parent != null) prefix = parent + ".";
             if (o is IEnumerable<KeyValuePair<string, object>>) {
                 foreach (var i in (o as IEnumerable<KeyValuePair<string, object>>)) {
-                    yield return new KeyValuePair<string, object>(i.Key, GetValue(i.Value));
+                    yield return new JProperty(i.Key, GetValue(i.Value));
                 }
             } else if (o is DynamicObject) {
                 var obj = o as DynamicObject;
                 foreach (var name in obj.GetDynamicMemberNames()) {
-                    var kvp = new KeyValuePair<string, object>(name, GetValue(Dynamitey.Dynamic.InvokeGet(o, name)));
-                    yield return kvp;
+                    yield return new JProperty(name, GetValue(Dynamitey.Dynamic.InvokeGet(o, name)));
                 }
             } else if (o is JObject) {
                 var obj = o as JObject;
                 foreach (var prop in obj.Properties()) {
-                    var kvp = new KeyValuePair<string, object>(prop.Name, GetValue(prop.Value));
-                    yield return kvp;
+                    yield return new JProperty(prop.Name, GetValue(prop.Value));
                 }
             } else if (o is JArray) {
                 var obj = o as JArray;
                 for (var i = 0; i < obj.Count; i++) {
-                    var kvp = new KeyValuePair<string, object>(i.ToString(), GetValue(obj[i]));
-                    yield return kvp;
+                    yield return new JProperty(i.ToString(), GetValue(obj[i]));
                 }
             } else {
                 foreach (var prop in o.GetType().GetProperties()) {
-                    var kvp = new KeyValuePair<string, object>(prop.Name, GetValue(prop.GetValue(o)));
-                    yield return kvp;
+                    yield return new JProperty(prop.Name, GetValue(prop.GetValue(o)));
                 }
             }
-        }
-
-        public static Dictionary<string, object> ObjectToDictionary( object o ) {
-            if (IsValue(o)) throw new InvalidOperationException();
-            if (o == null) return new Dictionary<string, object>();
-
-            var dick = EnumerateProperties(o).ToDictionary(x => x.Key, x => {
-                if (IsValue(x.Value)) return GetValue(x.Value);
-                return ObjectToDictionary(x.Value);
-            });
-
-            return dick;
         }
 
         public static object GetValue( object o ) {
             if (o == null) return null;
-            if (!(o is JToken)) {
-                if (IsArray(o)) {
-                    var props = EnumerateProperties(o)
-                        .ToDictionary(x => int.Parse(x.Key), x => x.Value)
-                        .OrderBy(x => x.Key)
-                        .ToDictionary(x => x.Key, x => x.Value);
-                    if (props.Count == 0) return new JArray();
+            if (IsValue(o)) return o;
+            if (IsArray(o)) {
+                var props = EnumerateProperties(o)
+                    .ToDictionary(x => int.Parse(x.Name), x => x.Value)
+                    .OrderBy(x => x.Key)
+                    .ToDictionary(x => x.Key, x => x.Value);
+                if (props.Count == 0) return new JArray();
 
-                    var jarr = new List<object>();
-                    for (var i = 0; i < props.Last().Key + 1; i++) {
-                        object val = null;
-                        props.TryGetValue(i, out val);
-                        jarr.Add(val);
-                    }
-                    return new JArray(jarr);
-                } else return o;
-            }
-            var j = (JToken)o;
-
-            switch (j.Type) {
-                case JTokenType.Boolean:
-                    return j.Value<bool>();
-                case JTokenType.Date:
-                    return j.Value<DateTime>();
-                case JTokenType.Float:
-                    return j.Value<float>();
-                case JTokenType.Guid:
-                    return j.Value<Guid>();
-                case JTokenType.Integer:
-                    return j.Value<long>();
-                case JTokenType.Undefined:
-                case JTokenType.None:
-                case JTokenType.Null:
-                    return null;
-                case JTokenType.Raw:
-                case JTokenType.String:
-                    return j.Value<string>();
-                case JTokenType.TimeSpan:
-                    return j.Value<TimeSpan>();
-                case JTokenType.Uri:
-                    return j.Value<Uri>();
-                case JTokenType.Object:
-                    return ObjectToDictionary(j.Value<object>());
-                default:
-                    throw new NotImplementedException();
-            }
+                var jarr = new List<object>();
+                for (var i = 0; i < props.Last().Key + 1; i++) {
+                    JToken val = null;
+                    props.TryGetValue(i, out val);
+                    jarr.Add(val);
+                }
+                return new JArray(jarr);
+            } else return ToJObject(o);
         }
     }
 }
