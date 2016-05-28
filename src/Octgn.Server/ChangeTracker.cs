@@ -1,4 +1,5 @@
-﻿using Octgn.Shared;
+﻿using Newtonsoft.Json.Linq;
+using Octgn.Shared;
 using System.Collections.Generic;
 
 namespace Octgn.Server
@@ -6,14 +7,14 @@ namespace Octgn.Server
     internal class ChangeTracker
     {
         private Dictionary<int, ObjectDiff> _changes;
-        private Dictionary<string, object> _objectProps;
+        private JObject _prevObject;
         private object _object;
         private int _prevId;
 
         public ChangeTracker(object o)
         {
             _object = o;
-            _objectProps = new Dictionary<string, object>();
+            _prevObject = JObject.FromObject(new object());
             _changes = new Dictionary<int, ObjectDiff>();
         }
 
@@ -21,14 +22,14 @@ namespace Octgn.Server
         {
             var diff = new ObjectDiff();
 
-            if (diff.Diff(_objectProps, _object))
+            if (diff.Diff(_prevObject, _object))
             {
                 diff.Id = ++_prevId;
                 // Store those changes(patch)
                 _changes.Add(diff.Id, diff);
 
                 // Update the _objectProps object with new object
-                _objectProps = ObjectDiff.ObjectToDictionary(_object);
+                _prevObject = ObjectDiff.ToJObject(_object);
             }
 
             return diff;

@@ -88,7 +88,7 @@ namespace Octgn.Test.Shared
                     foreach (var prop in objProps)
                     {
                         Assert.Contains(prop.Name, adderPropsDick.Keys.ToArray());
-                        Assert.AreEqual(prop.Value, ((JValue)adderPropsDick[prop.Name]).Value);
+                        Assert.AreEqual(prop.Value, adderPropsDick[prop.Name]);
                     }
                     foreach (var prop in adderPropsDick)
                     {
@@ -195,7 +195,7 @@ namespace Octgn.Test.Shared
         [Test]
         public void Patch()
         {
-            var po = ObjectDiff.ObjectToDictionary(new
+            var po = ObjectDiff.ToJObject(new
             {
                 a = 1,
                 b = 2,
@@ -205,7 +205,7 @@ namespace Octgn.Test.Shared
                 }
             });
 
-            var co = ObjectDiff.ObjectToDictionary(new
+            var co = ObjectDiff.ToJObject(new
             {
                 a = 1,
                 b = 2,
@@ -216,16 +216,16 @@ namespace Octgn.Test.Shared
             });
 
             co["a"] = 2;
-            (co["c"] as Dictionary<string, object>).Add("e", 4);
+            (co["c"] as JObject).Add("e", 4);
             co.Remove("b");
 
             var diff = new ObjectDiff(po, co);
 
-            var patch = diff.Patch(po) as Dictionary<string, object>;
+            var patch = diff.Patch(po) as JObject;
 
-            Assert.AreEqual(co["a"], ((JValue)patch["a"]).Value);
-            Assert.False(patch.ContainsKey("b"));
-            Assert.AreEqual(4, (patch["c"] as Dictionary<string, object>)["e"]);
+            Assert.AreEqual(((JValue)co["a"]).Value, ((JValue)patch["a"]).Value);
+            Assert.IsNull(patch.Property("b"));
+            Assert.AreEqual(4, ((JValue)((JObject)patch["c"])["e"]).Value);
         }
 
         [Test]

@@ -76,35 +76,45 @@ namespace Octgn.Shared
         public object Patch( object patchObject ) {
             Contract.Requires(patchObject != null);
 
-            var ret = ObjectToDictionary(patchObject);
+            var ret = ToJObject(patchObject);
 
             foreach (var a in Added) {
                 var keys = a.Key.Split('.');
-                var current = ret;
+                JToken current = ret;
                 for (var i = 0; i < keys.Length - 1; i++) {
-                    current = (Dictionary<string, object>)current[keys[i]];
+                    current = current[keys[i]];
                 }
-                var val = IsValue(a.Value) ? a.Value : ObjectToDictionary(a.Value);
-                current.Add(keys[keys.Length - 1], val);
+                var val = IsValue(a.Value) ? a.Value : ToJObject(a.Value);
+                if(current is JObject) {
+                    ((JObject)current).Add(keys[keys.Length - 1], JValue.FromObject(val));
+                } else if(current is JArray) {
+                    var numString = (keys[keys.Length - 1]).Trim('[', ']');
+                    ((JArray)current).Insert(int.Parse(numString), JValue.FromObject(val));
+                }
             }
 
             foreach (var m in Modified) {
                 var keys = m.Key.Split('.');
-                var current = ret;
+                JToken current = ret;
                 for (var i = 0; i < keys.Length - 1; i++) {
-                    current = (Dictionary<string, object>)current[keys[i]];
+                    current = current[keys[i]];
                 }
-                var val = IsValue(m.Value) ? m.Value : ObjectToDictionary(m.Value);
-                current[keys[keys.Length - 1]] = val;
+                var val = IsValue(m.Value) ? m.Value : ToJObject(m.Value);
+                current[keys[keys.Length - 1]] = JValue.FromObject(val);
             }
 
             foreach (var d in Deleted) {
                 var keys = d.Split('.');
-                var current = ret;
+                JToken current = ret;
                 for (var i = 0; i < keys.Length - 1; i++) {
-                    current = (Dictionary<string, object>)current[keys[i]];
+                    current = current[keys[i]];
                 }
-                current.Remove(keys[keys.Length - 1]);
+                if (current is JObject) {
+                    ((JObject)current).Remove(keys[keys.Length - 1]);
+                } else if (current is JArray) {
+                    var numString = (keys[keys.Length - 1]).Trim('[', ']');
+                    ((JArray)current).RemoveAt(int.Parse(numString));
+                }
             }
 
             return ret;
