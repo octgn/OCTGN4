@@ -13,3 +13,7 @@ _build
 *.suo
 /src/.vs
 *.user
+/src/Octgn.JSEngine/jsout
+/src/Octgn.JSEngine/bin
+/src/Octgn.JSEngine/obj
+/src/Octgn.JSEngine/.ntvs_analysis.dat

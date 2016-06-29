@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25402.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.WindowsClient", "Octgn.WindowsClient\Octgn.WindowsClient.csproj", "{9A0F112F-91BE-48B9-93C1-0B0114D6381E}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.UI", "Octgn.UI\Octgn.UI.csproj", "{54421B10-06B5-4DF6-A538-1D85D36FA43F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Shared", "Octgn.Shared\Octgn.Shared.csproj", "{B4730346-26D1-4A9C-92AB-1E13664943AB}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Octgn.JSEngine", "Octgn.JSEngine\Octgn.JSEngine.njsproj", "{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{B4730346-26D1-4A9C-92AB-1E13664943AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4730346-26D1-4A9C-92AB-1E13664943AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4730346-26D1-4A9C-92AB-1E13664943AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,10 @@
+{
+  "name": "Octgn.JSEngine",
+  "version": "0.0.0",
+  "description": "Octgn.JSEngine",
+  "main": "server.js",
+  "author": {
+    "name": "itsth",
+    "email": ""
+  }
+}
