@@ -1,11 +1,13 @@
-﻿type Callback = (sender: any, obj: any) => void;
+﻿namespace Octgn {
+    export type Callback = (sender: any, obj: any) => void;
 
-interface Dict<TVal> {
-    [K: string]: TVal;
-}
+    export interface Dict<TVal> {
+        [K: string]: TVal;
+    }
 
-class NotImplementedException {
-    
+    export class NotImplementedException {
+
+    }
 }
 
 interface Object {

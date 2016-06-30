@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.UI", "Octgn.UI\Octgn.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Shared", "Octgn.Shared\Octgn.Shared.csproj", "{B4730346-26D1-4A9C-92AB-1E13664943AB}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Octgn.JS", "Octgn.JS\Octgn.JS.njsproj", "{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{B4730346-26D1-4A9C-92AB-1E13664943AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4730346-26D1-4A9C-92AB-1E13664943AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4730346-26D1-4A9C-92AB-1E13664943AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

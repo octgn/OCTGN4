@@ -1,10 +1,10 @@
 {
-  "name": "Octgn.JSEngine",
+  "name": "octgn.js",
   "version": "0.0.0",
-  "description": "Octgn.JSEngine",
+  "description": "Octgn.JS",
   "main": "server.js",
   "author": {
-    "name": "itsth",
+    "name": "Kelly Elton",
     "email": ""
   }
 }

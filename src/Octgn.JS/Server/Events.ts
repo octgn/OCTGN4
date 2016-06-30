@@ -1,27 +1,7 @@
-﻿/// <reference path="./Common.ts"/>
+﻿/// <reference path="./../Shared/Common.ts"/>
+/// <reference path="./../Shared/IUser.ts"/>
 
 namespace Octgn {
-    export class Communications {
-        private callbacks: Dict<Array<Callback>>;
-        on(name: string, callback: Callback) {
-            if (!(name in this.callbacks)) {
-                this.callbacks[name] = new Array<Callback>();
-            }
-            this.callbacks[name].push(callback);
-        }
-
-        fire_on(name: string, obj: any) {
-            if (!(name in this.callbacks)) return;
-            this.callbacks[name].forEach((cb, idx, list) => {
-                cb(this, obj);
-            });
-        }
-
-        broadcast(name: string, obj: any) {
-            throw new NotImplementedException();
-        }
-    }
-
     export class Events {
         private callbacks: Dict<Array<Callback>>;
 
@@ -42,10 +22,10 @@ namespace Octgn {
         }
     }
     export class UserInitializeEventArgs {
-        public User: User;
+        public User: IUser;
         public Allow: Boolean = true;
     }
     export class UserAuthenticateEventArgs {
-        public User: User;
+        public User: IUser;
     }
 }
