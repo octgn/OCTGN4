@@ -17,3 +17,5 @@ _build
 /src/Octgn.JS/bin
 /src/Octgn.JS/obj
 /src/Octgn.JS/.ntvs_analysis.dat
+/src/Octgn.JS/*.swp
+/src/Octgn.JS/node_modules

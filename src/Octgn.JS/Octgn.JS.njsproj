@@ -15,14 +15,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>5704a2a7-9d35-4f85-80cf-fdbed1189dd1</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>server.js</StartupFile>
+    <StartupFile>.\js\webserver.js</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <NodejsPort>1337</NodejsPort>
     <StartWebBrowser>true</StartWebBrowser>
   </PropertyGroup>
@@ -38,25 +38,26 @@
     <TypeScriptOutDir>js</TypeScriptOutDir>
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
     <TypeScriptNoEmitOnError>False</TypeScriptNoEmitOnError>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
+    <TypeScriptMapRoot>
+    </TypeScriptMapRoot>
+    <TypeScriptSourceRoot>
+    </TypeScriptSourceRoot>
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Client\Client.ts" />
-    <TypeScriptCompile Include="Server\Events.ts" />
     <TypeScriptCompile Include="Shared\Common.ts" />
+    <TypeScriptCompile Include="Shared\IUser.ts" />
+    <TypeScriptCompile Include="Server\Events.ts" />
     <TypeScriptCompile Include="Server\Communications.ts" />
     <TypeScriptCompile Include="Server\Server.ts" />
-    <TypeScriptCompile Include="Shared\IUser.ts" />
+    <TypeScriptCompile Include="webserver.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Client\" />

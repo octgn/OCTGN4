@@ -1,6 +1,4 @@
-﻿namespace Octgn {
-    export interface IUser {
-        Id: Number;
-        Username: string;
-    }
+﻿export interface IUser {
+    Id: number;
+    Username: string;
 }
