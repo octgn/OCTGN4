@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.UI", "Octgn.UI\Octgn.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Shared", "Octgn.Shared\Octgn.Shared.csproj", "{B4730346-26D1-4A9C-92AB-1E13664943AB}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Octgn.JSEngine", "Octgn.JSEngine\Octgn.JSEngine.njsproj", "{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Octgn.JS", "Octgn.JS\Octgn.JS.njsproj", "{5704A2A7-9D35-4F85-80CF-FDBED1189DD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
