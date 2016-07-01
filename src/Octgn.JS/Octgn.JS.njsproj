@@ -56,7 +56,7 @@
     <TypeScriptCompile Include="Shared\IUser.ts" />
     <TypeScriptCompile Include="Server\Events.ts" />
     <TypeScriptCompile Include="Server\Communications.ts" />
-    <TypeScriptCompile Include="Server\Server.ts" />
+    <TypeScriptCompile Include="Server\OServer.ts" />
     <TypeScriptCompile Include="Shared\Object.ts" />
     <TypeScriptCompile Include="webserver.ts" />
   </ItemGroup>

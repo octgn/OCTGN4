@@ -4,8 +4,8 @@ import {Communications} from "./Communications";
 import {Events} from "./Events";
 import * as wsd from 'ws';
 
-class ServerClass {
-    Com: Communications;
+class OServer {
+    public Com: Communications;
     public Event: Events;
     public State: any;
 
@@ -28,4 +28,4 @@ class ServerClass {
     }
 }
 
-export let Server: ServerClass = new ServerClass();
+export let Server: OServer = new OServer();
