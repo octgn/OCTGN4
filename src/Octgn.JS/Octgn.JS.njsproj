@@ -52,6 +52,7 @@
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Server\GameEngine.ts" />
     <TypeScriptCompile Include="Shared\Common.ts" />
     <TypeScriptCompile Include="Shared\IUser.ts" />
     <TypeScriptCompile Include="Server\Events.ts" />
