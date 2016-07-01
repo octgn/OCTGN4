@@ -57,6 +57,7 @@
     <TypeScriptCompile Include="Server\Events.ts" />
     <TypeScriptCompile Include="Server\Communications.ts" />
     <TypeScriptCompile Include="Server\Server.ts" />
+    <TypeScriptCompile Include="Shared\Object.ts" />
     <TypeScriptCompile Include="webserver.ts" />
   </ItemGroup>
   <ItemGroup>
