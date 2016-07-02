@@ -43,14 +43,20 @@
     <TypeScriptCompile Include="NodeHost\GameHost.ts" />
     <TypeScriptCompile Include="Server\IHostConfig.ts" />
     <TypeScriptCompile Include="Server\GameEngine.ts" />
-    <TypeScriptCompile Include="Server\IGameHost.ts" />
+    <TypeScriptCompile Include="Server\GameHostBase.ts" />
+    <TypeScriptCompile Include="Server\Octgn.Server.ts" />
+    <TypeScriptCompile Include="Server\User.ts" />
     <TypeScriptCompile Include="Shared\Common.ts" />
+    <TypeScriptCompile Include="Shared\IC2SComs.ts" />
     <TypeScriptCompile Include="Shared\IUser.ts" />
     <TypeScriptCompile Include="Server\Events.ts" />
     <TypeScriptCompile Include="Server\Communications.ts" />
     <TypeScriptCompile Include="Server\OServer.ts" />
     <TypeScriptCompile Include="Shared\Object.ts" />
     <TypeScriptCompile Include="typings\nconf\nconf.d.ts" />
+    <TypeScriptCompile Include="typings\node-uuid\node-uuid-base.d.ts" />
+    <TypeScriptCompile Include="typings\node-uuid\node-uuid-cjs.d.ts" />
+    <TypeScriptCompile Include="typings\node-uuid\node-uuid.d.ts" />
     <TypeScriptCompile Include="typings\node\node.d.ts" />
     <TypeScriptCompile Include="typings\ws\ws.d.ts" />
   </ItemGroup>
@@ -64,6 +70,7 @@
     <Folder Include="Server\" />
     <Folder Include="typings\" />
     <Folder Include="typings\nconf\" />
+    <Folder Include="typings\node-uuid\" />
     <Folder Include="typings\node\" />
     <Folder Include="typings\ws\" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿import {IGameHost} from './../Server/IGameHost';
+﻿import {GameHostBase} from './../Server/GameHostBase';
 class GameEngine {
-    public Host: IGameHost;
+    public Host: GameHostBase;
 }
