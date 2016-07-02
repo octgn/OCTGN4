@@ -23,6 +23,7 @@
     <ProjectView>ProjectFiles</ProjectView>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <TypeScriptOutDir>js</TypeScriptOutDir>
     <EnableTypeScript>true</EnableTypeScript>
     <StartWebBrowser>false</StartWebBrowser>
   </PropertyGroup>
@@ -31,7 +32,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptOutDir>js</TypeScriptOutDir>
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="NodeHost\app.ts" />
