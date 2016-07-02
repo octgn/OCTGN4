@@ -57,11 +57,20 @@ export class GameHost extends GameHostBase {
         });
     }
 
-    protected Send(user: IUser, message: string) {
+    public Send(user: IUser, message: string) {
         var client = this._clients[user.Id];
         if (!client) return;
 
         client.send(message);
+    }
+
+    public Broadcast(message: string) {
+        this._server.clients.forEach((item, idx, arr) => {
+            if (!item.upgradeReq.headers.sessionId) return;
+
+            var user = this.Sessions[item.upgradeReq.headers.sessionId];
+            this.Send(user, message);
+        });
     }
 }
 

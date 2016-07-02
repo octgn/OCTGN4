@@ -45,7 +45,10 @@ export abstract class GameHostBase {
     protected OnMessage(user: IUser, message: string) {
         console.log("Host: GotMessage " + message);
         this.Send(user, "Thanks for: " + JSON.stringify({ 'a': "b" }));
+
+        // TODO...create message object and drop it into the queue that doesn't exist yet.
     }
 
     protected abstract Send(user: IUser, message: string);
+    protected abstract Broadcast(message: string);
 }
