@@ -1,32 +1,35 @@
 ﻿/// <reference path='./../typings/node/node.d.ts' />
 /// <reference path='./../typings/ws/ws.d.ts' />
-import * as wsd from 'ws';
+import * as WebSocket from 'ws';
 import * as fs from 'fs';
 import * as http from 'http';
+import * as cmn from './../Shared/Common';
 import {GameHostBase} from './../Server/GameHostBase';
 import {IHostConfig} from './../Server/IHostConfig';
 import {User} from './../Server/User';
 import {IUser} from './../Shared/IUser';
 
 export class GameHost extends GameHostBase {
-    private _server: wsd.Server;
+    private _server: WebSocket.Server;
+    private _clients: cmn.Dict<WebSocket>;
 
     constructor(config: IHostConfig) {
         super(config);
+        this._clients = {};
     }
 
     public Start() {
         if (this._server) return;
 
-        var serverConfig: wsd.IServerOptions = {
+        var serverConfig: WebSocket.IServerOptions = {
             port: this.Config.Port,
             verifyClient: (info: { origin: string; secure: boolean; req: http.ServerRequest }): boolean => {
                 var user = this.VerifyClient(info.req);
                 return (user != null);
-            }
+            }            
         };
 
-        this._server = new wsd.Server(serverConfig);
+        this._server = new WebSocket.Server(serverConfig);
         this._server.on('connection', ws => {
             var sessionId = ws.upgradeReq.headers.sessionId;
             if (!sessionId) {
@@ -39,6 +42,8 @@ export class GameHost extends GameHostBase {
                 return;
             }
 
+            this._clients[user.Id] = ws;
+
             this.OnConnected(user);
             ws.on("open", (): void => {
                 this.OnConnected(user);
@@ -50,6 +55,13 @@ export class GameHost extends GameHostBase {
                 this.OnMessage(user, data);
             });
         });
+    }
+
+    protected Send(user: IUser, message: string) {
+        var client = this._clients[user.Id];
+        if (!client) return;
+
+        client.send(message);
     }
 }
 

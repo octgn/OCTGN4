@@ -17,14 +17,17 @@ host.Start();
 
 console.log('App: Server is running on port', host.Config.Port);
 
-var socket = new WebSocket('ws://localhost:' + config.Port);
+var socket = new WebSocket('ws://localhost:' + config.Port, {
+    headers: { "username": "jim" }
+});
+socket.onerror = function (err: Error) {
+    console.error(err);
+}
 socket.onopen = function () {
     console.log("App: Client connected");
-    socket.onmessage = function (mess) {
-        console.log("App: client: " + mess);
+    socket.onmessage = function (event: { data: any, type: string, target: WebSocket }) {
+        console.log("App: client: " + event.data);
     }
 
     socket.send(JSON.stringify({ 'a': "b" }));
-    socket.pause();
-    socket.resume();
 }

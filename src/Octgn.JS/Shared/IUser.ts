@@ -3,4 +3,5 @@
 export interface IUser extends IC2SComs {
     Id: number;
     Username: string;
+    SessionId: string;
 }

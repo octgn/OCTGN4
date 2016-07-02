@@ -14,6 +14,7 @@ export abstract class GameHostBase {
 
     constructor(protected config: IHostConfig) {
         this.Config = config;
+        this.Sessions = {};
     }
 
     public Start() {
@@ -28,6 +29,8 @@ export abstract class GameHostBase {
         // TODO run the game user.authenticate event here, and return null if it fails or something?
 
         this.Sessions[user.SessionId] = user;
+        req.headers.sessionId = user.SessionId;
+
         return user;
     }
 
@@ -41,5 +44,8 @@ export abstract class GameHostBase {
 
     protected OnMessage(user: IUser, message: string) {
         console.log("Host: GotMessage " + message);
+        this.Send(user, "Thanks for: " + JSON.stringify({ 'a': "b" }));
     }
+
+    protected abstract Send(user: IUser, message: string);
 }
