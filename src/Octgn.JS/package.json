@@ -1,13 +1,14 @@
 {
-  "name": "octgn.js",
+  "name": "octgn-js",
   "version": "0.0.0",
-  "description": "Octgn.JS",
-  "main": "server.js",
+  "description": "OctgnJS",
+  "main": "app.js",
   "author": {
     "name": "Kelly Elton",
     "email": ""
   },
   "dependencies": {
+    "nconf": "^0.8.4",
     "ws": "^1.1.1"
   }
 }
