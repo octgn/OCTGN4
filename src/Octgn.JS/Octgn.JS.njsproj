@@ -59,6 +59,8 @@
     <TypeScriptCompile Include="typings\node-uuid\node-uuid-cjs.d.ts" />
     <TypeScriptCompile Include="typings\node-uuid\node-uuid.d.ts" />
     <TypeScriptCompile Include="typings\node\node.d.ts" />
+    <TypeScriptCompile Include="typings\socket.io-client\socket.io-client.d.ts" />
+    <TypeScriptCompile Include="typings\socket.io\socket.io.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Client\" />
@@ -72,6 +74,8 @@
     <Folder Include="typings\nconf\" />
     <Folder Include="typings\node-uuid\" />
     <Folder Include="typings\node\" />
+    <Folder Include="typings\socket.io-client\" />
+    <Folder Include="typings\socket.io\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NodeHost\Games\774f25df-8fc3-496d-893b-27a90ccbe7e6\Resources\main.js" />

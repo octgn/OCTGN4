@@ -1,8 +1,8 @@
 ﻿/// <reference path='./../typings/node/node.d.ts' />
-/// <reference path='./../typings/ws/ws.d.ts' />
-import * as WebSocket from 'ws';
+/// <reference path='./../typings/socket.io/socket.io.d.ts' />
 import * as fs from 'fs';
 import * as http from 'http';
+import * as io from 'socket.io';
 import * as cmn from './../Shared/Common';
 import {GameHostBase} from './../Server/GameHostBase';
 import {IHostConfig} from './../Server/IHostConfig';
@@ -10,8 +10,10 @@ import {User} from './../Server/User';
 import {IUser} from './../Shared/IUser';
 
 export class GameHost extends GameHostBase {
-    private _server: WebSocket.Server;
-    private _clients: cmn.Dict<WebSocket>;
+    private _server: http.Server;
+    private _listener: SocketIO.Server;
+    private _interop: SocketIO.Namespace;
+    private _clients: cmn.Dict<SocketIO.Socket>;
 
     constructor(config: IHostConfig) {
         super(config);
@@ -19,39 +21,40 @@ export class GameHost extends GameHostBase {
     }
 
     public Start() {
-        if (this._server) return;
+        if (this._interop) return;
 
-        var serverConfig: WebSocket.IServerOptions = {
-            port: this.Config.Port,
-            verifyClient: (info: { origin: string; secure: boolean; req: http.ServerRequest }): boolean => {
-                var user = this.VerifyClient(info.req);
-                return (user != null);
-            }            
+        var so: SocketIO.ServerOptions = {
+            allowRequest: (req: any, callback: (err: number, success: boolean) => void) => {
+                var user = this.VerifyClient(req);
+                callback(0, user != null);
+            }
         };
 
-        this._server = new WebSocket.Server(serverConfig);
-        this._server.on('connection', ws => {
-            var sessionId = ws.upgradeReq.headers.sessionId;
+        this._server = http.createServer();
+        this._listener = io(this._server, so);
+
+        var interop = this._listener.of('/interop');
+        this._server.listen(this.Config.Port);
+
+        interop.on('connection', socket => {
+            var sessionId = socket.handshake.headers.sessionId;
             if (!sessionId) {
-                ws.close();
+                socket.disconnect(true);
                 return;
             }
             var user = this.Sessions[sessionId];
             if (!user) {
-                ws.close();
+                socket.disconnect(true);
                 return;
             }
 
-            this._clients[user.Id] = ws;
+            this._clients[user.Id] = socket;
 
             this.OnConnected(user);
-            ws.on("open", (): void => {
-                this.OnConnected(user);
-            });
-            ws.on("close", (): void => {
+            socket.on("disconnect", (): void => {
                 this.OnDisconnected(user);
             });
-            ws.on("message", (data): void => {
+            socket.on("event", (data): void => {
                 this.OnMessage(user, data);
             });
         });
@@ -65,12 +68,9 @@ export class GameHost extends GameHostBase {
     }
 
     public Broadcast(message: string) {
-        this._server.clients.forEach((item, idx, arr) => {
-            if (!item.upgradeReq.headers.sessionId) return;
-
-            var user = this.Sessions[item.upgradeReq.headers.sessionId];
-            this.Send(user, message);
-        });
+        for (var sessionId in this.Sessions) {
+            this.Send(this.Sessions[sessionId], message);
+        }
     }
 }
 

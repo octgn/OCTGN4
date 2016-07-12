@@ -1,6 +1,5 @@
 ﻿import * as nconf from 'nconf';
 import * as O from "./../Server/OServer";
-import * as WebSocket from 'ws';
 import {GameHost, HostConfig} from './GameHost';
 
 console.log("App: Loading Config");
