@@ -1,0 +1,26 @@
+{
+  "name": "octgn",
+  "version": "4.0.0",
+  "description": "Online Card and Tabletop Gaming Network",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octgn/OCTGN4.git"
+  },
+  "keywords": [
+    "octgn"
+  ],
+  "author": "Kelly Elton",
+  "license": "Unlicensed",
+  "bugs": {
+    "url": "https://github.com/octgn/OCTGN4/issues"
+  },
+  "homepage": "https://github.com/octgn/OCTGN4#readme"
+}
