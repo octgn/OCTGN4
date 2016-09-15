@@ -8,9 +8,6 @@
     }
 
     $("#gamePort").text(O.com.port);
-    O.on('com:msg', function () {
-        $("#MessageList").append("<li>" + this.value + "</li>");
-    });
     O.on('state:Updated', function () {
         RefreshChat();
     });
