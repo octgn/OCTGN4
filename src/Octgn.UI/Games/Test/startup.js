@@ -1,29 +1,24 @@
-﻿O.events.on('user.authenticate', function (ctx) {
-    ctx.allow = true;
+﻿O.events.on('user.authenticate', function (ctx, obj) {
+    obj.allow = true;
 });
 
 O.events.on('user.initialize', function (ctx) {
     O.state.users[ctx.user.id].layout = "StartStage.html";
+    var msg = {
+        from: {id: 0, username: "OCTGN"},
+        time: new Date().getTime(),
+        message: "User '" + ctx.user.username + "' Joined."
+    };
+    O.state.chatLog.push(msg);
 });
 
-O.com.on('msg', function (obj) {
-    O.com.broadcast('msg', obj);
+O.com.on('msg', function (ctx, obj) {
+    var msg = {
+        from: ctx.user,
+        time: new Date().getTime(),
+        message: obj
+    };
+    O.state.chatLog.push(msg);
 });
 
 O.state.chatLog = [];
-// Array item added
-O.state.chatLog.push(1);
-O.state.chatLog.push(2);
-// Array item removed
-delete O.state.chatLog[0]
-// Array item is changed
-O.state.chatLog[0] = 12
-
-O.state.someObj = {};
-// Property is created
-O.state.someObj.taco = 12;
-O.state.someObj.taco2 = 12;
-// Property is removed
-delete O.state.someObj.taco;
-// Property is changed
-O.state.someObj.taco2 = 1;

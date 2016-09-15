@@ -53,7 +53,7 @@ namespace Octgn.UI.Gameplay
             UIRPC = new GameUIRPC();
         }
 
-        public bool Connect()
+        public async Task<bool> Connect()
         {
             try
             {
@@ -63,6 +63,13 @@ namespace Octgn.UI.Gameplay
                 Log.Debug("Connected...");
                 this.RPC.Hello(User.UserName);
                 _readTask = Task.Factory.StartNew(ProcessMessages, _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                await Task.Run(() => {
+                    while(UserId == 0 && _cancellation.IsCancellationRequested == false)
+                    {
+                        Thread.Sleep(2);
+                    }
+                });
+                if (UserId == 0) return false;
                 return true;
             }
             catch (Exception e)

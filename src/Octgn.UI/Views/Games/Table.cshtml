@@ -67,6 +67,7 @@
             var user = O.state.users['@Model.UserId'];
             if (prevLayout == user.layout) return;
             if (!user.layout) return;
+            prevLayout = user.layout;
             setTimeout(function () {
                 $("#OctgnLoadingDiv").fadeOut(1000, function () {
                     $("#OctgnLoadingDiv").remove();

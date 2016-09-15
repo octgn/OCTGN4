@@ -8,6 +8,8 @@ using System.Dynamic;
 using Octgn.Server.JS;
 using Octgn.Server;
 using Dynamitey;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Octgn.Test.Shared
 {
@@ -72,14 +74,6 @@ namespace Octgn.Test.Shared
                     objs.Add(obj);
                 }
 
-                //{
-                //    var jstring = Newtonsoft.Json.JsonConvert.SerializeObject(adders);
-                //    ge.Javascript.Execute("var test = " + jstring + ";");
-                //    var obj = ge.Javascript.ExecuteAndReturn("test");
-
-                //    objs.Add(obj);
-                //}
-
                 {
                     objs.Add(adders);
                     objs.Add(adderPropsDick);
@@ -89,28 +83,54 @@ namespace Octgn.Test.Shared
                 foreach (var obj in objs)
                 {
                     var objProps = ObjectDiff.EnumerateProperties(obj)
-                        .Where(x=>x.Key != "users")
-                        .ToDictionary(x=>x.Key, x=>x.Value);
+                        .Where(x => x.Name != "users")
+                        .ToArray();
                     foreach (var prop in objProps)
                     {
-                        Assert.Contains(prop.Key, adderPropsDick.Keys.ToArray());
-                        Assert.AreEqual(prop.Value, adderPropsDick[prop.Key]);
+                        Assert.Contains(prop.Name, adderPropsDick.Keys.ToArray());
+                        Assert.AreEqual(prop.Value, adderPropsDick[prop.Name]);
                     }
-                    foreach(var prop in adderPropsDick)
+                    foreach (var prop in adderPropsDick)
                     {
-                        Assert.Contains(prop.Key, objProps.Keys.ToArray());
-                        Assert.AreEqual(prop.Value, objProps[prop.Key]);
+                        Assert.Contains(prop.Key, objProps.Select(x=>x.Name).ToArray());
+                        Assert.AreEqual(prop.Value, objProps.First(x=>x.Name == prop.Key).Value);
                     }
                 }
             }
         }
 
         [Test]
-        public void Diff()
+        public void EnumerateProperties_JObject()
         {
             GameThread.IgnoreThreadRestrictions = true;
             using (var ge = new GameEngine(null))
             {
+                ge.EngineInitialized.WaitOne();
+                var objs = new List<object>();
+
+                var adders = new
+                {
+                    a = 12,
+                    b = 14,
+                    c = new
+                    {
+                        d = 15
+                    }
+                };
+
+                var obj = JObject.FromObject(adders);
+
+                var props = ObjectDiff.EnumerateProperties(obj).ToDictionary(x => x.Name, x => x.Value);
+
+                Assert.AreEqual(12, ((JValue)props["a"]).Value);
+                Assert.AreEqual(14, ((JValue)props["b"]).Value);
+            }
+        }
+
+        [Test]
+        public void Diff() {
+            GameThread.IgnoreThreadRestrictions = true;
+            using (var ge = new GameEngine(null)) {
                 ge.EngineInitialized.WaitOne();
                 var diff = new ObjectDiff();
 
@@ -121,7 +141,7 @@ namespace Octgn.Test.Shared
                 eobj.Tim.bill = 12;
 
                 diff.Diff(sobj, eobj);
-                Assert.AreEqual(diff.Added["Tim"], eobj.Tim);
+                Assert.AreEqual(diff.Added["Tim"], ObjectDiff.ToJObject(eobj.Tim));
                 Assert.IsEmpty(diff.Deleted);
                 Assert.IsEmpty(diff.Modified);
 
@@ -149,7 +169,7 @@ namespace Octgn.Test.Shared
                 diff.Diff(sobj, eobj);
                 Assert.IsEmpty(diff.Added);
                 Assert.IsEmpty(diff.Deleted);
-                Assert.AreEqual(diff.Modified["Tim.bill"], "chicken");
+                Assert.AreEqual(((JValue)diff.Modified["Tim.bill"]).Value, "chicken");
 
                 // Delete
                 diff = new ObjectDiff();
@@ -173,9 +193,9 @@ namespace Octgn.Test.Shared
         }
 
         [Test]
-        public void ObjectToDictionary()
+        public void Patch()
         {
-            var po = ObjectDiff.ObjectToDictionary(new
+            var po = ObjectDiff.ToJObject(new
             {
                 a = 1,
                 b = 2,
@@ -185,30 +205,7 @@ namespace Octgn.Test.Shared
                 }
             });
 
-            Assert.AreEqual(1, po["a"]);
-            Assert.AreEqual(2, po["b"]);
-            Assert.IsInstanceOf<Dictionary<string, object>>(po["c"]);
-            Assert.AreEqual(3, ((Dictionary<string, object>)po["c"])["d"]);
-        }
-
-        [Test]
-        public void ObjectToDictionary_ThrowsOnValues([Values(null, "asdf", "", 12, 1.2)]object obj)
-        {
-            Assert.Throws<InvalidOperationException>(()=>ObjectDiff.ObjectToDictionary(obj));
-        }
-
-        [Test]
-        public void Patch()
-        {
-            var po = ObjectDiff.ObjectToDictionary(new {
-                a = 1,
-                b = 2,
-                c = new {
-                    d = 3
-                }
-            });
-
-            var co = ObjectDiff.ObjectToDictionary(new
+            var co = ObjectDiff.ToJObject(new
             {
                 a = 1,
                 b = 2,
@@ -219,16 +216,118 @@ namespace Octgn.Test.Shared
             });
 
             co["a"] = 2;
-            (co["c"] as Dictionary<string, object>).Add("e", 4);
-            co.Remove("b");
+            (co["c"] as JObject).Add("e", 4);
+            ((JObject)co).Remove("b");
 
             var diff = new ObjectDiff(po, co);
 
-            var patch = diff.Patch(po) as Dictionary<string, object> ;
+            var patch = diff.Patch(po) as JObject;
 
-            Assert.AreEqual(co["a"], patch["a"]);
-            Assert.False(patch.ContainsKey("b"));
-            Assert.AreEqual(4, (patch["c"] as Dictionary<string, object>)["e"]);
+            Assert.AreEqual(((JValue)co["a"]).Value, ((JValue)patch["a"]).Value);
+            Assert.IsNull(patch.Property("b"));
+            Assert.AreEqual(4, ((JValue)((JObject)patch["c"])["e"]).Value);
+        }
+
+        [Test]
+        public void IsArray()
+        {
+            var js = new JavascriptEngine();
+            var arrays = new object[] {
+                js.ExecuteAndReturn("[\"a\"]"),
+                new string[1] {"a"},
+            };
+            var notArrays = new object[]
+            {
+                js.ExecuteAndReturn("\"a\""),
+                new ExpandoObject(),
+                new Dictionary<int, string>()
+            };
+
+            for (var i = 0; i < arrays.Length; i++)
+            {
+                try
+                {
+                    Assert.True(ObjectDiff.IsArray(arrays[i]), "Item {0} is an array", i);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Item {i} in arrays threw an exception", e);
+                }
+            }
+
+            for (var i = 0; i < notArrays.Length; i++)
+            {
+                try
+                {
+                    Assert.False(ObjectDiff.IsArray(notArrays[i]), "Item {0} is not an array", i);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Item {i} in notArrays threw an exception", e);
+                }
+            }
+        }
+
+        [Test]
+        public void DiffKeysWithArrays()
+        {
+            using(var engine = new JavascriptEngine()) {
+                engine.Execute("var a = {};");
+                var startObj = engine.ExecuteAndReturn("a");
+
+                engine.Execute("var a = {};");
+                engine.Execute("a.users = []");
+                var endObj = engine.ExecuteAndReturn("a");
+
+                // Added
+                var diff = new ObjectDiff();
+                diff.Diff(startObj, endObj, "a");
+
+                Assert.AreEqual(1, diff.Added.Count);
+                Assert.AreEqual("a.users", diff.Added.Keys.First(), "It actually equals " + diff.Added.Keys.First());
+
+                var val = JsonConvert.SerializeObject(diff.Added.First().Value);
+                Assert.AreEqual("[]", val);
+            }
+            using(var engine = new JavascriptEngine())
+            {
+                engine.Execute("var a = {};");
+                engine.Execute("a.users = []");
+                var startObj = engine.ExecuteAndReturn("a");
+
+                engine.Execute("var a = {};");
+                engine.Execute("a.users = []");
+                engine.Execute("a.users[1] = 12");
+                var endObj = engine.ExecuteAndReturn("a");
+
+                // Added
+                var diff = new ObjectDiff();
+                diff.Diff(startObj, endObj, "a");
+
+                Assert.AreEqual(2, diff.Added.Count);
+                Assert.True(diff.Added.ContainsKey("a.users[0]"));
+                Assert.True(diff.Added.ContainsKey("a.users[1]"));
+
+                // Deleted
+                diff = new ObjectDiff();
+                diff.Diff(endObj, startObj, "a");
+
+                Assert.AreEqual(2, diff.Deleted.Count);
+                Assert.True(diff.Deleted.Contains("a.users[0]"));
+                Assert.True(diff.Deleted.Contains("a.users[1]"));
+
+                // Modified
+                engine.Execute("var a = {};");
+                engine.Execute("a.users = []");
+                engine.Execute("a.users[1] = 14");
+                var changedObj = engine.ExecuteAndReturn("a");
+
+                diff = new ObjectDiff();
+                diff.Diff(endObj, changedObj, "a");
+
+                Assert.AreEqual(1, diff.Modified.Count);
+                Assert.AreEqual("a.users[1]", diff.Modified.Keys.First(), "It actually equals " + diff.Modified.Keys.First());
+            }
         }
     }
 }

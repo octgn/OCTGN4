@@ -94,13 +94,12 @@ namespace Octgn.Server
         {
             this.Server.Engine.AssertRunningOnThisThread();
             this.Username = username;
-            dynamic context = new ExpandoObject();
-            context.id = this.Id;
-            context.username = this.Username;
-            context.allow = true;
-            this.Server.Engine.O.events.Fire_User_Authenticate(context);
+            var context = new EventContext(new { id=this.Id, username=this.Username });
+            dynamic obj = new ExpandoObject();
+            obj.allow = true;
+            this.Server.Engine.O.events.Fire_User_Authenticate(context, obj);
 
-            if(context.allow == false)
+            if(obj.allow == false)
             {
                 this.RPC.Kicked("You cannot join");
                 return;
@@ -109,9 +108,7 @@ namespace Octgn.Server
             this.RPC.HelloResp(resp);
 
             var uc = this.Server.Engine.O.state.AddUser(this.Id, username);
-            context = new ExpandoObject();
-            context.user = uc;
-            this.Server.Engine.O.events.Fire_User_Initialize(context);
+            this.Server.Engine.O.events.Fire_User_Initialize(context, null);
 			this.ReplaceSelf(new AuthenticatedUser(this));
         }
     }
@@ -126,7 +123,8 @@ namespace Octgn.Server
         public override void RemoteCall(string name, object obj)
         {
             this.Server.Engine.AssertRunningOnThisThread();
-            this.Server.Engine.O.com.Fire_on(name, obj);
+            var context = new EventContext(new { id = this.Id, username = this.Username });
+            this.Server.Engine.O.com.Fire_on(name, context, obj);
         }
 
 		public override void GetResource(int reqId, string path)
