@@ -87,11 +87,17 @@ namespace Octgn.Shared
                     current = current[keys[i]];
                 }
                 var val = IsValue(a.Value) ? a.Value : ToJObject(a.Value);
-                if(current is JObject) {
-                    ((JObject)current).Add(keys[keys.Length - 1], JValue.FromObject(val));
-                } else if(current is JArray) {
-                    var numString = (keys[keys.Length - 1]).Trim('[', ']');
+                var isArray = keys[keys.Length - 1].Last() == ']';
+                if (isArray) {
+                    var lastKey = (keys[keys.Length - 1]);
+                    var name = lastKey.Substring(0, lastKey.LastIndexOf('['));
+                    var numString = lastKey.Substring(name.Length).Trim('[', ']');
+
+                    current = current[name];
+
                     ((JArray)current).Insert(int.Parse(numString), JValue.FromObject(val));
+                } else {
+                    ((JObject)current).Add(keys[keys.Length - 1], JValue.FromObject(val));
                 }
             }
 

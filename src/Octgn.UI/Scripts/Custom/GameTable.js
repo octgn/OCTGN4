@@ -119,7 +119,27 @@ var BackendCommunicationClass = function () {
 
             for (var property in diff.Added) {
                 if (diff.hasOwnProperty(property)) continue;
+                var isArray = property.endsWith("]");
                 var str = "O.state." + property + " = " + JSON.stringify(diff.Added[property]);
+                if (isArray) {
+                    var bareName = property.substr(0, property.lastIndexOf("["));
+                    var number = parseInt(property.substr(property.lastIndexOf("[") + 1, property.length - 2 - bareName.length));
+
+                    // Does array exist
+                    var arrayExists = false;
+                    try {
+                        arrayExists = eval("typeof O.state." + bareName + " !== undefined");
+                    } catch (x) {
+
+                    }
+                    if (!arrayExists) {
+                        var tmpStr = "O.state." + bareName + " = []";
+                        eval(tmpStr);
+                    }
+
+                    eval("if(O.state." + bareName + ".hasOwnProperty(" + number + ") == false) O.state." + bareName + ".length = " + number + " + 1;");
+                }
+
                 eval(str);
             }
             for (var property in diff.Modified) {
