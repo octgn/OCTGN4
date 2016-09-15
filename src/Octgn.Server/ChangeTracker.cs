@@ -7,7 +7,7 @@ namespace Octgn.Server
     internal class ChangeTracker
     {
         private Dictionary<int, ObjectDiff> _changes;
-        private JObject _prevObject;
+        private JToken _prevObject;
         private object _object;
         private int _prevId;
 

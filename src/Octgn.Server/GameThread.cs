@@ -49,17 +49,23 @@ namespace Octgn.Server
             Thread.CurrentThread.Name = "ServerGameThread:" + Thread.CurrentThread.ManagedThreadId;
             while (!_disposing)
             {
-                Run();
-                Action a = null;
-                while (_invokeQueue.IsEmpty == false)
+                try
                 {
-                    if (_invokeQueue.TryDequeue(out a))
+                    Run();
+                    Action a = null;
+                    while (_invokeQueue.IsEmpty == false)
                     {
-                        a();
+                        if (_invokeQueue.TryDequeue(out a))
+                        {
+                            a();
+                        }
                     }
-                }
 
-                Thread.Sleep(1);
+                    Thread.Sleep(1);
+                }
+                catch (Exception e) {
+                    Log.Error("_run\n{0}", e);
+                }
             }
         }
 

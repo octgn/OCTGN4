@@ -3,11 +3,12 @@
     O.on('com:msg', function () {
         $("#MessageList").append("<li>" + this.value + "</li>");
     });
-    O.on('state:Update', function () {
+    O.on('state:Updated', function () {
+        debugger;
         $('#MessageList').html("");
-        for (var i = 0; i < O.state.chatLog.length; i++) {
-            var cur = O.state.chatLog[i];
-            $('#MessageList').Append("<li><b>[" + cur.from.username + "]</b> " + cur.message + "</li>");
+        for (var property in O.state.chatLog) {
+            var cur = O.state.chatLog[property];
+            $('#MessageList').append("<li><b>[" + cur.from.username + "]</b> " + cur.message + "</li>");
         }
     });
 

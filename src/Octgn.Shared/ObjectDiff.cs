@@ -34,35 +34,37 @@ namespace Octgn.Shared
             var curObj = ToJObject(cur);
 
             // Added and modified
-            foreach (var prop in curObj.Properties()) {
-                JToken prevProp;
-                var key = prop.Name;
+            foreach (var curProp in EnumerateProperties(curObj)) {
+                var prevProp = GetProperty(prevObj, curProp.Name);
+
+                var key = curProp.Name;
                 var prefix = parent == null ? string.Empty : parent;
-                if (IsArray(cur)) {
-                    key = "[" + key + "]";
-                } else if (parent != null) {
-                    prefix += ".";
-                }
-                if (!prevObj.TryGetValue(prop.Name, out prevProp)) {
-                    Added.Add(prefix + key, prop.Value);
+
+                if (IsArray(prevObj)) key = "[" + key + "]"; // We have a parent that's an array, use brackets
+                else if (parent != null) prefix += "."; // We have a parent that's not an array, use dot notation
+
+                if(prevProp == null) // Property just created now
+                {
+                    Added.Add(prefix + key, curProp.Value);
                     continue;
                 }
 
-                if (IsValue(prop.Value)) {
-                    if (object.Equals(prop.Value, prevProp)) continue;
-                    Modified.Add(prefix + key, prop.Value);
+                // Property already exists
+                if (IsValue(curProp.Value)) {
+                    if (object.Equals(curProp.Value, prevProp.Value)) continue; // Values are the same, no change here
+                    Modified.Add(prefix + key, curProp.Value);
                     continue;
                 }
 
                 // This is an object
-                Diff(prevProp, prop.Value, prefix + key);
+                Diff(prevProp.Value, curProp.Value, prefix + key);
             }
 
             // Deleted
-            foreach (var prevProp in prevObj.Properties().Where(x => !curObj.Properties().Any(y => y.Name == x.Name))) {
+            foreach (var prevProp in EnumerateProperties(prevObj).Where(x => !EnumerateProperties(curObj).Any(y => y.Name == x.Name))) {
                 var key = prevProp.Name;
                 var prefix = parent == null ? string.Empty : parent;
-                if (IsArray(cur)) {
+                if (IsArray(prev)) {
                     key = "[" + key + "]";
                 } else if (parent != null) {
                     prefix += ".";
@@ -142,15 +144,24 @@ namespace Octgn.Shared
             return false;
         }
 
-        public static JObject ToJObject( object o ) {
+        public static JToken ToJObject( object o ) {
             Contract.Ensures(Contract.Result<JObject>() != null);
             if (o == null) return JObject.FromObject(null);
 
+            if (IsArray(o))
+            {
+                var reta = new JArray();
+                foreach (var prop in EnumerateProperties(o))
+                {
+                    reta.Insert(int.Parse(prop.Name), prop.Value);
+                }
+                return reta;
+            }
             var ret = new JObject();
-            foreach (var prop in EnumerateProperties(o)) {
+            foreach (var prop in EnumerateProperties(o))
+            {
                 ret.Add(prop.Name, prop.Value);
             }
-
             return ret;
         }
 
@@ -202,6 +213,15 @@ namespace Octgn.Shared
                 }
                 return new JArray(jarr);
             } else return ToJObject(o);
+        }
+
+        public static JProperty GetProperty( JToken jt, string name )
+        {
+            foreach(var prop in EnumerateProperties(jt))
+            {
+                if (prop.Name == name) return prop;
+            }
+            return null;
         }
     }
 }
