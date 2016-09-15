@@ -217,7 +217,7 @@ namespace Octgn.Test.Shared
 
             co["a"] = 2;
             (co["c"] as JObject).Add("e", 4);
-            co.Remove("b");
+            ((JObject)co).Remove("b");
 
             var diff = new ObjectDiff(po, co);
 
@@ -310,7 +310,7 @@ namespace Octgn.Test.Shared
 
                 // Deleted
                 diff = new ObjectDiff();
-                diff.Diff(endObj, startObj, "a");                
+                diff.Diff(endObj, startObj, "a");
 
                 Assert.AreEqual(2, diff.Deleted.Count);
                 Assert.True(diff.Deleted.Contains("a.users[0]"));
@@ -323,7 +323,7 @@ namespace Octgn.Test.Shared
                 var changedObj = engine.ExecuteAndReturn("a");
 
                 diff = new ObjectDiff();
-                diff.Diff(endObj, changedObj, "a");                
+                diff.Diff(endObj, changedObj, "a");
 
                 Assert.AreEqual(1, diff.Modified.Count);
                 Assert.AreEqual("a.users[1]", diff.Modified.Keys.First(), "It actually equals " + diff.Modified.Keys.First());
